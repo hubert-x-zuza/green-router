@@ -1,0 +1,22 @@
+# GIOŚ stations and sensors used by the air-quality archiver.
+# Sensor IDs verified from station/sensors/{id} on 2026-10-11 (see data/manifest.yml).
+# A pollutant lists CANDIDATE sensors; the client keeps the one that returns hourly data
+# (decided from the API response, not from list position).
+base_url: "https://api.gios.gov.pl/pjp-api/v1/rest"
+timezone_current: "Europe/Warsaw"      # current data are local time with DST
+indicator_ids: {PM10: 3, PM25: 69, NO2: 6}
+hourly_code_suffix: "-1g"              # sensor code of an hourly series, e.g. MpKrakBujaka-PM10-1g
+metadata_min_interval_s: 31            # station/sensor metadata limit is 2 req/min
+request_timeout_s: 30
+retries: 3
+stations:
+  400: {name: "Kraków, Aleja Krasińskiego", sensors: {PM10: [2750], PM25: [2752], NO2: [2747]}}
+  401: {name: "Kraków, ul. Bujaka",         sensors: {PM10: [2770, 2771], PM25: [2773], NO2: [2766]}}
+  402: {name: "Kraków, ul. Bulwarowa",      sensors: {PM10: [2792, 2793], PM25: [2794], NO2: [2788]}}
+  # Added 2026-10-11 after probing station/sensors and data/getData (none of these has PM2.5;
+  # 20367 ul. Półłanki has no PM10/PM2.5/NO2 sensor and is not used).
+  10123: {name: "Kraków, ul. Złoty Róg",       sensors: {PM10: [16370, 16786]}}
+  10139: {name: "Kraków, Os. Piastów",         sensors: {PM10: [16368, 16784]}}
+  10447: {name: "Kraków, Os. Wadów",           sensors: {PM10: [17309, 17310]}}
+  11303: {name: "Kraków, Os. Swoszowice",      sensors: {PM10: [20320, 20321]}}
+  16896: {name: "Kraków, ul. Kamieńskiego",    sensors: {PM10: [27841], NO2: [27843]}}

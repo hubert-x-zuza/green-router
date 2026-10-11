@@ -1,0 +1,151 @@
+# data/manifest.yml
+# One entry per external dataset. This file feeds (1) the "About data" panel in the UI,
+# (2) the technical documentation, (3) the citation requirements.
+# Rules: never invent values. Use `status` to say what is verified. Fill TODOs from the real source.
+# Licence note (team, 11 Oct 2026): city resources may be used provided the source is cited.
+# Keep the exact regulamin wording in docs/licences/ (screenshot or quoted text + URL + date).
+
+project:
+  internal_crs: "EPSG:2178"        # all city data arrives in 2178 (green layer reports ESRI:102176 = same CS2000 zone 7)
+  web_crs: "EPSG:4326"
+  coverage: "Kraków city boundary + ~500 m buffer"
+  date_obtained_default: "2026-10-11"
+
+datasets:
+
+  noise_2022:
+    title: "Mapy hałasu 2022 (imisja: drogi, szyny; wskaźniki LDWN i LN)"
+    provider: "Gmina Miejska Kraków, Miejski System Informacji Przestrzennej (MSIP)"
+    catalogue_page: "https://msip.krakow.pl/dataset/1361"
+    service: "https://msip.um.krakow.pl/arcgis/rest/services/Mapa_halasu_2022"
+    files_used:
+      - halas_2022_imisja_dr_LDWN.geojson      # road, polygons by dB class
+      - halas_2022_imisja_dr_LN.geojson
+      - halas_2022_imisja_szyn_LDWN.geojson    # rail + tram
+      - halas_2022_imisja_szyn_LN.geojson
+    files_ignored:
+      - "*_izofony.geojson (isolines, redundant)"
+      - "*_przem_*.geojson (industry; export has no geometry)"
+    crs: "EPSG:2178"
+    data_year: 2022
+    files_generated: "2026-03-23"      # __Aktualnosc__.txt says 2026-03-23_14:47:00 (a second copy, "__Aktualnosc__ 2.txt", says 14:41:00)
+    date_obtained: "2026-10-11"
+    status: "verified; grids rebuilt 2026-10-11 by etl/noise_to_grid.py (LDWN 63.1 % at floor, LN 70.9 %)"
+    attributes: "isov1, isov2 (dB class bounds), nazwa (district), objectid"
+    limitations:
+      - "Road classes are 5 dB wide; about two thirds of the city is in the lowest class."
+      - "TODO: check metadata for which roads were modelled."
+      - "Strategic noise map (modelled), not live noise."
+    citation_pl: "Źródło: Gmina Miejska Kraków, MSIP, „Mapy hałasu 2022”, dane pozyskane 2026-10-11 (pliki wygenerowane 2026-03-23)."
+
+  green_map:
+    title: "Mapa zieleni (zieleń wysoka / niska / sportowa)"
+    provider: "Gmina Miejska Kraków, MSIP"
+    layer_url: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer/7"
+    portal_item_id: "ffc310c95ea74ed388d94cf5d9c4b49d"
+    geometry: "polygon"
+    source_crs: "ESRI:102176 (ETRS_1989_UWPP_2000_PAS_7, same projection as EPSG:2178)"
+    request_out_sr: 2178
+    fields: [class_name, area_ha, objectid]
+    classes_seen_in_renderer: ["200 Zieleń wysoka", "300 Zieleń niska", "400 Zieleń sportowa, ogródki działkowe"]
+    paging: {max_record_count: 1000, order_by: objectid}
+    status: "found; TODO confirm layer id (JSON said id 0, URL ends /7), distinct class values, data date"
+    data_date: "TODO"
+    date_obtained: "TODO"
+    todo:
+      - "List other layers of the service and the MONIT-AIR folder (possible ventilation/air-flow layer)."
+    citation_pl: "TODO: Źródło: Gmina Miejska Kraków, MSIP, „Mapa zieleni”, dane z <data>, pozyskane <data>."
+
+  drinking_fountains:
+    title: "Lokalizacja pitników wody kranowej (program „Dobra woda dla Krakowa”)"
+    provider: "Gmina Miejska Kraków, MSIP"
+    catalogue_page: "https://msip.krakow.pl/dataset/1359"
+    subsets_available: ["pitniki zewnętrzne (outdoor) - USE", "w restauracjach", "w szkołach i na uczelniach", "w urzędach i szpitalach"]
+    formats: [json, shp, dxf, WMS, WFS]
+    crs: "EPSG:2178"
+    status: "listing verified; TODO inspect attributes (status, seasonal availability)"
+    citation_pl: "TODO"
+
+  address_points:
+    title: "Punkty adresowe (EMUiA)"
+    provider: "Prezydent Miasta Krakowa, Urząd Miasta Krakowa, Wydział Geodezji (gd.umk@um.krakow.pl)"
+    catalogue_page: "https://msip.krakow.pl/dataset/1492"
+    formats: [xlsx, shp, dxf, json, WMS, WFS]
+    crs: "EPSG:2178"
+    restrictions: "Użycie zgodnie z regulaminem MSIP (team: reuse allowed with citation)"
+    status: "verified listing; used for the local geocoder"
+    citation_pl: "TODO"
+
+  streets:
+    title: "Ulice (EMUiA)"
+    catalogue_page: "https://msip.krakow.pl/dataset/1379"
+    status: "listed in catalogue; TODO verify download and fields"
+
+  districts:
+    title: "Podział administracyjny - dzielnice"
+    catalogue_page: "https://msip.krakow.pl/dataset/1483"
+    status: "listed in catalogue; TODO verify download. Also gives the Kraków boundary."
+
+  parks_table:
+    title: "Parki miejskie w Krakowie"
+    page: "https://otwartedane.um.krakow.pl/zbiory-danych/parki-miejskie-w-krakowie"
+    fields: [type, name, district, area]
+    geometry: none
+    status: "verified; table only; planner statistics only, not used for routing"
+
+  air_quality_gios:
+    title: "Jakość powietrza (Państwowy Monitoring Środowiska, EKOINFONET - JPOAT)"
+    provider: "Główny Inspektorat Ochrony Środowiska (GIOŚ), portal Jakość Powietrza"
+    api_base: "https://api.gios.gov.pl/pjp-api/v1/rest"   # old /pjp-api/rest endpoints withdrawn 2025-06-30
+    endpoints: ["station/findAll", "station/sensors/{stationId}", "data/getData/{sensorId}", "aqindex/getIndex/{stationId}"]
+    limits: "current data 1500 req/min; archive, metadata, statistics 2 req/min"
+    units: "µg/m3"
+    time_zones: "archive data fixed UTC+1; current data local time. Store as UTC."
+    request_header: "Accept: application/ld+json is required (application/json returns HTTP 406; verified 2026-10-11)"
+    stations:   # coordinates from station/findAll, 2026-10-11 (WGS84)
+      - {api_id: 400, code: MpKrakAlKras, name: "Kraków, Aleja Krasińskiego", lat: 50.057678, lon: 19.926189, sensors: {PM10: 2750, PM25: 2752, NO2: 2747}, type: "TODO manual: findAll has no station-type field"}
+      - {api_id: 401, code: MpKrakBujaka, name: "Kraków, ul. Bujaka", lat: 50.010575, lon: 19.949189, sensors: {PM10: 2770, NO2: 2766}, type: "TODO manual"}
+      - {api_id: 402, code: MpKrakBulwar, name: "Kraków, ul. Bulwarowa", lat: 50.069308, lon: 20.053492, sensors: {PM10: 2792, PM25: 2794, NO2: 2788}, type: "TODO manual"}
+      # added 2026-10-11 (probed; PM10 hourly sensor chosen from the response; no PM2.5 at these)
+      - {api_id: 10123, code: MpKrakZloRog, name: "Kraków, ul. Złoty Róg", lat: 50.081197, lon: 19.895358, sensors: {PM10: 16786}, type: "TODO manual"}
+      - {api_id: 10139, code: MpKrakOsPias, name: "Kraków, Os. Piastów", lat: 50.098508, lon: 20.018269, sensors: {PM10: 16784}, type: "TODO manual"}
+      - {api_id: 10447, code: MpKrakWadow, name: "Kraków, Os. Wadów", lat: 50.100569, lon: 20.122561, sensors: {PM10: 17309}, type: "TODO manual"}
+      - {api_id: 11303, code: MpKrakSwoszo, name: "Kraków, Os. Swoszowice", lat: 49.991442, lon: 19.936792, sensors: {PM10: 20320}, type: "TODO manual"}
+      - {api_id: 16896, code: MpKrakKamien, name: "Kraków, ul. Kamieńskiego", lat: 50.024605, lon: 19.978460, sensors: {PM10: 27841, NO2: 27843}, type: "TODO manual"}
+    manual_sensors_no_live_data:   # data/getData returns HTTP 400, API-ERR-100003 (archive only, after 4-8 weeks)
+      - {sensor: 2771, station: 401, indicator: PM10}
+      - {sensor: 2793, station: 402, indicator: PM10}
+      - {sensor: 2773, station: 401, indicator: PM2.5, note: "station 401 therefore has no live PM2.5"}
+      - {sensors: [16370, 16368, 17310, 20321], stations: [10123, 10139, 10447, 11303], indicator: PM10}
+    hourly_series_code_pattern: "<station code>-<indicator>-1g, e.g. MpKrakBujaka-PM10-1g"
+    not_used_station: "20367 ul. Półłanki (in findAll; has none of PM10, PM2.5, NO2)"
+    indicator_ids: {PM10: 3, PM25: 69, NO2: 6}
+    attribution_required: "Yes: the source must be clearly and visibly stated. Data are not continuously verified and may change."
+    contact: "api@gios.gov.pl"
+    live_reading_checked: "2026-10-11: 8 of 9 pollutant series return hourly values (last 3 days, ~62 rows); the latest hour in progress is returned with value null"
+    status: "verified 2026-10-11 (coordinates, sensors, hourly choice, live readings); TODO station type (manual), hour-label semantics"
+    citation_pl: "Źródło: Główny Inspektorat Ochrony Środowiska, Portal Jakość Powietrza (API)."
+
+  air_forecast_iosPIB:
+    title: "Prognoza jakości powietrza (IOŚ-PIB)"
+    url: "https://api.prognozy.ios.edu.pl/v1/PM10/1261/"   # 1261 = TERYT of Kraków
+    returns: "daily mean forecast, date -> µg/m3 (PM10, NO2, SO2, O3)"
+    status: "documented by GIOŚ; TODO read terms, test one call"
+    use: "'tomorrow' indicator and fallback; city-wide only"
+
+  osm:
+    title: "OpenStreetMap (street network)"
+    provider: "OpenStreetMap contributors"
+    licence: "ODbL 1.0 - attribution required; share-alike applies to published derived databases"
+    status: "TODO download Kraków extract; record extract date"
+    citation: "© OpenStreetMap contributors"
+
+  # --- planner view (Phase 4); all TODO to verify
+  schools: {title: "Szkoły (boiska, korty, bieżnie) - dwa zbiory, miejskie i prywatne", provider: "otwartedane.um.krakow.pl", status: "reported by a third party; TODO verify and fields"}
+  bike_counters: {title: "Automatyczne liczniki rowerowe (ZDMK)", provider: "otwartedane.um.krakow.pl", status: "reported by a third party; TODO verify"}
+  gtfs: {title: "GTFS Kraków", provider: "Zarząd Transportu Publicznego w Krakowie", url: "https://gtfs.ztp.krakow.pl/", status: "listing verified; TODO licence/terms"}
+  residents: {title: "Zameldowania stałe i czasowe", catalogue_page: "https://msip.krakow.pl/dataset/3180", status: "listed; TODO check aggregation level before use"}
+
+parked:
+  urban_heat_island:
+    note: "Not used in this version. See plan, Appendix A, and mwc_decode.py."

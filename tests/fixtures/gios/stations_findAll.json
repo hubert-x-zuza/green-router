@@ -1,0 +1,173 @@
+{
+ "@context": {
+  "Lista stacji pomiarów": {
+   "@id": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll"
+  },
+  "links": "https://schema.org/relatedLink",
+  "totalPages": "https://schema.org/numberOfPages"
+ },
+ "Lista stacji pomiarowych": [
+  {
+   "Identyfikator stacji": 11,
+   "Kod stacji": "DsCzerStraza",
+   "Nazwa stacji": "Czerniawa",
+   "WGS84 φ N": "50.912475",
+   "WGS84 λ E": "15.312190",
+   "Identyfikator miasta": 142,
+   "Nazwa miasta": "Czerniawa",
+   "Gmina": "Świeradów-Zdrój",
+   "Powiat": "lubański",
+   "Województwo": "DOLNOŚLĄSKIE",
+   "Ulica": "ul. Strażacka 7"
+  },
+  {
+   "Identyfikator stacji": 400,
+   "Kod stacji": "MpKrakAlKras",
+   "Nazwa stacji": "Kraków, Aleja Krasińskiego",
+   "WGS84 φ N": "50.057678",
+   "WGS84 λ E": "19.926189",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Al. Krasińskiego"
+  },
+  {
+   "Identyfikator stacji": 401,
+   "Kod stacji": "MpKrakBujaka",
+   "Nazwa stacji": "Kraków, ul. Bujaka",
+   "WGS84 φ N": "50.010575",
+   "WGS84 λ E": "19.949189",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "ul. Bujaka"
+  },
+  {
+   "Identyfikator stacji": 402,
+   "Kod stacji": "MpKrakBulwar",
+   "Nazwa stacji": "Kraków, ul. Bulwarowa",
+   "WGS84 φ N": "50.069308",
+   "WGS84 λ E": "20.053492",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "ul. Bulwarowa"
+  },
+  {
+   "Identyfikator stacji": 10123,
+   "Kod stacji": "MpKrakZloRog",
+   "Nazwa stacji": "Kraków, ul. Złoty Róg",
+   "WGS84 φ N": "50.081197",
+   "WGS84 λ E": "19.895358",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Złoty Róg"
+  },
+  {
+   "Identyfikator stacji": 10139,
+   "Kod stacji": "MpKrakOsPias",
+   "Nazwa stacji": "Kraków, Os. Piastów",
+   "WGS84 φ N": "50.098508",
+   "WGS84 λ E": "20.018269",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Os. Piastów"
+  },
+  {
+   "Identyfikator stacji": 10447,
+   "Kod stacji": "MpKrakWadow",
+   "Nazwa stacji": "Kraków, Os. Wadów",
+   "WGS84 φ N": "50.100569",
+   "WGS84 λ E": "20.122561",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Wadów"
+  },
+  {
+   "Identyfikator stacji": 11303,
+   "Kod stacji": "MpKrakSwoszo",
+   "Nazwa stacji": "Kraków, Os. Swoszowice",
+   "WGS84 φ N": "49.991442",
+   "WGS84 λ E": "19.936792",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Lusińska"
+  },
+  {
+   "Identyfikator stacji": 16896,
+   "Kod stacji": "MpKrakKamien",
+   "Nazwa stacji": "Kraków, ul. Kamieńskiego",
+   "WGS84 φ N": "50.024605",
+   "WGS84 λ E": "19.978460",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "ul. Kamieńskiego"
+  },
+  {
+   "Identyfikator stacji": 20367,
+   "Kod stacji": "MpKrakPollan",
+   "Nazwa stacji": "Kraków, ul. Półłanki",
+   "WGS84 φ N": "50.034702",
+   "WGS84 λ E": "20.044386",
+   "Identyfikator miasta": 415,
+   "Nazwa miasta": "Kraków",
+   "Gmina": "Kraków",
+   "Powiat": "Kraków",
+   "Województwo": "MAŁOPOLSKIE",
+   "Ulica": "Półłanki 76"
+  }
+ ],
+ "meta": {
+  "dc:description": "Usługa sieciowa udostępniająca listę funkcjonujących stacji pomiarowych",
+  "sy:updateFrequency": "1",
+  "dc:language": "pol (ISO 639-2 / ISO 639-3)",
+  "schema:contentType": "application/ld+json",
+  "schema:provider": {
+   "@context": "https://schema.org",
+   "@type": "Organization",
+   "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Warszawa",
+    "postalCode": "02-362",
+    "streetAddress": "Bitwy Warszawskiej 1920 3"
+   },
+   "email": "api@gios.gov.pl",
+   "name": "Główny Inspektorat Ochrony Środowiska"
+  },
+  "schema:dateModified": "do uzupełnienia po publikacji (ISO 8601)",
+  "dc:title": "Lista stacji pomiarowych",
+  "schema:datePublished": "10.04.2017",
+  "schema:keywords": "powietrze, jakość powietrza, zanieczyszczenie powietrza, stacje pomiarowe, stanowiska pomiarowe, monitoring powietrza, Państwowy Monitoring Środowiska, środowisko, stan środowiska",
+  "sy:updatePeriod": "year",
+  "schema:isPartOf": "Państwowy Monitoring Środowiska, Jakość powietrza"
+ },
+ "links": {
+  "next": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500&page=1&size=500",
+  "last": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500&page=0&size=500",
+  "prev": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500&page=0&size=500",
+  "self": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500&page=0&size=500",
+  "first": "https://api.gios.gov.pl/pjp-api/v1/rest/station/findAll?size=500&page=0&size=500"
+ },
+ "totalPages": 1
+}

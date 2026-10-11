@@ -1,0 +1,26 @@
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+# secrets / env
+.env
+# macOS
+.DS_Store
+# data: raw and processed stay out of git; the small noise grids are the exception
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/noise_LDWN_10m.tif
+!data/processed/noise_LN_10m.tif
+# air history is a local runtime store
+*.sqlite
+*.sqlite-journal
+logs/
+# web
+web/node_modules/
+web/dist/
+data/processed/

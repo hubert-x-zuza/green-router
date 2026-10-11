@@ -1,0 +1,33 @@
+[project]
+name = "zdrowa-trasa"
+version = "0.0.1"
+description = "Zdrowa Trasa - healthier routes for Kraków (Open Data App)"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy",
+  "rasterio",
+  "httpx",
+  "pyyaml",
+]
+
+[dependency-groups]
+dev = ["pytest", "ruff", "black", "pre-commit"]
+
+[tool.setuptools]
+packages = ["etl", "etl.fetch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "api/tests"]
+addopts = "-q"
+
+[tool.black]
+line-length = 100
+extend-exclude = "etl/noise_to_grid.py"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["etl/noise_to_grid.py"]  # tested upstream, kept verbatim
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
