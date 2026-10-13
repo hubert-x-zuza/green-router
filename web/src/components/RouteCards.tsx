@@ -64,10 +64,16 @@ export default function RouteCards({ routes, selected, onSelect }: Props) {
             <div className="card-head">
               <span className="swatch" aria-hidden="true" />
               <strong>{t(`kinds.${r.kind}`)}</strong>
-              {r.kind !== "fastest" && <span className="muted"> · {t(`profiles.${r.profile}`)}</span>}
+              {r.kind !== "fastest" && r.profile !== r.kind && (
+                <span className="muted"> · {t(`profiles.${r.profile}`)}</span>
+              )}
             </div>
             {r.same_as ? (
-              <p className="muted">{t("metrics.sameAs", { kind: t(`kinds.${r.same_as}`) })}</p>
+              <p className="muted">
+                {r.same_as === "fastest"
+                  ? t("metrics.sameAsFastest")
+                  : t("metrics.sameAs", { kind: t(`kinds.${r.same_as}`) })}
+              </p>
             ) : (
               <>
                 <p className="big">

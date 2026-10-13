@@ -1,32 +1,78 @@
 {
-  "app": { "title": "Healthy Route", "tagline": "Healthier walking and cycling routes in Kraków" },
-  "tabs": { "route": "Route", "planner": "For the city" },
-  "lang": { "switch": "Polski", "label": "Change language" },
+  "app": {
+    "title": "Healthy Route",
+    "tagline": "Healthier walking and cycling routes in Kraków"
+  },
+  "tabs": {
+    "route": "Route",
+    "planner": "For the city"
+  },
+  "lang": {
+    "switch": "Polski",
+    "label": "Change language"
+  },
   "route": {
-    "from": "From", "to": "To", "placeholder": "Address or street, e.g. Basztowa 20",
+    "from": "From",
+    "to": "To",
+    "placeholder": "Address or street, e.g. Basztowa 20",
     "clickHint": "Type an address or click the map: the first click sets the start, the second the destination.",
-    "myLocation": "My location", "swap": "Swap", "clear": "Clear",
-    "mode": "Mode", "walk": "Walk", "bike": "Bike",
-    "profile": "Priority", "advanced": "Advanced settings",
-    "maxDetour": "Max. extra time: {{pct}} %", "night": "Night time (LN noise)",
-    "custom": "Custom weights", "plan": "Find routes", "planning": "Calculating…",
-    "noResults": "No results", "pickedOnMap": "Point on map"
+    "myLocation": "My location",
+    "swap": "Swap",
+    "clear": "Clear",
+    "mode": "Mode",
+    "walk": "Walk",
+    "bike": "Bike",
+    "profile": "Priority",
+    "advanced": "Advanced settings",
+    "maxDetour": "Max. extra time: {{pct}} %",
+    "night": "Night time (LN noise)",
+    "custom": "Custom weights",
+    "plan": "Find routes",
+    "planning": "Calculating…",
+    "noResults": "No results",
+    "pickedOnMap": "Point on map"
   },
   "profiles": {
-    "fastest": "Fastest", "balanced": "Balanced", "quiet": "Quiet",
-    "clean_air": "Clean air", "green_water": "Green & water", "healthiest": "Healthiest"
+    "fastest": "Fastest",
+    "balanced": "Balanced",
+    "quiet": "Quiet",
+    "clean_air": "Clean air",
+    "green_water": "Green & water",
+    "healthiest": "Healthiest"
   },
-  "weights": { "noise": "Noise", "air": "Air", "traffic": "Traffic", "green": "Greenery", "fountain": "Fountains" },
-  "kinds": { "fastest": "Fastest", "healthiest": "Healthiest within limit", "balanced": "Balanced" },
+  "weights": {
+    "noise": "Noise",
+    "air": "Air",
+    "traffic": "Traffic",
+    "green": "Greenery",
+    "fountain": "Fountains"
+  },
+  "kinds": {
+    "fastest": "Fastest",
+    "healthiest": "Healthiest within limit",
+    "balanced": "Balanced"
+  },
   "metrics": {
-    "time": "{{min}} min", "distance": "{{km}} km", "noise": "Mean noise", "loud": "Loud sections (≥65 dB)",
-    "green": "Greenery nearby", "air": "Air index", "exposure": "Exposure index",
-    "fountains": "Fountains nearby", "noData": "no data", "sameAs": "Same route as: {{kind}}",
-    "limited": "Limited by the detour cap", "show": "Show on map", "shown": "On map"
+    "time": "{{min}} min",
+    "distance": "{{km}} km",
+    "noise": "Mean noise",
+    "loud": "Loud sections (≥65 dB)",
+    "green": "Greenery nearby",
+    "air": "Air index",
+    "exposure": "Exposure index",
+    "fountains": "Fountains nearby",
+    "noData": "no data",
+    "sameAs": "Same route as: {{kind}}",
+    "limited": "Limited by the detour cap",
+    "show": "Show on map",
+    "shown": "On map",
+    "sameAsFastest": "The fastest route is also the healthiest here: no detour needed."
   },
   "tradeoff": {
-    "minutes": "{{sign}}{{min}} min", "same": "no extra time",
-    "noise": "{{sign}}{{pct}} % noise exposure", "green": "{{sign}}{{pct}} % greenery",
+    "minutes": "{{sign}}{{min}} min",
+    "same": "no extra time",
+    "noise": "{{sign}}{{pct}} % noise exposure",
+    "green": "{{sign}}{{pct}} % greenery",
     "exposure": "{{sign}}{{pct}} % total exposure"
   },
   "warnings": {
@@ -43,27 +89,55 @@
     "geolocation": "Could not get your location."
   },
   "air": {
-    "title": "Air in Kraków", "level": "Quality: {{band}}", "from": "data from {{time}}",
-    "stale": "Data out of date", "unavailable": "No air data",
+    "title": "Air in Kraków",
+    "level": "Quality: {{band}}",
+    "from": "data from {{time}}",
+    "stale": "Data out of date",
+    "unavailable": "No air data",
     "indicative": "Indicative: the mean of GIOŚ stations, spread in space by proximity to traffic. Not a street-level measurement.",
-    "stations": "Monitoring stations", "source": "Source: GIOŚ, Air Quality Portal. Data are not continuously verified."
+    "stations": "Monitoring stations",
+    "source": "Source: GIOŚ, Air Quality Portal. Data are not continuously verified."
   },
-  "layers": { "title": "Layers", "noise": "Noise (Lden)", "green": "Greenery", "traffic": "Traffic proximity", "fountains": "Fountains", "stations": "Air stations", "hotspots": "Priority places" },
-  "legend": { "noise": "dB: 55 → 75+", "green": "little → much", "traffic": "far → close to a busy road" },
+  "layers": {
+    "title": "Layers",
+    "noise": "Noise (Lden)",
+    "green": "Greenery",
+    "traffic": "Traffic proximity",
+    "fountains": "Fountains",
+    "stations": "Air stations",
+    "hotspots": "Priority places"
+  },
+  "legend": {
+    "noise": "dB: 55 → 75+",
+    "green": "little → much",
+    "traffic": "far → close to a busy road"
+  },
   "planner": {
     "intro": "Street segments where high exposure (noise, traffic, little greenery) meets many sensitive users: schools, kindergartens, nurseries and residents.",
-    "district": "District", "all": "All districts", "top": "Highest priority",
-    "export": "Download CSV", "districts": "Districts",
-    "rank": "#{{rank}}", "priority": "Priority {{value}}",
+    "district": "District",
+    "all": "All districts",
+    "top": "Highest priority",
+    "export": "Download CSV",
+    "districts": "Districts",
+    "rank": "#{{rank}}",
+    "priority": "Priority {{value}}",
     "explain": "noise {{noise}} dB, greenery {{green}} %, traffic proximity {{traffic}} %",
     "who": "within 200 m: {{schools}} schools ({{pupils}} pupils), {{kg}} kindergartens, {{nur}} nurseries",
-    "pop": "Residents", "kids": "Children 0–14", "seniors": "Seniors 65+", "sites": "Sites",
-    "noiseMean": "Mean noise", "loudShare": "Loud cells", "hotspots": "In top 100",
+    "pop": "Residents",
+    "kids": "Children 0–14",
+    "seniors": "Seniors 65+",
+    "sites": "Sites",
+    "noiseMean": "Mean noise",
+    "loudShare": "Loud cells",
+    "hotspots": "In top 100",
     "method": "Method: priority = exposure × presence of sensitive people, in 150 m cells. Weights in config/etl.yml."
   },
   "about": {
-    "button": "About data", "title": "Data sources", "close": "Close",
-    "created": "Data date", "obtained": "Obtained",
+    "button": "About data",
+    "title": "Data sources",
+    "close": "Close",
+    "created": "Data date",
+    "obtained": "Obtained",
     "disclaimer": "The exposure index compares routes with each other. It is not a medical assessment. The noise map is a 2022 strategic model, the greenery map is from 2016, and the air term is indicative.",
     "privacy": "Privacy: route requests are processed and discarded. No locations are stored and no analytics cookies are used.",
     "inspiration": "Method inspired by Green Paths 2 (DigitalGeographyLab, MIT licence)."
