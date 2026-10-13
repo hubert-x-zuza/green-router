@@ -14,7 +14,7 @@
   "route": {
     "from": "From",
     "to": "To",
-    "placeholder": "Address or street, e.g. Basztowa 20",
+    "placeholder": "Address, street or place, e.g. Tauron Arena",
     "clickHint": "Type an address or click the map: the first click sets the start, the second the destination.",
     "myLocation": "My location",
     "swap": "Swap",

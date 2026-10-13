@@ -80,10 +80,13 @@ export interface RouteRequest {
 
 export interface Place {
   label: string;
-  kind: "address" | "street";
+  kind: "address" | "street" | "poi";
   district: string | null;
   lon: number;
   lat: number;
+  category: string | null;
+  category_pl: string | null;
+  category_en: string | null;
 }
 
 export interface Station {

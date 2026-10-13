@@ -42,7 +42,8 @@ services:
       - >
         python -m etl.fetch.msip --large &&
         python -m etl.fetch.otwartedane &&
+        python -m etl.fetch.osm_poi &&
         python etl/noise_to_grid.py --in data/raw/noise_2022/Mapa_imisyjna_2022_JSON --out data/processed &&
         python -m etl.graph && python -m etl.layers && python -m etl.enrich &&
-        python -m etl.normalise && python -m etl.geocoder && python -m etl.planner &&
+        python -m etl.normalise && python -m etl.planner && python -m etl.geocoder &&
         python -m etl.air

@@ -110,6 +110,7 @@ class Store:
     manifest: dict[str, Any]
     overlays: dict[str, Any]
     planner: dict[str, Any] = field(default_factory=dict)
+    snap_max_m: float = 300.0
 
 
 def load_store(processed: Path = PROCESSED) -> Store:
@@ -147,4 +148,5 @@ def load_store(processed: Path = PROCESSED) -> Store:
         manifest=yaml.safe_load((Path(CONFIG).parent / "data" / "manifest.yml").read_text("utf-8")),
         overlays=json.loads(overlays_path.read_text("utf-8")) if overlays_path.exists() else {},
         planner=planner,
+        snap_max_m=etl_cfg["coverage"]["snap_max_m"],
     )

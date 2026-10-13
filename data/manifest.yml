@@ -184,6 +184,15 @@ datasets:
     derived_data: "network_*.parquet are derived from OSM (ODbL share-alike): not published; ship the ETL scripts instead"
     citation: "© OpenStreetMap contributors (ODbL)"
 
+  osm_places:
+    title: "Miejsca z OpenStreetMap (obiekty, restauracje, kawiarnie, muzea, parki, dworce, przystanki, części miasta)"
+    provider: "OpenStreetMap contributors"
+    source: "Overpass API via osmnx features_from_polygon; categories in config/sources.yml (osm_poi)"
+    date_obtained: "2026-10-13"
+    licence: "ODbL 1.0 - attribution; used only as search results (produced work), the extract is not published"
+    status: "verified 2026-10-13: 5582 places after merging duplicates and stop platforms; 22 unreachable ones (outside the graph area or > 300 m from a path) left out of the index"
+    citation: "© OpenStreetMap contributors (ODbL)"
+
   basemap_openfreemap:
     title: "Podkład mapowy (wektorowy) OpenFreeMap, styl positron"
     provider: "OpenFreeMap (openfreemap.org); dane © OpenStreetMap contributors, OpenMapTiles"

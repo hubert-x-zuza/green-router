@@ -50,6 +50,7 @@ traffic:
 
 coverage:
   neutral_penalty: 0.5            # penalty used where a layer has no data (outside the city)
+  snap_max_m: 300                 # a route end must be this close to the walk/bike network
 
 planner:
   cell_m: 150                     # planner unit: square cell of this size

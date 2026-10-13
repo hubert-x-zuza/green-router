@@ -57,3 +57,7 @@ approximately (D-019).
 (ztpk-gmk-2.hub.arcgis.com), linked from otwartedane. Not used yet: transit stops would strengthen the
 planner's "sensitive presence", cycling infrastructure could lower the bike cost on separated paths.
 Resolving the Hub map ids to feature-layer URLs needs a check in the browser.
+
+**A8. Name check in the trade-mark registers.** A web search (2026-10-13) found no app or trade mark
+"Zdrowa Trasa". Before publishing beyond the contest, search the exact name in the UPRP
+(Polish Patent Office) and EUIPO (eSearch plus / TMview) registers.

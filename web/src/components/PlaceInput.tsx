@@ -11,7 +11,7 @@ interface Props {
 
 /** Address search with a keyboard-accessible suggestion list (ARIA combobox pattern). */
 export default function PlaceInput({ label, value, onChange, onPick }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const id = useId();
   const [items, setItems] = useState<Place[]>([]);
   const [open, setOpen] = useState(false);
@@ -94,6 +94,9 @@ export default function PlaceInput({ label, value, onChange, onPick }: Props) {
               }}
             >
               {p.label}
+              {p.kind === "poi" && (
+                <span className="cat"> {i18n.language === "en" ? p.category_en : p.category_pl}</span>
+              )}
               {p.district && <span className="muted"> · {p.district.replace("Dzielnica ", "")}</span>}
             </li>
           ))}

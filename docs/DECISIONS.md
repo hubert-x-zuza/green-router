@@ -147,3 +147,21 @@ can contain a home address. Route requests are POST bodies and are never logged 
 ## D-024 (2026-10-13) otwartedane.um.krakow.pl: only datasets the app uses
 The portal had 45 datasets; 17 are relevant (sensitive users, residents, parks, ZTP layers). The
 list and the reason for each is in config/otwartedane.yml; `--all` still downloads everything.
+
+## D-025 (2026-10-13) Named places in the search: OpenStreetMap plus the city's own sites
+Users route to places, not only to addresses ("Tauron Arena", "Kościół Mariacki", a restaurant,
+"Kazimierz"). Source: OSM features in the graph area for 45 categories (venues, food, culture,
+parks, stations, stops, neighbourhoods; config/sources.yml), the 18 districts from MSIP and the
+schools/kindergartens/nurseries the planner already placed. Alternatives: Nominatim (external
+dependency the plan excludes), Google Places (licence forbids storing). OSM `alt_name`/`short_name`
+are indexed so "Mariacki" finds "Bazylika Wniebowzięcia NMP"; categories have search synonyms
+("dworzec" finds stations). Stop platforms ("Rondo Mogilskie 01/02") become one entry. Places a route
+cannot reach (outside the area or > `coverage.snap_max_m` from a path, 22 of them) are not indexed.
+ODbL: the places are shown as search results (a produced work) with OSM attribution; the extract
+itself is not published.
+
+## D-026 (2026-10-13) Logo drawn for the project
+`web/public/logo.svg` is drawn from scratch from simple geometric shapes (rounded square, leaf,
+dashed route, two dots); it copies no existing mark and uses no third-party artwork or font. A web
+search on 2026-10-13 found no app or trade mark named "Zdrowa Trasa"; a check in the UPRP and EUIPO
+registers is still open (OPEN_QUESTIONS A8).

@@ -8,9 +8,10 @@ setup:  ## Python 3.12 venv with all dependencies (D-001)
 	$(UV) venv --python 3.12 .venv
 	$(UV) pip install --python $(PY) -e ".[dev]"
 
-fetch:  ## download every external dataset into data/raw/ (MSIP incl. the 614 MB noise map, ArcGIS, otwartedane)
+fetch:  ## download every external dataset into data/raw/ (MSIP incl. the 614 MB noise map, ArcGIS, otwartedane, OSM places)
 	$(PY) -m etl.fetch.msip --large
 	$(PY) -m etl.fetch.otwartedane
+	$(PY) -m etl.fetch.osm_poi
 
 noise:  ## 10 m noise grids (LDWN, LN)
 	$(PY) etl/noise_to_grid.py --in $(NOISE_IN) --out data/processed
@@ -32,7 +33,7 @@ planner:
 	$(PY) -m etl.planner
 
 data:  ## rebuild everything from data/raw (run `make fetch` first on a fresh clone)
-	$(MAKE) noise graph layers enrich geocoder planner
+	$(MAKE) noise graph layers enrich planner geocoder  # geocoder indexes the planner's sites
 	$(PY) -m etl.air
 
 air-once:  ## one archiver run (the hourly job calls the same thing)

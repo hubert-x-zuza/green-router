@@ -82,10 +82,13 @@ class RouteResponse(BaseModel):
 
 class GeocodeResult(BaseModel):
     label: str
-    kind: Literal["address", "street"]
+    kind: Literal["address", "street", "poi"]
     district: str | None
     lon: float
     lat: float
+    category: str | None = Field(None, description="e.g. stadium, restaurant, district, school")
+    category_pl: str | None = None
+    category_en: str | None = None
 
 
 class Health(BaseModel):

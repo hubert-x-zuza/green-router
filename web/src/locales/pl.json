@@ -14,7 +14,7 @@
   "route": {
     "from": "Skąd",
     "to": "Dokąd",
-    "placeholder": "Adres lub ulica, np. Basztowa 20",
+    "placeholder": "Adres, ulica, miejsce, np. Tauron Arena",
     "clickHint": "Wpisz adres albo kliknij na mapie: pierwszy klik to start, drugi to cel.",
     "myLocation": "Moja lokalizacja",
     "swap": "Zamień",

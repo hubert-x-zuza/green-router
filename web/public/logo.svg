@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Zdrowa Trasa">
+  <!-- Original mark drawn for this project (simple geometric shapes): a leaf whose midrib is a
+       dashed route from a start dot to an end dot. -->
+  <rect width="64" height="64" rx="14" fill="#1b6e43"/>
+  <path d="M12 52C12 27 29 12 53 11C53 36 37 52 12 52Z" fill="#8fd8a8"/>
+  <path d="M17 47C25 40 33 31 45 19" fill="none" stroke="#ffffff" stroke-width="4"
+        stroke-linecap="round" stroke-dasharray="0.1 7.5"/>
+  <circle cx="16" cy="48" r="5" fill="#ffffff"/>
+  <circle cx="46" cy="18" r="4.5" fill="#1b6e43" stroke="#ffffff" stroke-width="2.5"/>
+</svg>

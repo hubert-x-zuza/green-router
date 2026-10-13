@@ -155,8 +155,6 @@ def tradeoff_text(t: dict, lang: str) -> str:
 
 # ---- request -> three routes ---------------------------------------------------------------
 
-SNAP_MAX_M = 300
-
 
 def snap(store, net: Network, lon: float, lat: float, which: str) -> int:
     from shapely import Point
@@ -167,7 +165,7 @@ def snap(store, net: Network, lon: float, lat: float, which: str) -> int:
     if not store.coverage_area.contains(Point(x, y)):
         raise RouteError("outside_city", f"{which} is outside Kraków")
     d, i = net.node_tree.query([x, y])
-    if d > SNAP_MAX_M:
+    if d > store.snap_max_m:
         raise RouteError("far_from_network", f"{which} is {d:.0f} m from the nearest path")
     return int(i)
 

@@ -60,3 +60,51 @@ def test_penalties_neutral_outside_coverage():
 )
 def test_geocoder_query_normalisation(q, words, number):
     assert geocoder.split_query(q) == (words, number)
+
+
+def _place(name, cat, kind="poi", cat_terms=""):
+    return (geocoder.normalise(name), geocoder.normalise(cat_terms or cat), name, kind, "", None,
+            cat, cat, cat, 19.9, 50.0)  # fmt: skip
+
+
+def test_geocoder_places_ranking(tmp_path):
+    import sqlite3
+
+    db = tmp_path / "g.sqlite"
+    con = sqlite3.connect(db)
+    con.executescript(geocoder.SCHEMA)
+    rows = [
+        _place("Wawelska", "street", kind="street"),
+        _place("Zamek Królewski na Wawelu; Wawel", "attraction"),
+        _place("Kazimierza Wielkiego", "street", kind="street"),
+        _place("Kazimierz", "quarter"),
+        _place("Kazimierz", "bus_stop"),
+        _place("Kino Pod Baranami", "cinema", cat_terms="kino cinema"),
+        _place("Ars", "cinema", cat_terms="kino cinema"),
+    ]
+    con.executemany("INSERT INTO places VALUES (?,?,?,?,?,?,?,?,?,?,?)", rows)
+    con.commit()
+    con.close()
+    g = geocoder.Geocoder(db)
+    assert g.search("wawel")[0].label.startswith("Zamek Królewski")  # alt name, whole word
+    k = g.search("kazimierz")
+    assert (k[0].label, k[0].category) == ("Kazimierz", "quarter")  # area before stop and street
+    assert k[1].category == "bus_stop"
+    kino = [p.label for p in g.search("kino")]
+    assert kino[0] == "Kino Pod Baranami" and "Ars" in kino  # name match, then category match
+
+
+def test_osm_places_categories_and_stop_merging():
+    import geopandas as gpd
+
+    from etl.fetch import osm_poi
+
+    df = pd.DataFrame({"amenity": ["restaurant", None, "cafe"], "leisure": [None, "stadium", None]})
+    tags = {"amenity": {"restaurant": [], "cafe": []}, "leisure": {"stadium": []}}
+    assert list(osm_poi.categorise(df, tags)) == ["restaurant", "stadium", "cafe"]
+    pts = gpd.GeoDataFrame(
+        {"name": ["Rondo", "Rondo", "Rondo"], "category": ["tram_stop"] * 3,
+         "x": [0.0, 120.0, 900.0], "y": [0.0, 0.0, 0.0]},
+        geometry=gpd.points_from_xy([0, 120, 900], [0, 0, 0]),
+    )  # fmt: skip
+    assert len(osm_poi.merge_close(pts, 300)) == 2  # two platforms merged, a far stop kept

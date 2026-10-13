@@ -23,3 +23,63 @@ arcgis:
     order_by: "objectid_1"
 
 page_size: 1000
+
+# Named places from OpenStreetMap for the geocoder (ODbL, same licence as the street graph).
+# tag -> value -> [label pl, label en, extra search terms...]. Only features with a `name` are kept; polygons become
+# their representative point. Stops are merged by name within `merge_stops_m`.
+osm_poi:
+  merge_stops_m: 300
+  tags:
+    amenity:
+      restaurant: [restauracja, restaurant, jedzenie, food]
+      cafe: [kawiarnia, café]
+      bar: [bar, bar]
+      pub: [pub, pub]
+      fast_food: [bar szybkiej obsługi, fast food, jedzenie, food]
+      ice_cream: [lodziarnia, ice cream]
+      theatre: [teatr, theatre]
+      cinema: [kino, cinema]
+      arts_centre: [centrum kultury, arts centre]
+      events_venue: [obiekt wydarzeń, events venue]
+      conference_centre: [centrum kongresowe, conference centre]
+      exhibition_centre: [centrum wystawiennicze, exhibition centre]
+      library: [biblioteka, library]
+      university: [uczelnia, university, uniwersytet]
+      college: [szkoła wyższa, college]
+      hospital: [szpital, hospital, sor]
+      townhall: [urząd, town hall]
+      marketplace: [targowisko, marketplace]
+      place_of_worship: [świątynia, place of worship, kościół, church, bazylika]
+      bus_station: [dworzec autobusowy, bus station, dworzec]
+    tourism:
+      attraction: [atrakcja, attraction]
+      museum: [muzeum, museum]
+      gallery: [galeria, gallery]
+      viewpoint: [punkt widokowy, viewpoint]
+      zoo: [zoo, zoo]
+      hotel: [hotel, hotel]
+    leisure:
+      stadium: [stadion, stadium, hala, arena]
+      sports_centre: [centrum sportowe, sports centre]
+      park: [park, park]
+      garden: [ogród, garden]
+      water_park: [park wodny, water park]
+    historic:
+      castle: [zamek, castle]
+      monument: [pomnik, monument]
+    shop:
+      mall: [centrum handlowe, shopping centre, galeria, mall]
+      department_store: [dom towarowy, department store]
+    railway:
+      station: [stacja kolejowa, railway station, dworzec, pkp, kolej, train]
+      halt: [przystanek kolejowy, railway halt, kolej, pkp, skm]
+      tram_stop: [przystanek tramwajowy, tram stop]
+    highway:
+      bus_stop: [przystanek autobusowy, bus stop]
+    place:
+      suburb: [część miasta, neighbourhood]
+      quarter: [część miasta, quarter]
+      neighbourhood: [osiedle, neighbourhood]
+      village: [dawna wieś / część miasta, village]
+      hamlet: [przysiółek, hamlet]
+      square: [plac, square]

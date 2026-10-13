@@ -127,6 +127,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="top">
+        <img className="logo" src="/logo.svg" alt="" width="36" height="36" />
         <div className="brand">
           <h1>{t("app.title")}</h1>
           <span className="tagline">{t("app.tagline")}</span>
