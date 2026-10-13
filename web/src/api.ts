@@ -55,6 +55,7 @@ export interface Route {
   metrics: RouteMetrics;
   tradeoff: Tradeoff | null;
   same_as: RouteKind | null;
+  google_waypoints: [number, number][];
   geometry: GeoJSON.FeatureCollection<GeoJSON.LineString, SegmentProps>;
 }
 

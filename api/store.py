@@ -115,6 +115,7 @@ class Store:
     planner: dict[str, Any] = field(default_factory=dict)
     snap_max_m: float = 300.0
     cycleways: dict[str, Any] | None = None
+    poi_tree: cKDTree | None = None
 
 
 def load_store(processed: Path = PROCESSED) -> Store:
@@ -154,7 +155,20 @@ def load_store(processed: Path = PROCESSED) -> Store:
         planner=planner,
         snap_max_m=etl_cfg["coverage"]["snap_max_m"],
         cycleways=load_cycleways(etl_cfg),
+        poi_tree=load_poi_tree(),
     )
+
+
+def load_poi_tree() -> cKDTree | None:
+    """OSM venues (not stops or areas): Google snaps waypoints to these."""
+    path = RAW / "osm" / "poi.parquet"
+    if not path.exists():
+        return None
+    p = pd.read_parquet(path)
+    skip = {"bus_stop", "tram_stop", "halt", "suburb", "quarter", "neighbourhood", "village",
+            "hamlet", "square"}  # fmt: skip
+    p = p[~p.category.isin(skip)]
+    return cKDTree(p[["x", "y"]].to_numpy()) if len(p) else None
 
 
 def load_cycleways(etl_cfg: dict[str, Any]) -> dict[str, Any] | None:

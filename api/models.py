@@ -72,6 +72,9 @@ class Route(BaseModel):
     metrics: RouteMetrics
     tradeoff: Tradeoff | None
     same_as: str | None = Field(None, description="kind of an identical route listed earlier")
+    google_waypoints: list[list[float]] = Field(
+        default_factory=list, description="[lon, lat] waypoints for the Google Maps link (max 3)"
+    )
     geometry: dict[str, Any] = Field(description="GeoJSON FeatureCollection, one feature per edge")
 
 

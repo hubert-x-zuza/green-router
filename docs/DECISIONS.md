@@ -222,3 +222,18 @@ documented 3-point link was equal or closer in all five cases. Revisit with the 
 **Update (2026-10-13):** after reviewing the measurements the team switched back to the documented
 format with at most 3 waypoints (`USE_LEGACY_GOOGLE_URL = false`); the undocumented builder stays in
 the code as an option.
+
+## D-030 (2026-10-13) Choosing the Google Maps waypoints on the server: one per detour
+`api/google_link.py` returns `google_waypoints` with every route; the browser only builds the link.
+The route is split into *detours* (runs of nodes >= 40 m from the fastest route, >= 150 m long); the
+3 most important (length x mean deviation) get one waypoint each, at the node that maximises
+deviation x street factor (named street 1.0, named path 0.7, unnamed 0.35) x venue factor (0.3
+within 50 m of an OSM venue, where Google would snap) x a preference for the middle of the detour.
+No detour, no waypoint. Parameters in config/profiles.yml (`google_link`).
+
+Measured on 9 routes (|Google length − our length|, summed): previous client-side choice 4.5 km,
+this choice **3.1 km** (Nowa Huta → Rynek by bike 10.7 → 9.3 km vs 8.9 km; Gronostajowa → Rynek
+Podgórski 5.5 → 5.4 km vs 5.4 km). Tried and rejected: giving long detours 2–3 waypoints
+(5.5 km, worse: every extra waypoint is snapped to an address and adds a spur). Remaining gaps are
+mostly Google's own network (e.g. Narciarska → Muzeum Lotnictwa: Google's fastest is already 2.4 km
+vs our 2.1 km).

@@ -134,7 +134,9 @@ export function googleMapsDocumentedUrl(route: Route, mode: Mode, fastest?: Rout
     destination: fmt(coords[coords.length - 1]),
     travelmode: mode === "bike" ? "bicycling" : "walking",
   });
-  const wps = waypointsFor(route, fastest);
+  // chosen by the API (api/google_link.py: detours, streets, away from venues); the client-side
+  // choice is only a fallback for an older API
+  const wps: LngLat[] = route.google_waypoints ?? waypointsFor(route, fastest);
   if (wps.length) params.set("waypoints", wps.map(fmt).join("|"));
   return `https://www.google.com/maps/dir/?${params.toString()}`;
 }

@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from api import google_link
 from api.costs import air_penalty, edge_cost
 from api.store import Network
 
@@ -231,6 +232,7 @@ def plan(store, req) -> dict[str, Any]:
     near = store.profiles.get("fountain_near_m", 100)
     out, seen = [], {}
     base = None
+    gcfg = store.profiles["google_link"]
     for kind, (pname, p) in paths.items():
         m = metrics(net, p.edges, speed, pen, store.fountains_xy, store.fountain_tree, near)
         m["exposure_index"] = exposure_index(net, p.edges, pen, exp_w)
@@ -250,6 +252,9 @@ def plan(store, req) -> dict[str, Any]:
                 "metrics": m,
                 "tradeoff": t,
                 "same_as": seen.get(key),
+                "google_waypoints": google_link.waypoints(
+                    net, p.edges, fastest, store.poi_tree, gcfg
+                ),
                 "geometry": features(net, p.edges, pen),
             }
         )
