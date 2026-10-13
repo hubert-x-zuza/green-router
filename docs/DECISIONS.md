@@ -192,3 +192,29 @@ be automated. What we do instead:
 3. **GPX download** of the exact track.
 An in-app "Prowadź" guidance mode (live GPS on our map) was built and removed again on the team's
 request (2026-10-13): the team wants guidance to happen in Google Maps.
+
+## D-029 (2026-10-13) Google Maps link: undocumented path format with up to 8 waypoints (team choice)
+On the team's request the "Otwórz w Google Maps" link uses the undocumented format
+`google.com/maps/dir/<lat,lng>/.../data=!4m2!4m1!3e2` (walk; `3e1` bike): origin, up to 8
+waypoints, destination (Google's UI caps a route at 10 points). Google does not document it and may
+change it; `USE_LEGACY_GOOGLE_URL` in web/src/export.ts switches back to the documented format
+(max 3 waypoints). Waypoints: junctions where the route departs >= 80 m from the fastest route,
+>= 500 m apart, named streets strongly preferred.
+
+What we measured (2026-10-13, headless Chrome, Google route length vs ours):
+
+| Route | Ours | Google, no waypoints | Google, 3 (documented) | Google, 8 (this format) |
+|---|---|---|---|---|
+| Narciarska 26 → Muzeum Lotnictwa (walk) | 2.1 km | 2.4 km* | 2.7 km | 2.7 km |
+| Basztowa 20 → Plac Nowy 4 (walk) | 2.1 km | 2.0 km* | 2.0 km | 2.0 km |
+| Kazimierz → Tauron Arena (walk) | 5.1 km | 4.7 km* | 5.0 km | 5.2 km |
+| Nowa Huta → Rynek (bike) | 8.9 km | 8.8 km* | 10.7 km | 11.2 km |
+| Gronostajowa 7 → Rynek Podgórski (walk) | 5.4 km | 4.5 km* | 5.5 km | 6.7 km |
+
+\* Google's own fastest route (compare with our fastest: 2.1, 1.9, 4.6, 8.0, 4.7 km): the networks
+agree. Google turns every waypoint into the nearest address or venue ("Kamień Elvisa Presleya",
+"Bateria FB-28", "Plac zabaw") and routes to it, so each waypoint can add a short spur; more
+waypoints, more spurs. Writing the point differently (quoted, with a space) or putting exact
+coordinates into the `data` parameter did not change that. The route *shape* with 8 points follows
+ours (e.g. through Zakrzówek and along the Vistula), the length is up to 1.3 km longer; the
+documented 3-point link was equal or closer in all five cases. Revisit with the team.

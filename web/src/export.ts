@@ -1,9 +1,18 @@
 // Route export: Google Maps link, GPX download and sharing to a navigation app.
 import type { Mode, Route } from "./api";
 
-/** Google Maps URLs (developers.google.com/maps/documentation/urls): mobile browsers accept at most
- * three waypoints, so we always use three to behave the same on every device. */
+/** Documented Google Maps URLs (developers.google.com/maps/documentation/urls): mobile browsers
+ * accept at most three waypoints. */
 export const GOOGLE_MAX_WAYPOINTS = 3;
+
+/** Undocumented path format google.com/maps/dir/<point>/<point>/.../data=!4m2!4m1!3e<mode>:
+ * up to 10 points (origin, 8 waypoints, destination), also opened by the mobile app. Google does not
+ * document it and may change it at any time: set USE_LEGACY_GOOGLE_URL to false to fall back to the
+ * documented format (decision D-029). */
+export const USE_LEGACY_GOOGLE_URL = true;
+export const GOOGLE_LEGACY_MAX_WAYPOINTS = 8;
+// travel mode codes used by Google Maps in the `data` parameter (undocumented)
+const LEGACY_MODE: Record<Mode, string> = { walk: "3e2", bike: "3e1" };
 
 type LngLat = [number, number];
 
@@ -26,6 +35,10 @@ function distM(a: LngLat, b: LngLat): number {
   const dy = (b[1] - a[1]) * k;
   return Math.hypot(dx, dy);
 }
+
+const MIN_WAYPOINT_SPACING_M = 500;
+// a junction this far from the fastest route is worth forcing Google through
+const MIN_DEVIATION_M = 80;
 
 const fmt = (p: LngLat) => `${p[1].toFixed(6)},${p[0].toFixed(6)}`;
 
@@ -82,12 +95,15 @@ export function waypointsFor(route: Route, fastest: Route | undefined, n = GOOGL
   const scored = nodes
     .filter((nd) => nd.along > margin && nd.along < total - margin)
     .map((nd) => ({ ...nd, dev: distToLine(nd.p, ref) }))
-    .map((nd) => ({ ...nd, score: nd.dev * (nd.named ? 1 : 0.8) }));
+    // Google snaps a point between buildings to the nearest venue and detours to it: junctions
+    // on named streets are strongly preferred
+    .map((nd) => ({ ...nd, score: nd.dev * (nd.named ? 1 : 0.4) }));
   const chosen: typeof scored = [];
-  const spacing = total / (n + 1) / 2;
+  // points packed close together each get snapped to a different venue: keep them apart
+  const spacing = Math.max(MIN_WAYPOINT_SPACING_M, total / (n + 1) / 2);
   for (let k = 0; k < n; k++) {
     const pick = scored
-      .filter((c) => c.dev >= 40 && chosen.every((x) => Math.abs(x.along - c.along) >= spacing))
+      .filter((c) => c.dev >= MIN_DEVIATION_M && chosen.every((x) => Math.abs(x.along - c.along) >= spacing))
       .sort((a, b) => b.score - a.score)[0];
     if (!pick) break;
     chosen.push(pick);
@@ -96,6 +112,21 @@ export function waypointsFor(route: Route, fastest: Route | undefined, n = GOOGL
 }
 
 export function googleMapsUrl(route: Route, mode: Mode, fastest?: Route): string {
+  return USE_LEGACY_GOOGLE_URL
+    ? googleMapsLegacyUrl(route, mode, fastest)
+    : googleMapsDocumentedUrl(route, mode, fastest);
+}
+
+/** Undocumented format with up to 8 waypoints (see USE_LEGACY_GOOGLE_URL). */
+export function googleMapsLegacyUrl(route: Route, mode: Mode, fastest?: Route): string {
+  const coords = routeCoords(route);
+  const points = [coords[0], ...waypointsFor(route, fastest, GOOGLE_LEGACY_MAX_WAYPOINTS), coords[coords.length - 1]];
+  const path = points.map(fmt).join("/");
+  return `https://www.google.com/maps/dir/${path}/data=!4m2!4m1!${LEGACY_MODE[mode]}`;
+}
+
+/** Documented format (Maps URLs, api=1) with at most 3 waypoints. */
+export function googleMapsDocumentedUrl(route: Route, mode: Mode, fastest?: Route): string {
   const coords = routeCoords(route);
   const params = new URLSearchParams({
     api: "1",

@@ -152,7 +152,7 @@
   "export": {
     "google": "Otwórz w Google Maps",
     "gpx": "Pobierz GPX",
-    "hint": "Google Maps nie przyjmuje gotowej trasy, tylko start, cel i do 3 punktów pośrednich: wybieramy je tam, gdzie trasa odbiega od najszybszej, ale Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
+    "hint": "Google Maps nie przyjmuje gotowej trasy, tylko punkty: przekazujemy start, cel i do 8 punktów pośrednich tam, gdzie trasa odbiega od najszybszej. Między nimi Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
     "share": "Wyślij do aplikacji nawigacyjnej"
   }
 }
