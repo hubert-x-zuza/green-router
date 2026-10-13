@@ -1,0 +1,121 @@
+import numpy as np
+import pytest
+
+from api import routing
+from api.costs import edge_cost
+from api.models import RouteRequest
+from api.store import load_cfg
+from api.tests.conftest import grid_network
+
+ZERO = {"noise": 0.0, "air": 0.0, "traffic": 0.0, "green": 0.0, "fountain": 0.0, "cycleway": 0.0}
+
+
+def pens(net):
+    return routing.penalties_for(net, 0.2, 0.3, night=False)
+
+
+@pytest.mark.parametrize("seed", range(5))
+def test_zero_weights_give_the_shortest_path(seed):
+    net = grid_network(n=7, seed=seed)
+    src, dst = 0, net.graph.vcount() - 1
+    p = routing.shortest(net, src, dst, edge_cost(net.length, 1.33, pens(net), ZERO))
+    ref = net.graph.distances(src, dst, weights=net.length)[0][0]
+    assert net.length[p].sum() == pytest.approx(ref)
+
+
+@pytest.mark.parametrize("seed", range(8))
+def test_high_noise_weight_never_increases_mean_noise(seed):
+    net = grid_network(n=7, seed=seed)
+    pen = pens(net)
+    src, dst = 0, net.graph.vcount() - 1
+    prev = None
+    for w in (0.0, 0.5, 1.0, 3.0, 10.0, 50.0):
+        e = routing.shortest(net, src, dst, edge_cost(net.length, 1.33, pen, {**ZERO, "noise": w}))
+        mean = (pen["noise"][e] * net.length[e]).sum() / net.length[e].sum()
+        if prev is not None:
+            assert mean <= prev + 1e-9
+        prev = mean
+
+
+def test_detour_guard_respects_limit():
+    net = grid_network(n=8, seed=3)
+    pen = pens(net)
+    src, dst = 0, net.graph.vcount() - 1
+    fast = routing.shortest(net, src, dst, edge_cost(net.length, 1.0, pen, ZERO))
+    t_fast = routing.travel_s(net, fast, 1.0)
+    for pct in (0, 5, 30):
+        limit = t_fast * (1 + pct / 100)
+        p = routing.guarded(net, src, dst, pen, {**ZERO, "noise": 20.0, "green": 20.0}, 1.0, limit)
+        assert routing.travel_s(net, p.edges, 1.0) <= limit + 1e-6
+
+
+def test_plan_returns_three_routes(fake_store):
+    xy = fake_store.networks["walk"].node_xy
+    from api.store import TO_4326
+
+    o = TO_4326.transform(*xy[0])
+    d = TO_4326.transform(*xy[-1])
+    req = RouteRequest(origin={"lon": o[0], "lat": o[1]}, destination={"lon": d[0], "lat": d[1]})
+    r = routing.plan(fake_store, req)
+    assert [x["kind"] for x in r["routes"]] == ["fastest", "healthiest", "balanced"]
+    fastest = r["routes"][0]["metrics"]
+    for x in r["routes"][1:]:
+        assert x["metrics"]["duration_min"] <= fastest["duration_min"] * 1.3 + 0.1
+    assert "air_unavailable" in r["warnings"]  # no air database in the fake store
+
+
+def test_outside_city_is_rejected(fake_store):
+    req = RouteRequest(origin={"lon": 21.0, "lat": 52.2}, destination={"lon": 19.94, "lat": 50.06})
+    with pytest.raises(routing.RouteError) as e:
+        routing.plan(fake_store, req)
+    assert e.value.code == "outside_city"
+
+
+def test_tradeoff_text():
+    t = {"extra_min": 4.2, "exposure_pct": -12.0, "noise_pct": -18.0, "green_pct": 25.0}
+    assert routing.tradeoff_text(t, "pl") == "+4 min, -12 % ekspozycji, -18 % hałasu, +25 % zieleni"
+    assert routing.tradeoff_text(t, "en") == "+4 min, -12 % exposure, -18 % noise, +25 % greenery"
+    assert np.isfinite(t["extra_min"])
+
+
+def test_cycleway_weight_increases_share_on_cycle_paths():
+    net = grid_network(n=7, seed=11)
+    pen = pens(net)
+    src, dst = 0, net.graph.vcount() - 1
+    shares = []
+    for w in (0.0, 2.0, 20.0):
+        e = routing.shortest(
+            net, src, dst, edge_cost(net.length, 4.2, pen, {**ZERO, "cycleway": w})
+        )
+        on_path = ((1 - pen["cycleway"][e]) * net.length[e]).sum() / net.length[e].sum()
+        shares.append(on_path)
+    assert shares[0] <= shares[1] + 1e-9 <= shares[2] + 2e-9
+
+
+@pytest.mark.parametrize("profile", ["green_water", "clean_air"])
+@pytest.mark.parametrize("level", [0.0, 0.119, 1.0])
+def test_profiles_avoid_traffic_despite_roadside_amenities(profile, level):
+    """A 25% detour away from cars wins, including without live air readings.
+
+    For green_water the busy route also has more greenery and a nearby fountain.
+    """
+    net = grid_network(n=2)
+    # Paths 0->1->3 (busy) and 0->2->3 (less traffic), in both directions.
+    busy = np.array([0, 2, 4, 6])
+    calm = np.array([1, 3, 5, 7])
+    net.length[busy] = 100.0
+    net.length[calm] = 125.0
+    for values in net.penalties.values():
+        values[:] = 0.0
+    net.penalties["traffic"][busy] = 0.9 if profile == "green_water" else 0.25
+    net.penalties["traffic"][calm] = 0.1
+    if profile == "green_water":
+        net.penalties["green"][busy] = 0.2
+        net.penalties["green"][calm] = 0.3
+        net.penalties["fountain"][calm] = 1.0
+    cfg = load_cfg("profiles.yml")
+    pen = routing.penalties_for(net, level, load_cfg("air_stations.yml")["index"]["air_a"], False)
+    speed = cfg["speeds_mps"]["walk"]
+    path = routing.guarded(net, 0, 3, pen, cfg["profiles"][profile], speed, 200 / speed * 1.3)
+    assert path.edges == [1, 3]
+    assert routing.travel_s(net, path.edges, speed) <= 200 / speed * 1.3

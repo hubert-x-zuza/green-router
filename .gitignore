@@ -23,4 +23,6 @@ logs/
 # web
 web/node_modules/
 web/dist/
-data/processed/
+web/tsconfig.tsbuildinfo
+# browser QA scratch (screenshots, snapshots)
+.playwright-mcp/

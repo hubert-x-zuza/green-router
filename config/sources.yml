@@ -1,0 +1,92 @@
+# Download sources for `make fetch`. Every URL here was read from the provider's catalogue page
+# on 2026-10-13 (see data/manifest.yml for catalogue pages, terms and citations).
+
+# MSIP direct downloads (msip.krakow.pl/dataset/<id> -> "Do pobrania"). Unzipped to data/raw/<key>/.
+msip_zip:
+  districts: {url: "https://msip.um.krakow.pl/Dane/Dzielnice_JSON.zip", catalogue: 1483}
+  address_points: {url: "https://msip.um.krakow.pl/Dane/Adresy_JSON.zip", catalogue: 1492}
+  streets: {url: "https://msip.um.krakow.pl/Dane/Ulice_JSON.zip", catalogue: 1379}
+  fountains_outdoor: {url: "https://msip.um.krakow.pl/Dane/Pitniki_zewnetrzne_JSON.zip", catalogue: 1359}
+  noise_2022: {url: "https://msip.um.krakow.pl/Dane/Mapa_Halasu_2022_JSON.zip", catalogue: 1361, large: true}
+
+# ArcGIS REST feature layers. The layer id is resolved from the service JSON by `layer_name`
+# (CLAUDE.md data rule 7: never hard-code the id). Saved as GeoJSON in EPSG:2178.
+arcgis:
+  green_map:
+    service: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer"
+    layer_name: "Mapa zieleni"
+    out_fields: "objectid,class_name,area_ha"
+  city_boundary:
+    service: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer"
+    layer_name: "Granica Krakowa"
+    out_fields: "*"
+    order_by: "objectid_1"
+  # ZTP "Liniowa infrastruktura rowerowa" (ArcGIS Online item 674e4dbbd0414e74a7bb860bc042e96e,
+  # linked from otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie)
+  cycle_infra:
+    service: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Ciagi_rowerowe/FeatureServer"
+    layer_name: "ciagi_rowerowe"
+    out_fields: "OBJECTID,rodzaj,nawierzchnia"
+    order_by: "OBJECTID"
+
+page_size: 1000
+
+# Named places from OpenStreetMap for the geocoder (ODbL, same licence as the street graph).
+# tag -> value -> [label pl, label en, extra search terms...]. Only features with a `name` are kept; polygons become
+# their representative point. Stops are merged by name within `merge_stops_m`.
+osm_poi:
+  merge_stops_m: 300
+  tags:
+    amenity:
+      restaurant: [restauracja, restaurant, jedzenie, food]
+      cafe: [kawiarnia, café]
+      bar: [bar, bar]
+      pub: [pub, pub]
+      fast_food: [bar szybkiej obsługi, fast food, jedzenie, food]
+      ice_cream: [lodziarnia, ice cream]
+      theatre: [teatr, theatre]
+      cinema: [kino, cinema]
+      arts_centre: [centrum kultury, arts centre]
+      events_venue: [obiekt wydarzeń, events venue]
+      conference_centre: [centrum kongresowe, conference centre]
+      exhibition_centre: [centrum wystawiennicze, exhibition centre]
+      library: [biblioteka, library]
+      university: [uczelnia, university, uniwersytet]
+      college: [szkoła wyższa, college]
+      hospital: [szpital, hospital, sor]
+      townhall: [urząd, town hall]
+      marketplace: [targowisko, marketplace]
+      place_of_worship: [świątynia, place of worship, kościół, church, bazylika]
+      bus_station: [dworzec autobusowy, bus station, dworzec]
+    tourism:
+      attraction: [atrakcja, attraction]
+      museum: [muzeum, museum]
+      gallery: [galeria, gallery]
+      viewpoint: [punkt widokowy, viewpoint]
+      zoo: [zoo, zoo]
+      hotel: [hotel, hotel]
+    leisure:
+      stadium: [stadion, stadium, hala, arena]
+      sports_centre: [centrum sportowe, sports centre]
+      park: [park, park]
+      garden: [ogród, garden]
+      water_park: [park wodny, water park]
+    historic:
+      castle: [zamek, castle]
+      monument: [pomnik, monument]
+    shop:
+      mall: [centrum handlowe, shopping centre, galeria, mall]
+      department_store: [dom towarowy, department store]
+    railway:
+      station: [stacja kolejowa, railway station, dworzec, pkp, kolej, train]
+      halt: [przystanek kolejowy, railway halt, kolej, pkp, skm]
+      tram_stop: [przystanek tramwajowy, tram stop]
+    highway:
+      bus_stop: [przystanek autobusowy, bus stop]
+    place:
+      suburb: [część miasta, neighbourhood]
+      quarter: [część miasta, quarter]
+      neighbourhood: [osiedle, neighbourhood]
+      village: [dawna wieś / część miasta, village]
+      hamlet: [przysiółek, hamlet]
+      square: [plac, square]

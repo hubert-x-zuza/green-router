@@ -18,6 +18,7 @@ datasets:
     provider: "Gmina Miejska Kraków, Miejski System Informacji Przestrzennej (MSIP)"
     catalogue_page: "https://msip.krakow.pl/dataset/1361"
     service: "https://msip.um.krakow.pl/arcgis/rest/services/Mapa_halasu_2022"
+    download: "https://msip.um.krakow.pl/Dane/Mapa_Halasu_2022_JSON.zip"   # 614 MB, Last-Modified 2026-04-23; fetched by etl/fetch/msip.py --large
     files_used:
       - halas_2022_imisja_dr_LDWN.geojson      # road, polygons by dB class
       - halas_2022_imisja_dr_LN.geojson
@@ -30,7 +31,7 @@ datasets:
     data_year: 2022
     files_generated: "2026-03-23"      # __Aktualnosc__.txt says 2026-03-23_14:47:00 (a second copy, "__Aktualnosc__ 2.txt", says 14:41:00)
     date_obtained: "2026-10-11"
-    status: "verified; grids rebuilt 2026-10-11 by etl/noise_to_grid.py (LDWN 63.1 % at floor, LN 70.9 %)"
+    status: "verified; grids rebuilt 2026-10-13 from the catalogue zip by etl/noise_to_grid.py (LDWN 63.1 % at floor, LN 70.9 %, identical to 2026-10-11)"
     attributes: "isov1, isov2 (dB class bounds), nazwa (district), objectid"
     limitations:
       - "Road classes are 5 dB wide; about two thirds of the city is in the lowest class."
@@ -49,12 +50,24 @@ datasets:
     fields: [class_name, area_ha, objectid]
     classes_seen_in_renderer: ["200 Zieleń wysoka", "300 Zieleń niska", "400 Zieleń sportowa, ogródki działkowe"]
     paging: {max_record_count: 1000, order_by: objectid}
-    status: "found; TODO confirm layer id (JSON said id 0, URL ends /7), distinct class values, data date"
-    data_date: "TODO"
-    date_obtained: "TODO"
-    todo:
-      - "List other layers of the service and the MONIT-AIR folder (possible ventilation/air-flow layer)."
-    citation_pl: "TODO: Źródło: Gmina Miejska Kraków, MSIP, „Mapa zieleni”, dane z <data>, pozyskane <data>."
+    status: "verified 2026-10-13: layer id 7 (resolved by name), 128221 polygons, exactly 3 class values (200, 300, 400); downloaded with etl/fetch/msip.py"
+    service_description: "MONIT-AIR Atlas 2016: Mapa zieleni i warunków przewietrzania Krakowa (granice, przewietrzanie, dachy zielone, potencjał solarny, ortofoto 2014)"
+    data_date: "2016 atlas (based on 2014 orthophoto); layer has no edit date"
+    date_obtained: "2026-10-13"
+    other_layers: "0 Granica Krakowa (used as city boundary), 1-3 ventilation areas (4 m / 10 m above ground), 4-5 green roofs, 6 solar potential. Ventilation layers are not used (no documented meaning per street)."
+    limitations:
+      - "About ten years old (orthophoto 2014): newer developments and felled/planted trees are not reflected."
+      - "Classes by height, not a tree register: no species, crown size or shade."
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), MONIT-AIR Atlas 2016 „Mapa zieleni”, dane pozyskane 2026-10-13."
+
+  city_boundary:
+    title: "Granica Krakowa"
+    provider: "Gmina Miejska Kraków, MSIP"
+    layer_url: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer/0"
+    crs: "EPSG:2178"
+    status: "verified 2026-10-13; 1 polygon; used for the coverage mask and the +500 m OSM buffer"
+    date_obtained: "2026-10-13"
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), „Granica Krakowa”, dane pozyskane 2026-10-13."
 
   drinking_fountains:
     title: "Lokalizacja pitników wody kranowej (program „Dobra woda dla Krakowa”)"
@@ -63,8 +76,12 @@ datasets:
     subsets_available: ["pitniki zewnętrzne (outdoor) - USE", "w restauracjach", "w szkołach i na uczelniach", "w urzędach i szpitalach"]
     formats: [json, shp, dxf, WMS, WFS]
     crs: "EPSG:2178"
-    status: "listing verified; TODO inspect attributes (status, seasonal availability)"
-    citation_pl: "TODO"
+    download: "https://msip.um.krakow.pl/Dane/Pitniki_zewnetrzne_JSON.zip"
+    attributes: "objectid, miejsce, adres, obiekt, www, data_imp (no seasonal or status field)"
+    files_generated: "2026-10-10"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: 63 outdoor fountains, points. No seasonal field: the UI says outdoor fountains usually run in the warm season (unverified per fountain)."
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), „Lokalizacja pitników wody kranowej” (pitniki zewnętrzne), plik z 2026-10-10, pozyskane 2026-10-13."
 
   address_points:
     title: "Punkty adresowe (EMUiA)"
@@ -73,25 +90,49 @@ datasets:
     formats: [xlsx, shp, dxf, json, WMS, WFS]
     crs: "EPSG:2178"
     restrictions: "Użycie zgodnie z regulaminem MSIP (team: reuse allowed with citation)"
-    status: "verified listing; used for the local geocoder"
-    citation_pl: "TODO"
+    download: "https://msip.um.krakow.pl/Dane/Adresy_JSON.zip"
+    fields: [nazwa_ulicy, numer_adresowy, kod_pocztowy, miejscowosc, numer_dzielnicy, nazwa_dzielnicy, kod_teryt]
+    files_generated: "2026-10-13 (regenerated daily)"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: 70277 points; used for the local geocoder and to place schools/nurseries"
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), „Punkty adresowe (EMUiA)”, plik z 2026-10-13, pozyskane 2026-10-13."
 
   streets:
     title: "Ulice (EMUiA)"
     catalogue_page: "https://msip.krakow.pl/dataset/1379"
-    status: "listed in catalogue; TODO verify download and fields"
+    provider: "Prezydent Miasta Krakowa, UMK Wydział Geodezji"
+    download: "https://msip.um.krakow.pl/Dane/Ulice_JSON.zip"
+    crs: "EPSG:2178"
+    fields: [nazwa_ulicy, kod_teryt, nazwa_dzielnicy, numer_dzielnicy]
+    files_generated: "2026-10-13 (regenerated daily)"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: 3036 street lines; geocoder street search"
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), „Ulice (EMUiA)”, plik z 2026-10-13, pozyskane 2026-10-13."
 
   districts:
     title: "Podział administracyjny - dzielnice"
     catalogue_page: "https://msip.krakow.pl/dataset/1483"
-    status: "listed in catalogue; TODO verify download. Also gives the Kraków boundary."
+    provider: "Prezydent Miasta Krakowa, UMK Wydział Geodezji"
+    download: "https://msip.um.krakow.pl/Dane/Dzielnice_JSON.zip"
+    crs: "EPSG:2178"
+    fields: [id_dzielni, nr_dzielni, nazwa, nazwa_peln, powierzchn]
+    files_generated: "2025-12-05"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: 18 districts; planner aggregation"
+    citation_pl: "Źródło: Gmina Miejska Kraków, Portal MSIP Obserwatorium (https://msip.krakow.pl), „Podział administracyjny - dzielnice”, plik z 2025-12-05, pozyskane 2026-10-13."
 
   parks_table:
     title: "Parki miejskie w Krakowie"
     page: "https://otwartedane.um.krakow.pl/zbiory-danych/parki-miejskie-w-krakowie"
     fields: [type, name, district, area]
     geometry: none
-    status: "verified; table only; planner statistics only, not used for routing"
+    api: "https://api.um.krakow.pl/opendata-srodowisko-parki-miejskie/v1/parki-miejskie-powierzchnia"
+    provider: "Zarząd Zieleni Miejskiej w Krakowie (publisher: Urząd Miasta Krakowa)"
+    data_date: "2026-04-27"
+    date_obtained: "2026-10-13"
+    licence: "Otwarte Dane terms: free reuse, cite source with creation and download dates (docs/licences/otwartedane_warunki.md)"
+    status: "verified 2026-10-13: 78 rows; table only; planner statistics only, not used for routing"
+    citation_pl: "Źródło: Gmina Miejska Kraków, otwartedane.um.krakow.pl, „Parki miejskie w Krakowie” (ZZM), dane z 2026-04-27, pozyskane 2026-10-13."
 
   air_quality_gios:
     title: "Jakość powietrza (Państwowy Monitoring Środowiska, EKOINFONET - JPOAT)"
@@ -137,14 +178,59 @@ datasets:
     title: "OpenStreetMap (street network)"
     provider: "OpenStreetMap contributors"
     licence: "ODbL 1.0 - attribution required; share-alike applies to published derived databases"
-    status: "TODO download Kraków extract; record extract date"
-    citation: "© OpenStreetMap contributors"
+    source: "Overpass API via osmnx 2.1 (graph_from_polygon / features_from_polygon), area = MSIP city boundary + 500 m"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: walk 170704 nodes / 429582 directed edges; bike 82544 / 184004 (one-way respected, 2127 contraflow edges); 66886 road lines for the traffic proxy"
+    derived_data: "network_*.parquet are derived from OSM (ODbL share-alike): not published; ship the ETL scripts instead"
+    citation: "© OpenStreetMap contributors (ODbL)"
 
-  # --- planner view (Phase 4); all TODO to verify
-  schools: {title: "Szkoły (boiska, korty, bieżnie) - dwa zbiory, miejskie i prywatne", provider: "otwartedane.um.krakow.pl", status: "reported by a third party; TODO verify and fields"}
-  bike_counters: {title: "Automatyczne liczniki rowerowe (ZDMK)", provider: "otwartedane.um.krakow.pl", status: "reported by a third party; TODO verify"}
+  osm_places:
+    title: "Miejsca z OpenStreetMap (obiekty, restauracje, kawiarnie, muzea, parki, dworce, przystanki, części miasta)"
+    provider: "OpenStreetMap contributors"
+    source: "Overpass API via osmnx features_from_polygon; categories in config/sources.yml (osm_poi)"
+    date_obtained: "2026-10-13"
+    licence: "ODbL 1.0 - attribution; used only as search results (produced work), the extract is not published"
+    status: "verified 2026-10-13: 5582 places after merging duplicates and stop platforms; 22 unreachable ones (outside the graph area or > 300 m from a path) left out of the index"
+    citation: "© OpenStreetMap contributors (ODbL)"
+
+  basemap_openfreemap:
+    title: "Podkład mapowy (wektorowy) OpenFreeMap, styl positron"
+    provider: "OpenFreeMap (openfreemap.org); dane © OpenStreetMap contributors, OpenMapTiles"
+    url: "https://tiles.openfreemap.org/styles/positron"
+    licence: "free, no keys, no cookies; attribution required (added automatically by MapLibre)"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13"
+    citation: "OpenFreeMap © OpenMapTiles Data from OpenStreetMap"
+
+  # --- planner view: sensitive users. All from otwartedane.um.krakow.pl (API api.um.krakow.pl, no key),
+  # downloaded by etl/fetch/otwartedane.py (list in config/otwartedane.yml; per-table update dates in
+  # data/raw/otwartedane/<slug>/dataset.json). Rows carry street + number and are placed with the
+  # address points (no coordinates in the source).
+  otwartedane_sensitive:
+    title: "Szkoły podstawowe i ponadpodstawowe (liczba uczniów), przedszkola (liczba dzieci), żłobki (samorządowe, prywatne, na zlecenie), kluby dziecięce - rok 2025/2026"
+    provider: "Gmina Miejska Kraków, otwartedane.um.krakow.pl"
+    fields: ["Nazwa szkoły_placówki / Nazwa", "Ulica", "Nr domu / Numer budynku", "Kod pocztowy", "Liczba uczniów ogółem / Liczba dzieci ogółem / Liczba miejsc"]
+    date_obtained: "2026-10-13"
+    licence: "Otwarte Dane terms (docs/licences/otwartedane_warunki.md)"
+    status: "verified 2026-10-13"
+    citation_pl: "Źródło: Gmina Miejska Kraków, otwartedane.um.krakow.pl (szkoły, przedszkola, żłobki, kluby dziecięce), pozyskane 2026-10-13."
+  cycle_infra_ztp:
+    title: "Liniowa infrastruktura rowerowa (drogi dla rowerów, ciągi pieszo-rowerowe, pasy, kontrapasy, kontraruchy, przejazdy)"
+    provider: "Zarząd Transportu Publicznego w Krakowie (ZTP)"
+    page: "https://otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie"
+    hub_item: "https://ztpk-gmk-2.hub.arcgis.com/maps/674e4dbbd0414e74a7bb860bc042e96e"
+    layer_url: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Ciagi_rowerowe/FeatureServer/0"
+    crs: "EPSG:2178"
+    fields: [rodzaj, nawierzchnia]
+    data_date: "2026-10 (layer last edit; the portal says updated continuously)"
+    date_obtained: "2026-10-13"
+    licence: "Otwarte Dane terms (dataset listed on otwartedane.um.krakow.pl; the ArcGIS item states no other licence)"
+    status: "verified 2026-10-13: 2637 lines; droga rowerowa 181 km, ciąg pieszo-rowerowy 85 km, kontraruch 64 km, kontrapas 18 km, pas rowerowy 9 km, przejazd 17 km"
+    citation_pl: "Źródło: Zarząd Transportu Publicznego w Krakowie, „Liniowa infrastruktura rowerowa”, otwartedane.um.krakow.pl, stan z 2026-10, pozyskane 2026-10-13."
+  bike_counters: {title: "Punktowa infrastruktura rowerowa ZTP (liczniki, stojaki, stacje naprawy)", provider: "Zarząd Transportu Publicznego w Krakowie", page: "https://otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie", layer_url: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Infrastruktura_rowerowa_ZTP/FeatureServer", status: "layer resolved 2026-10-13; not used yet"}
+  transit_stops: {title: "Przystanki KMK", provider: "Zarząd Transportu Publicznego w Krakowie", page: "https://otwartedane.um.krakow.pl/zbiory-danych/komunikacja-miejska-w-krakowie-kmk", hub_map: "https://ztpk-gmk-2.hub.arcgis.com/maps/73cfc1778d0d4305a643ef0d2cb13e1f", status: "ArcGIS Hub map link; layer URL to resolve"}
   gtfs: {title: "GTFS Kraków", provider: "Zarząd Transportu Publicznego w Krakowie", url: "https://gtfs.ztp.krakow.pl/", status: "listing verified; TODO licence/terms"}
-  residents: {title: "Zameldowania stałe i czasowe", catalogue_page: "https://msip.krakow.pl/dataset/3180", status: "listed; TODO check aggregation level before use"}
+  residents: {title: "Mieszkańcy zameldowani na pobyt stały (31.12.2025)", provider: "Gmina Miejska Kraków, otwartedane.um.krakow.pl", page: "https://otwartedane.um.krakow.pl/zbiory-danych/mieszkancy-zameldowani-na-pobyt-staly", aggregation: "district x sex x birth year (safe, already published)", date_obtained: "2026-10-13", status: "verified 2026-10-13; used for children (0-14) and seniors (65+) per district", citation_pl: "Źródło: Gmina Miejska Kraków, otwartedane.um.krakow.pl, „Mieszkańcy zameldowani na pobyt stały” (stan na 31.12.2025), pozyskane 2026-10-13."}
 
 parked:
   urban_heat_island:

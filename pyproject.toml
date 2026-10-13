@@ -5,16 +5,28 @@ description = "Zdrowa Trasa - healthier routes for Kraków (Open Data App)"
 requires-python = ">=3.11"
 dependencies = [
   "numpy",
+  "pandas",
+  "pyarrow",
+  "scipy",
   "rasterio",
+  "geopandas",
+  "shapely>=2",
+  "pyproj",
+  "osmnx>=2",
+  "python-igraph",
+  "pillow",
   "httpx",
   "pyyaml",
+  "fastapi",
+  "uvicorn[standard]",
+  "pydantic>=2",
 ]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = ["pytest", "ruff", "black", "pre-commit"]
 
 [tool.setuptools]
-packages = ["etl", "etl.fetch"]
+packages = ["etl", "etl.fetch", "api"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "api/tests"]

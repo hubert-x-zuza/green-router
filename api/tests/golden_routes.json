@@ -1,0 +1,142 @@
+[
+ {
+  "from": "dworzec",
+  "to": "wawel",
+  "mode": "walk",
+  "origin": [
+   19.945576,
+   50.068043
+  ],
+  "destination": [
+   19.936127,
+   50.0542
+  ],
+  "fastest_m": 2085.0
+ },
+ {
+  "from": "rynek",
+  "to": "agh",
+  "mode": "walk",
+  "origin": [
+   19.936491,
+   50.061449
+  ],
+  "destination": [
+   19.923628,
+   50.064485
+  ],
+  "fastest_m": 1207.0
+ },
+ {
+  "from": "plac_nowy",
+  "to": "rynek",
+  "mode": "walk",
+  "origin": [
+   19.944627,
+   50.051257
+  ],
+  "destination": [
+   19.936491,
+   50.061449
+  ],
+  "fastest_m": 1537.0
+ },
+ {
+  "from": "blonia",
+  "to": "rynek",
+  "mode": "walk",
+  "origin": [
+   19.903094,
+   50.066813
+  ],
+  "destination": [
+   19.936491,
+   50.061449
+  ],
+  "fastest_m": 3082.0
+ },
+ {
+  "from": "tauron",
+  "to": "dworzec",
+  "mode": "walk",
+  "origin": [
+   19.989273,
+   50.068664
+  ],
+  "destination": [
+   19.945576,
+   50.068043
+  ],
+  "fastest_m": 3613.0
+ },
+ {
+  "from": "kampus_uj",
+  "to": "podgorze",
+  "mode": "walk",
+  "origin": [
+   19.900446,
+   50.026664
+  ],
+  "destination": [
+   19.949864,
+   50.044735
+  ],
+  "fastest_m": 4731.0
+ },
+ {
+  "from": "bronowice",
+  "to": "agh",
+  "mode": "bike",
+  "origin": [
+   19.89261,
+   50.080601
+  ],
+  "destination": [
+   19.923628,
+   50.064485
+  ],
+  "fastest_m": 3352.0
+ },
+ {
+  "from": "nowa_huta",
+  "to": "rynek",
+  "mode": "bike",
+  "origin": [
+   20.038623,
+   50.071894
+  ],
+  "destination": [
+   19.936491,
+   50.061449
+  ],
+  "fastest_m": 8060.0
+ },
+ {
+  "from": "czyzyny",
+  "to": "tauron",
+  "mode": "bike",
+  "origin": [
+   19.997676,
+   50.075136
+  ],
+  "destination": [
+   19.989273,
+   50.068664
+  ],
+  "fastest_m": 1922.0
+ },
+ {
+  "from": "kampus_uj",
+  "to": "rynek",
+  "mode": "bike",
+  "origin": [
+   19.900446,
+   50.026664
+  ],
+  "destination": [
+   19.936491,
+   50.061449
+  ],
+  "fastest_m": 5445.0
+ }
+]

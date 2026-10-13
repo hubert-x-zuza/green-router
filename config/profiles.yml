@@ -1,0 +1,35 @@
+# Routing profiles (plan 5.4). cost(e) = length_m / speed_mps(mode) * (1 + sum_k w_k * p_k(e, t))
+# Penalty keys: noise (LDWN, or LN when `night` is requested), air (live, see config/air_stations.yml
+# index.air_a), traffic (static near-road proxy), green (1 - green_score), fountain (distance),
+# cycleway (1 - share on ZTP paths away from traffic: cycle roads and lanes when cycling, shared
+# foot-and-cycle paths when walking).
+# Starting values; tune with the golden routes in api/tests.
+speeds_mps: {walk: 1.33, bike: 4.2}     # 4.8 km/h walking, 15 km/h cycling
+max_detour_pct: 30                       # guard rail: healthier routes may take at most this much longer
+default_profile: balanced
+
+profiles:
+  fastest:     {noise: 0.0, air: 0.0, traffic: 0.0, green: 0.0, fountain: 0.0, cycleway: 0.0}
+  balanced:    {noise: 1.0, air: 1.0, traffic: 0.5, green: 0.7, fountain: 0.0, cycleway: 0.7}
+  quiet:       {noise: 3.0, air: 0.5, traffic: 0.5, green: 0.5, fountain: 0.0, cycleway: 0.5}
+  # Avoid motor traffic even on clean days or when live air readings are unavailable (D-031).
+  clean_air:   {noise: 0.5, air: 3.0, traffic: 4.0, green: 0.5, fountain: 0.0, cycleway: 1.0}
+  # Roadside greenery/fountains must not outweigh a substantially less traffic-exposed path.
+  green_water: {noise: 0.7, air: 0.7, traffic: 3.0, green: 2.5, fountain: 1.0, cycleway: 0.5}
+  # used as the "healthiest" alternative when the chosen profile is fastest or balanced
+  healthiest:  {noise: 2.5, air: 2.0, traffic: 1.0, green: 2.0, fountain: 0.0, cycleway: 1.0}
+
+# The UI suggests the clean_air profile when the city-level PM10 mean exceeds this (µg/m3).
+smog_hint_pm10: 50
+
+# Waypoints for the "Open in Google Maps" link (api/google_link.py, decision D-030). Google turns a
+# waypoint into the nearest address or venue and routes to it, so points sit on streets, away from
+# venues, one per stretch where our route leaves the fastest route.
+google_link:
+  max_waypoints: 3            # documented Maps URLs limit in mobile browsers
+  min_deviation_m: 40         # a route node this far from the fastest route belongs to a detour
+  min_detour_m: 150           # shorter detours are not worth a waypoint
+  poi_radius_m: 50            # a venue this close makes Google snap to it
+  poi_factor: 0.3             # score multiplier near a venue
+  street_classes: [primary, secondary, tertiary, unclassified, residential, living_street, pedestrian, service]
+  class_factor: {street_named: 1.0, path_named: 0.7, unnamed: 0.35}

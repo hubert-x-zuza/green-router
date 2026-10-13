@@ -1,0 +1,210 @@
+{
+  "app": {
+    "title": "Zdrowa Trasa",
+    "tagline": "Zdrowsze trasy piesze i rowerowe po Krakowie"
+  },
+  "tabs": {
+    "route": "Trasa",
+    "planner": "Dla miasta",
+    "label": "Widok"
+  },
+  "lang": {
+    "switch": "English",
+    "label": "Zmień język"
+  },
+  "route": {
+    "from": "Skąd",
+    "to": "Dokąd",
+    "placeholder": "Adres, ulica, miejsce, np. Tauron Arena",
+    "clickHint": "Wpisz adres albo kliknij na mapie: pierwszy klik to start, drugi to cel.",
+    "myLocation": "Moja lokalizacja",
+    "swap": "Zamień",
+    "clear": "Wyczyść",
+    "mode": "Sposób",
+    "walk": "Pieszo",
+    "bike": "Rowerem",
+    "profile": "Priorytet",
+    "advanced": "Więcej opcji",
+    "maxDetour": "Maks. wydłużenie trasy: {{pct}} %",
+    "night": "Pora nocna (hałas LN)",
+    "custom": "Własne wagi",
+    "plan": "Wyznacz trasy",
+    "planning": "Liczę…",
+    "noResults": "Brak wyników",
+    "pickedOnMap": "Punkt z mapy",
+    "fromPlaceholder": "Skąd? Adres, ulica lub miejsce",
+    "toPlaceholder": "Dokąd? Adres, ulica lub miejsce",
+    "detourShort": "do +{{pct}} %",
+    "nightShort": "noc",
+    "customShort": "własne wagi",
+    "maxDetourLabel": "Maks. wydłużenie trasy",
+    "results": "Porównanie tras",
+    "mapHintFrom": "Kliknij na mapie, aby ustawić start",
+    "mapHintTo": "Kliknij na mapie, aby ustawić cel"
+  },
+  "profiles": {
+    "fastest": "Najszybsza",
+    "balanced": "Zrównoważona",
+    "quiet": "Cicha",
+    "clean_air": "Czyste powietrze",
+    "green_water": "Zieleń i woda",
+    "healthiest": "Najzdrowsza"
+  },
+  "weights": {
+    "noise": "Hałas",
+    "air": "Powietrze",
+    "traffic": "Ruch uliczny",
+    "green": "Zieleń",
+    "fountain": "Poidełka",
+    "cycleway_bike": "Drogi rowerowe (ZTP)",
+    "cycleway_walk": "Ciągi pieszo-rowerowe (ZTP)"
+  },
+  "kinds": {
+    "fastest": "Najszybsza",
+    "healthiest": "Najzdrowsza w limicie",
+    "balanced": "Zrównoważona"
+  },
+  "metrics": {
+    "time": "{{min}} min",
+    "distance": "{{km}} km",
+    "noise": "Hałas śr.",
+    "loud": "Głośne odcinki (≥65 dB)",
+    "green": "Zieleń w pobliżu",
+    "air": "Indeks powietrza",
+    "exposure": "Indeks ekspozycji",
+    "fountains": "Poidełka w pobliżu",
+    "noData": "brak danych",
+    "sameAs": "Ta sama trasa co: {{kind}}",
+    "limited": "Ograniczona limitem wydłużenia",
+    "show": "Pokaż na mapie",
+    "shown": "Na mapie",
+    "sameAsFastest": "Najszybsza trasa jest tu też najzdrowsza: nie trzeba nadkładać drogi.",
+    "separated_bike": "Drogi rowerowe odseparowane",
+    "separated_walk": "Ciągi pieszo-rowerowe",
+    "on_street": "Pasy i kontrapasy",
+    "reference": "Punkt odniesienia",
+    "limitedShort": "limit wydłużenia",
+    "sameAsNamed": "„{{kind}}” to ta sama trasa co „{{other}}”.",
+    "detailsOf": "Szczegóły trasy",
+    "vsFastest": "vs najszybsza"
+  },
+  "tradeoff": {
+    "minutes": "{{sign}}{{min}} min",
+    "same": "bez straty czasu",
+    "noise": "{{sign}}{{pct}} % ekspozycji na hałas",
+    "green": "{{sign}}{{pct}} % zieleni",
+    "exposure": "{{sign}}{{pct}} % ekspozycji ogółem"
+  },
+  "warnings": {
+    "partial_coverage": "Część trasy leży poza zasięgiem danych miejskich (poza granicą Krakowa); tam przyjęto wartość neutralną.",
+    "air_unavailable": "Brak aktualnych danych o powietrzu: składnik powietrza nie wpływa teraz na trasę.",
+    "smog_hint": "Podwyższone stężenie pyłu PM10: rozważ profil „Czyste powietrze”."
+  },
+  "errors": {
+    "outside_city": "Aplikacja działa tylko na terenie Krakowa. Wybierz punkt w granicach miasta.",
+    "far_from_network": "Punkt jest za daleko od drogi lub ścieżki. Wybierz miejsce bliżej ulicy.",
+    "same_point": "Start i cel są w tym samym miejscu.",
+    "no_route": "Nie udało się znaleźć trasy między tymi punktami.",
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "geolocation": "Nie udało się ustalić lokalizacji."
+  },
+  "air": {
+    "title": "Powietrze w Krakowie",
+    "level": "Jakość: {{band}}",
+    "from": "dane z {{time}}",
+    "stale": "Dane nieaktualne",
+    "unavailable": "Brak danych o powietrzu",
+    "indicative": "Wskaźnik orientacyjny: średnia ze stacji GIOŚ, rozłożona przestrzennie wg bliskości ruchu ulicznego. To nie jest pomiar na ulicy.",
+    "stations": "Stacje pomiarowe",
+    "source": "Źródło: GIOŚ, Portal Jakość Powietrza. Dane nie są na bieżąco weryfikowane.",
+    "nStations_one": "{{count}} stacja",
+    "nStations_few": "{{count}} stacje",
+    "nStations_many": "{{count}} stacji",
+    "nStations_other": "{{count}} stacji",
+    "prefix": "Powietrze:"
+  },
+  "layers": {
+    "title": "Warstwy",
+    "noise": "Hałas (LDWN)",
+    "green": "Zieleń",
+    "traffic": "Bliskość ruchu",
+    "fountains": "Poidełka",
+    "stations": "Stacje powietrza",
+    "hotspots": "Miejsca priorytetowe",
+    "cycleways": "Infrastruktura rowerowa ZTP",
+    "active_one": "{{count}} aktywna warstwa",
+    "active_few": "{{count}} aktywne warstwy",
+    "active_many": "{{count}} aktywnych warstw",
+    "active_other": "{{count}} aktywnych warstw"
+  },
+  "legend": {
+    "noise": "55 dB → 75+ dB",
+    "green": "mało → dużo",
+    "traffic": "daleko → blisko ruchliwej ulicy",
+    "cycleways": "odseparowana · na jezdni · inna",
+    "routeTitle": "Hałas na wybranej trasie",
+    "otherRoutes": "pozostałe trasy",
+    "lower": "niższy priorytet",
+    "higher": "wyższy"
+  },
+  "planner": {
+    "intro": "Odcinki ulic, gdzie wysoka ekspozycja (hałas, ruch, brak zieleni) spotyka wielu wrażliwych użytkowników: szkoły, przedszkola, żłobki i mieszkańców.",
+    "district": "Dzielnica",
+    "all": "Wszystkie dzielnice",
+    "top": "Najwyższy priorytet",
+    "export": "Pobierz CSV",
+    "districts": "Dzielnice",
+    "rank": "#{{rank}}",
+    "priority": "Priorytet {{value}}",
+    "explain": "hałas {{noise}} dB, zieleń {{green}} %, bliskość ruchu {{traffic}} %",
+    "who": "w promieniu 200 m: {{schools}} szk. ({{pupils}} uczn.), {{kg}} przedszk., {{nur}} żłobk.",
+    "pop": "Mieszkańcy",
+    "kids": "Dzieci 0–14",
+    "seniors": "Seniorzy 65+",
+    "sites": "Placówki",
+    "noiseMean": "Hałas śr.",
+    "loudShare": "Głośne komórki",
+    "hotspots": "W top 100",
+    "method": "Metoda: priorytet = ekspozycja × obecność osób wrażliwych, w komórkach 150 m. Wagi w config/etl.yml.",
+    "factNoise": "{{v}} dB",
+    "factGreen": "zieleń {{v}} %",
+    "factTraffic": "ruch {{v}} %",
+    "loading": "Wczytuję…",
+    "showing": "top {{n}}",
+    "none": "Brak miejsc priorytetowych dla tego wyboru.",
+    "sortHint": "Kliknij nagłówek, aby sortować"
+  },
+  "about": {
+    "button": "O danych",
+    "title": "Źródła danych",
+    "close": "Zamknij",
+    "created": "Data danych",
+    "obtained": "Pozyskano",
+    "disclaimer": "Indeks ekspozycji porównuje trasy między sobą. Nie jest oceną medyczną. Mapa hałasu to model strategiczny z 2022 r., mapa zieleni pochodzi z 2016 r., a składnik powietrza jest orientacyjny.",
+    "privacy": "Prywatność: zapytania o trasy są przetwarzane i od razu usuwane. Nie zapisujemy lokalizacji, nie używamy ciasteczek analitycznych.",
+    "inspiration": "Inspiracja metodą: Green Paths 2 (DigitalGeographyLab, licencja MIT)."
+  },
+  "export": {
+    "google": "Otwórz w Google Maps",
+    "gpx": "Pobierz GPX",
+    "hint": "„Prowadź” pokazuje dokładnie tę trasę z Twoją pozycją (lokalizacja zostaje w telefonie). Google Maps nie przyjmuje gotowej trasy, tylko punkty: przekazujemy start, cel i do 3 punktów pośrednich tam, gdzie trasa odbiega od najszybszej. Między nimi Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
+    "share": "Wyślij do aplikacji nawigacyjnej",
+    "navigate": "Prowadź",
+    "googleShort": "Google Maps",
+    "how": "Czym różnią się te opcje?"
+  },
+  "nav": {
+    "remaining": "Do celu: {{km}} km · ok. {{min}} min",
+    "offRoute": "Zszedłeś z trasy ({{m}} m)",
+    "stop": "Zakończ",
+    "waiting": "Ustalam pozycję…",
+    "arrived": "Jesteś na miejscu",
+    "error": "Brak dostępu do lokalizacji"
+  },
+  "empty": {
+    "title": "Zaplanuj zdrowszą trasę",
+    "step1": "Wpisz start albo kliknij na mapie.",
+    "step2": "Wybierz cel tak samo: trasy policzą się od razu.",
+    "step3": "Porównaj najszybszą trasę z najzdrowszą i zobacz, ile minut kosztuje cisza i zieleń."
+  }
+}

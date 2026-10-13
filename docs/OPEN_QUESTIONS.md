@@ -1,108 +1,63 @@
 # Open questions
 
-Status date: 2026-10-11. Part A needs your decision; part B is the manual checklist for every manifest entry
-still marked TODO (the city portals may block automated requests, so these are checks to do in your browser).
-For each item: open the URL, read the listed things, and paste the answers back (or edit `data/manifest.yml`
-yourself). Items are ordered by how much they block Phase 1.
+Status date: 2026-10-13. Part A needs a decision from the team; part B lists checks that still need a
+person (a browser or an e-mail). Everything from the 2026-10-11 checklist that could be verified by
+calling the sources was done on 2026-10-13 (see `data/manifest.yml` and `docs/DECISIONS.md`).
 
-## A. Questions for you
+## A. Decisions for the team
 
-**A1. (resolved 2026-10-11) More Kraków stations.** Probed: five of the other six deliver hourly PM10 (16896 also NO₂), none PM2.5; 20367 has none of the three. The five are now archived (decision D-009). Open: station types for all eight (B8).
+**A1. Paper application form (deadline).** It must *arrive* at ul. Basztowa 20 by Fri 23 Oct 2026,
+14:30 (the rules say 25 Oct, a Sunday). Needs the team members and the leader's name. Send by
+courier by ~20 Oct and keep the tracking number.
 
-**A2. Station 401 (Bujaka) has no live PM2.5.** Its PM2.5 sensor 2773 is manual (GIOŚ error API-ERR-100003).
-`level(t)` will use PM2.5 from stations 400 and 402 only (recorded as D-006). Tell me if you want something
-different.
+**A2. Where the air archiver runs permanently.** Today: launchd on this Mac (installed 2026-10-13,
+history back to 2026-10-11 00:00 UTC). A sleeping laptop loses hours; gaps up to 3 days are
+back-filled automatically. Options: the `air` service in docker-compose on a small VPS (recommended,
+it is ready), or keep the Mac awake.
 
-**A3. Where will the archiver run permanently?** Today it runs on this Mac through launchd (hourly, minute 7).
-A sleeping laptop misses hours (the GIOŚ current endpoint keeps about 3 days, so a gap shorter than that is
-recovered by the next run). Plan section 11, question 2 is still open: VPS, home server or cloud.
+**A3. Public demo URL.** `docker compose up` works locally (http://localhost:8080). A public demo
+needs a host (VPS ~2 GB RAM is enough: the API uses ~1 GB). Decide who hosts it.
 
-## B. Manual checklist (manifest entries with TODO)
+**A4. MSIP services and the regulamin.** The regulamin forbids redistributing MSIP map services and
+requires written consent for continuous, organised use of them in another system. The app does not
+do that (it downloads the open data once, D-010). If the city wants the app to refresh from the
+services automatically, ask the MSIP administrator (gd.umk@um.krakow.pl) for consent.
 
-### B1. `green_map` (blocks Phase 1; plan task 0.6)
-Open `https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer/7?f=pjson`
-1. Is `name` "Mapa zieleni"? Are the fields `class_name`, `area_ha`, `objectid` present? Note the `id`
-   (earlier JSON said `id: 0`, the URL ends `/7`). Copy `maxRecordCount` and `capabilities`.
-   → `green_map.status`, `green_map.fields`.
-2. Open `…/MapServer/7/query?where=1%3D1&outFields=class_name&returnDistinctValues=true&returnGeometry=false&f=json`
-   and list every distinct `class_name` (the renderer shows 3, the data may have more). → `classes_seen`.
-3. Open `…/MapServer/7/query?where=1%3D1&returnCountOnly=true&f=json` and note the count (sizing the download).
-4. Open `…/MapServer?f=pjson` and list all layers (id, name). Is there a ventilation/air-flow layer?
-   Then open the folder `https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR?f=pjson` and list its services.
-   → `green_map.todo`.
-5. Data date: in the layer JSON look at `description` / `copyrightText`; otherwise the portal item
-   `ffc310c95ea74ed388d94cf5d9c4b49d` (item page → "Updated"). → `green_map.data_date`; write today's date in
-   `date_obtained` only after the download is done; fix `citation_pl`.
+**A5. GIOŚ index bands.** `config/air_stations.yml` uses the GIOŚ index bands as we know them
+(PM10 20/50/80/110/150, PM2.5 13/35/55/75/110, NO₂ 40/100/150/230/400 µg/m³). Please confirm them
+against the GIOŚ index documentation on powietrze.gios.gov.pl.
 
-### B2. `drinking_fountains`
-Open `https://msip.krakow.pl/dataset/1359`, the **outdoor** subset ("pitniki zewnętrzne").
-Read: the field list (name, status, any column about season or opening months, year), the number of records,
-the data creation/update date, the licence/terms line. Is there any field saying a fountain works only in
-some months? → `attributes`, `status`, `citation_pl`.
+**A6. Weights and thresholds.** Profiles (`config/profiles.yml`) and ETL values (`config/etl.yml`)
+are starting values. The golden-route tests show the effect of a change.
 
-### B3. `address_points` (needed for the geocoder)
-Open `https://msip.krakow.pl/dataset/1492`. Read: the field names for street, house number, postcode, any
-"full address" column; the JSON/SHP download size; creation/update date; the exact wording of "use restrictions"
-and what the MSIP regulamin says about derivative works (a search index built from the points counts as one).
-Save the wording to `docs/licences/` (text + URL + date). → `fields`, `citation_pl`, `restrictions`.
+**A7. Open source after the contest?** (Plan section 11.5.) If the repository is published, the
+OSM-derived Parquet files stay out of it (ODbL share-alike); the ETL scripts rebuild them.
 
-### B4. `streets`
-Open `https://msip.krakow.pl/dataset/1379`. Read: is there a download (format, size, CRS), the field names
-(street name, any short name or "ul./al." type column), date, terms. → `status`, `fields`, `citation_pl`.
+## B. Checks that need a person
 
-### B5. `districts` (also gives the Kraków boundary)
-Open `https://msip.krakow.pl/dataset/1483`. Read: download format and CRS, the field with the district name and
-any district id, whether the district polygons dissolve into one city boundary, date, terms.
-→ `status`, `fields`, `citation_pl`.
+**B1. Station types (traffic / urban background) for the 8 GIOŚ stations.** Not in the API. Needed
+for the write-up of the NO₂ traffic-vs-background check (plan 5.3 point 4). Look on the station pages
+of powietrze.gios.gov.pl.
 
-### B6. `noise_2022` (the one open limitation)
-Open `https://msip.krakow.pl/dataset/1361` and the service
-`https://msip.um.krakow.pl/arcgis/rest/services/Mapa_halasu_2022?f=pjson` (also look at each layer's
-`description`). Find any metadata that says which roads were modelled (all streets, or only roads above some
-traffic volume / classes). If it is not stated anywhere, say so; I will record "not documented".
-→ replace the `TODO: check metadata…` line in `limitations`.
+**B2. GIOŚ hour labels.** Is the value at "14:00" the hour ending or starting at 14:00? The archiver
+stores the label as given (converted to UTC), so nothing is lost either way.
 
-### B7. `parks_table`
-Open `https://otwartedane.um.krakow.pl/zbiory-danych/parki-miejskie-w-krakowie`. Read the licence/terms line,
-the update date, the record count. The manifest has no citation yet. → add `licence`, `data_date`, `citation_pl`.
+**B3. Which roads the noise map models** (catalogue 1361 / the 2022 report). If minor streets are not
+modelled they look quiet only because they are missing. Not stated in the downloaded files.
 
-### B8. `air_quality_gios` (what is left; the rest was verified by calls)
-1. **Station type** (traffic / urban background / …) for all eight stations (400, 401, 402, 10123, 10139, 10447, 11303, 16896). The API's `findAll` has no such field, so
-   look on the station pages of the GIOŚ air-quality portal (`powietrze.gios.gov.pl`, the address the API's own
-   error message points to) for the station-type label. I did not guess a URL path. This is needed for the
-   NO₂ proxy validation (plan 3c). → `stations[].type`.
-2. Terms of the API (is the visible-source requirement worded anywhere precisely, any further condition?).
-   Copy the wording to `docs/licences/`. → `attribution_required`, `citation_pl`.
-3. Hour labels: for a row like `Data: 2026-10-11 14:00:00` is the value for the hour *ending* at 14:00 or
-   *starting* at 14:00? The API returns the hour in progress with a null value, which suggests "hour
-   starting", but I did not confirm it. Look in the API documentation ("content/api" on the portal). The
-   archiver stores the label as given (converted to UTC) so nothing is lost either way.
+**B4. IOŚ-PIB forecast terms** (`https://api.prognozy.ios.edu.pl/v1/PM10/1261/`). Not used yet; the
+"tomorrow" indicator is a stretch feature.
 
-### B9. `air_forecast_iosPIB`
-Read the terms of use of the IOŚ-PIB forecast service (the GIOŚ API documentation points to it; I have no
-terms URL, so I did not invent one). Then open `https://api.prognozy.ios.edu.pl/v1/PM10/1261/` in the browser and
-paste the response shape (a date → value map?). → `status`, `licence`, `citation_pl`. I did not call it.
+**B5. Schools with no house number in the portal API.** 133 rows of the school/kindergarten tables
+have `Nr domu = null` (the column is typed as a number, so values like "9-11" are probably lost).
+Worth reporting to the portal (otwartedane.um.krakow.pl/kontakt); the planner places them
+approximately (D-019).
 
-### B10. `osm`
-Decide the source: Geofabrik extract for Małopolskie (then clip to Kraków + 500 m) or osmnx/Overpass for the
-boundary. Tell me which, and give the extract's download URL and its date (I have no verified URL in the
-manifest, so I did not write one). → `status`, extract date, `citation`.
+**B6. ZTP layers (transit stops, cycling infrastructure).** They are on ArcGIS Hub
+(ztpk-gmk-2.hub.arcgis.com), linked from otwartedane. Not used yet: transit stops would strengthen the
+planner's "sensitive presence", cycling infrastructure could lower the bike cost on separated paths.
+Resolving the Hub map ids to feature-layer URLs needs a check in the browser.
 
-### B11. Planner-view datasets (Phase 4, not blocking now)
-- `schools`: on `otwartedane.um.krakow.pl` find the two school datasets (municipal and private). Read: URL,
-  geometry (points?), fields (type of school, address), format, date, terms.
-- `bike_counters`: find the ZDMK automatic bike counters dataset. Read: URL, whether counts are published,
-  counter coordinates, time resolution, terms.
-- `gtfs`: `https://gtfs.ztp.krakow.pl/`. Read: file names, update frequency, licence/terms; confirm stops
-  have coordinates.
-- `residents`: `https://msip.krakow.pl/dataset/3180`. Read: the aggregation level (district? statistical
-  region? address?), the period, terms. Do not use address-level data (privacy).
-
-## C. Findings that contradict or extend the plan (for your information)
-
-- The plan says the 2022 grid spot values are Rondo Mogilskie 67.9 etc. I did not reproduce these: landmark
-  coordinates I typed from memory read as the floor value in the rebuilt grid, so they were probably off the
-  road. The aggregate shares match the plan (see the Phase 0 report). Spot checks need coordinates read
-  from a map by you or from the OSM graph in Phase 1.
-- `data/raw/noise/` also holds `halas_2022_tereny_zagrozone_*` files (≈ 0.8 GB, not used, not in the manifest)
-  and two `__Aktualnosc__` files with different times (14:47 and 14:41, same date 2026-03-23).
+**A8. Name check in the trade-mark registers.** A web search (2026-10-13) found no app or trade mark
+"Zdrowa Trasa". Before publishing beyond the contest, search the exact name in the UPRP
+(Polish Patent Office) and EUIPO (eSearch plus / TMview) registers.

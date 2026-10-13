@@ -1,0 +1,27 @@
+# Datasets from otwartedane.um.krakow.pl that the app uses (python -m etl.fetch.otwartedane).
+# The portal had 45 datasets on 2026-10-13; the rest (culture, sport events, tourism, labour market,
+# foreigners, vehicles, lost property, admin services) are not relevant to routing or the planner view.
+# `use` says why each one is here (plan section 5.5 "sensitive users", section 3 rows 10-13).
+datasets:
+  # greenery statistics per district (planner view; tables only, no geometry)
+  parki-miejskie-w-krakowie: {use: "planner: park area per district"}
+  parki-kieszonkowe-w-krakowie: {use: "planner: pocket parks per district"}
+  # sensitive users: children
+  szkoly-podstawowe-w-krakowie-liczba-dzieci: {use: "planner: primary schools, pupil counts"}
+  szkoly-ponadpodstawowe-w-krakowie-liczba-uczniow: {use: "planner: secondary schools, pupil counts"}
+  przedszkola-w-krakowie-liczba-dzieci: {use: "planner: kindergartens, child counts"}
+  zlobki-samorzadowe-w-krakowie: {use: "planner: municipal nurseries"}
+  zlobki-prywatne-w-krakowie: {use: "planner: private nurseries"}
+  zlobki-niesamorzadowe-prowadzone-na-zlecenie-gminy-miejskiej-krakow: {use: "planner: commissioned nurseries"}
+  kluby-dzieciece-w-krakowie: {use: "planner: children's clubs"}
+  infrastruktura-sportowa-szkol-i-oplacowek-samorzadowych-w-roku-szkolnym-2023-2024: {use: "planner: school sports grounds (outdoor exposure)"}
+  infrastruktura-sportowa-szkol-i-placowek-niesamorzadowych-w-roku-szkolnym-2023-2024: {use: "planner: school sports grounds (outdoor exposure)"}
+  # sensitive users: seniors and patients
+  centra-aktywnosci-seniora-w-krakowie: {use: "planner: senior activity centres"}
+  podmioty-lecznicze-prowadzone-przez-gmine-miejska-krakow: {use: "planner: municipal health facilities"}
+  # residents (check the aggregation level before use; privacy)
+  mieszkancy-zameldowani-na-pobyt-staly: {use: "planner: population weight"}
+  krakow-statystyki-demograficzne: {use: "planner: population structure (age) if aggregated by district"}
+  # ArcGIS Hub layers only (no tables): the links are recorded, layers fetched separately
+  komunikacja-miejska-w-krakowie-kmk: {use: "planner: transit stops as sensitive-user proxy"}
+  mobilnosc-aktywna-rowery-w-krakowie: {use: "routing: cycling infrastructure; planner: bike counters"}
