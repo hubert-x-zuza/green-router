@@ -1,6 +1,9 @@
 import * as maplibregl from "maplibre-gl";
 import type { GeoJSONSource, MapMouseEvent } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+// maplibre-gl 6 loads its web worker from a file next to its own module; once bundled that file is
+// missing, so its URL is given explicitly (Vite emits it as an asset).
+import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { AirNow, HotspotProps, LonLat, Overlay, Route, RouteKind } from "../api";
@@ -22,6 +25,8 @@ interface Props {
   onMapClick: (p: LonLat) => void;
   onHotspotClick: (p: HotspotProps) => void;
 }
+
+maplibregl.setWorkerUrl(workerUrl);
 
 const STYLE = "https://tiles.openfreemap.org/styles/positron";
 const KRAKOW: [number, number] = [19.945, 50.061];

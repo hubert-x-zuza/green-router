@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 
 // In development the API runs on :8000 (make api); in Docker nginx proxies /api.
 // maplibre-gl 6 loads its web worker by a URL relative to its own module: pre-bundling breaks
-// that path, so the package is served as is.
+// that path, so the package is served as is (the build sets the worker URL in MapView.tsx).
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: { exclude: ["maplibre-gl"] },
