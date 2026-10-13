@@ -9,7 +9,7 @@ export const GOOGLE_MAX_WAYPOINTS = 3;
  * up to 10 points (origin, 8 waypoints, destination), also opened by the mobile app. Google does not
  * document it and may change it at any time: set USE_LEGACY_GOOGLE_URL to false to fall back to the
  * documented format (decision D-029). */
-export const USE_LEGACY_GOOGLE_URL = true;
+export const USE_LEGACY_GOOGLE_URL = false;
 export const GOOGLE_LEGACY_MAX_WAYPOINTS = 8;
 // travel mode codes used by Google Maps in the `data` parameter (undocumented)
 const LEGACY_MODE: Record<Mode, string> = { walk: "3e2", bike: "3e1" };

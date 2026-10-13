@@ -218,3 +218,7 @@ waypoints, more spurs. Writing the point differently (quoted, with a space) or p
 coordinates into the `data` parameter did not change that. The route *shape* with 8 points follows
 ours (e.g. through Zakrzówek and along the Vistula), the length is up to 1.3 km longer; the
 documented 3-point link was equal or closer in all five cases. Revisit with the team.
+
+**Update (2026-10-13):** after reviewing the measurements the team switched back to the documented
+format with at most 3 waypoints (`USE_LEGACY_GOOGLE_URL = false`); the undocumented builder stays in
+the code as an option.
