@@ -71,7 +71,7 @@ def test_outside_city_is_rejected(fake_store):
 
 
 def test_tradeoff_text():
-    t = {"extra_min": 4.2, "noise_pct": -18.0, "green_pct": 25.0}
-    assert routing.tradeoff_text(t, "pl") == "+4 min, -18 % hałasu, +25 % zieleni"
-    assert routing.tradeoff_text(t, "en") == "+4 min, -18 % noise, +25 % greenery"
+    t = {"extra_min": 4.2, "exposure_pct": -12.0, "noise_pct": -18.0, "green_pct": 25.0}
+    assert routing.tradeoff_text(t, "pl") == "+4 min, -12 % ekspozycji, -18 % hałasu, +25 % zieleni"
+    assert routing.tradeoff_text(t, "en") == "+4 min, -12 % exposure, -18 % noise, +25 % greenery"
     assert np.isfinite(t["extra_min"])

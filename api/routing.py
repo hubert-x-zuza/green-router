@@ -147,7 +147,7 @@ def tradeoff_text(t: dict, lang: str) -> str:
         "pl": {"noise_pct": "hałasu", "exposure_pct": "ekspozycji", "green_pct": "zieleni"},
         "en": {"noise_pct": "noise", "exposure_pct": "exposure", "green_pct": "greenery"},
     }
-    for k in ("noise_pct", "green_pct"):
+    for k in ("exposure_pct", "noise_pct", "green_pct"):
         if t.get(k) is not None and abs(t[k]) >= 1:
             parts.append(f"{t[k]:+.0f} % {labels[lang][k]}")
     return ", ".join(parts)

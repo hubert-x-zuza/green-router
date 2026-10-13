@@ -18,6 +18,8 @@ function TradeoffLine({ t: tr }: { t: Tradeoff }) {
       ? t("tradeoff.same")
       : t("tradeoff.minutes", { sign: sign(tr.extra_min), min: Math.abs(Math.round(tr.extra_min)) }),
   );
+  if (tr.exposure_pct != null && Math.abs(tr.exposure_pct) >= 1)
+    parts.push(t("tradeoff.exposure", { sign: sign(tr.exposure_pct), pct: Math.abs(tr.exposure_pct) }));
   if (tr.noise_pct != null && Math.abs(tr.noise_pct) >= 1)
     parts.push(t("tradeoff.noise", { sign: sign(tr.noise_pct), pct: Math.abs(tr.noise_pct) }));
   if (tr.green_pct != null && Math.abs(tr.green_pct) >= 1)

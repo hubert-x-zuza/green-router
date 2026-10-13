@@ -1,0 +1,48 @@
+# Zdrowa Trasa: `docker compose up --build` serves the app on http://localhost:8080
+# Data: the API reads ./data (built by `make data`, or in Docker:
+#   docker compose --profile etl run --rm etl).
+services:
+  api:
+    build: .
+    volumes:
+      - ./data:/app/data:ro
+      - ./data/manifest.yml:/app/data/manifest.yml:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # hourly GIOŚ archiver (writes data/processed/air_history.sqlite)
+  air:
+    build: .
+    command: ["sh", "-c", "while true; do python -m etl.air; sleep 3600; done"]
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # one-off: download all sources and rebuild data/processed (about 20 min, needs ~4 GB RAM)
+  etl:
+    build: .
+    profiles: ["etl"]
+    volumes:
+      - ./data:/app/data
+    command:
+      - sh
+      - -c
+      - >
+        python -m etl.fetch.msip --large &&
+        python -m etl.fetch.otwartedane &&
+        python etl/noise_to_grid.py --in data/raw/noise_2022/Mapa_imisyjna_2022_JSON --out data/processed &&
+        python -m etl.graph && python -m etl.layers && python -m etl.enrich &&
+        python -m etl.normalise && python -m etl.geocoder && python -m etl.planner &&
+        python -m etl.air

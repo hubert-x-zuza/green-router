@@ -178,8 +178,20 @@ datasets:
     title: "OpenStreetMap (street network)"
     provider: "OpenStreetMap contributors"
     licence: "ODbL 1.0 - attribution required; share-alike applies to published derived databases"
-    status: "TODO download Kraków extract; record extract date"
-    citation: "© OpenStreetMap contributors"
+    source: "Overpass API via osmnx 2.1 (graph_from_polygon / features_from_polygon), area = MSIP city boundary + 500 m"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13: walk 170704 nodes / 429582 directed edges; bike 82544 / 184004 (one-way respected, 2127 contraflow edges); 66886 road lines for the traffic proxy"
+    derived_data: "network_*.parquet are derived from OSM (ODbL share-alike): not published; ship the ETL scripts instead"
+    citation: "© OpenStreetMap contributors (ODbL)"
+
+  basemap_openfreemap:
+    title: "Podkład mapowy (wektorowy) OpenFreeMap, styl positron"
+    provider: "OpenFreeMap (openfreemap.org); dane © OpenStreetMap contributors, OpenMapTiles"
+    url: "https://tiles.openfreemap.org/styles/positron"
+    licence: "free, no keys, no cookies; attribution required (added automatically by MapLibre)"
+    date_obtained: "2026-10-13"
+    status: "verified 2026-10-13"
+    citation: "OpenFreeMap © OpenMapTiles Data from OpenStreetMap"
 
   # --- planner view: sensitive users. All from otwartedane.um.krakow.pl (API api.um.krakow.pl, no key),
   # downloaded by etl/fetch/otwartedane.py (list in config/otwartedane.yml; per-table update dates in

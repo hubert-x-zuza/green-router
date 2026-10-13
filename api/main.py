@@ -38,6 +38,9 @@ app = FastAPI(
     version="1.0.0",
     description="Healthier walking and cycling routes in Kraków (noise, air, greenery).",
     lifespan=lifespan,
+    docs_url="/api/v1/docs",
+    redoc_url=None,
+    openapi_url="/api/v1/openapi.json",
 )
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"])
 

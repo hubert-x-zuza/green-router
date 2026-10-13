@@ -63,4 +63,4 @@ def test_sources_from_manifest(client):
 
 
 def test_openapi_is_published(client):
-    assert client.get("/openapi.json").json()["info"]["title"] == "Zdrowa Trasa API"
+    assert client.get("/api/v1/openapi.json").json()["info"]["title"] == "Zdrowa Trasa API"
