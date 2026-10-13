@@ -1,4 +1,4 @@
-// Route export (Google Maps link, GPX) and helpers for in-app guidance.
+// Route export: Google Maps link, GPX download and sharing to a navigation app.
 import type { Mode, Route } from "./api";
 
 /** Google Maps URLs (developers.google.com/maps/documentation/urls): mobile browsers accept at most
@@ -160,20 +160,3 @@ export function downloadGpx(route: Route, name: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/** Progress along the route for in-app guidance: remaining metres from the closest route vertex,
- * and how far the user is from the route line. */
-export function progress(route: Route, me: LngLat): { remainingM: number; offRouteM: number } {
-  const coords = routeCoords(route);
-  let best = 0;
-  let bestD = Infinity;
-  coords.forEach((c, i) => {
-    const d = distM(c, me);
-    if (d < bestD) {
-      bestD = d;
-      best = i;
-    }
-  });
-  let remaining = 0;
-  for (let i = best + 1; i < coords.length; i++) remaining += distM(coords[i - 1], coords[i]);
-  return { remainingM: remaining, offRouteM: distToLine(me, coords) };
-}
