@@ -1,0 +1,71 @@
+{
+  "app": { "title": "Zdrowa Trasa", "tagline": "Zdrowsze trasy piesze i rowerowe po Krakowie" },
+  "tabs": { "route": "Trasa", "planner": "Dla miasta" },
+  "lang": { "switch": "English", "label": "Zmień język" },
+  "route": {
+    "from": "Skąd", "to": "Dokąd", "placeholder": "Adres lub ulica, np. Basztowa 20",
+    "clickHint": "Wpisz adres albo kliknij na mapie: pierwszy klik to start, drugi to cel.",
+    "myLocation": "Moja lokalizacja", "swap": "Zamień", "clear": "Wyczyść",
+    "mode": "Sposób", "walk": "Pieszo", "bike": "Rowerem",
+    "profile": "Priorytet", "advanced": "Ustawienia zaawansowane",
+    "maxDetour": "Maks. wydłużenie trasy: {{pct}} %", "night": "Pora nocna (hałas LN)",
+    "custom": "Własne wagi", "plan": "Wyznacz trasy", "planning": "Liczę…",
+    "noResults": "Brak wyników", "pickedOnMap": "Punkt z mapy"
+  },
+  "profiles": {
+    "fastest": "Najszybsza", "balanced": "Zrównoważona", "quiet": "Cicha",
+    "clean_air": "Czyste powietrze", "green_water": "Zieleń i woda", "healthiest": "Najzdrowsza"
+  },
+  "weights": { "noise": "Hałas", "air": "Powietrze", "traffic": "Ruch uliczny", "green": "Zieleń", "fountain": "Poidełka" },
+  "kinds": { "fastest": "Najszybsza", "healthiest": "Najzdrowsza w limicie", "balanced": "Zrównoważona" },
+  "metrics": {
+    "time": "{{min}} min", "distance": "{{km}} km", "noise": "Hałas śr.", "loud": "Głośne odcinki (≥65 dB)",
+    "green": "Zieleń w pobliżu", "air": "Indeks powietrza", "exposure": "Indeks ekspozycji",
+    "fountains": "Poidełka w pobliżu", "noData": "brak danych", "sameAs": "Ta sama trasa co: {{kind}}",
+    "limited": "Ograniczona limitem wydłużenia", "show": "Pokaż na mapie", "shown": "Na mapie"
+  },
+  "tradeoff": {
+    "minutes": "{{sign}}{{min}} min", "same": "bez straty czasu",
+    "noise": "{{sign}}{{pct}} % ekspozycji na hałas", "green": "{{sign}}{{pct}} % zieleni",
+    "exposure": "{{sign}}{{pct}} % ekspozycji ogółem"
+  },
+  "warnings": {
+    "partial_coverage": "Część trasy leży poza zasięgiem danych miejskich (poza granicą Krakowa); tam przyjęto wartość neutralną.",
+    "air_unavailable": "Brak aktualnych danych o powietrzu: składnik powietrza nie wpływa teraz na trasę.",
+    "smog_hint": "Podwyższone stężenie pyłu PM10: rozważ profil „Czyste powietrze”."
+  },
+  "errors": {
+    "outside_city": "Aplikacja działa tylko na terenie Krakowa. Wybierz punkt w granicach miasta.",
+    "far_from_network": "Punkt jest za daleko od drogi lub ścieżki. Wybierz miejsce bliżej ulicy.",
+    "same_point": "Start i cel są w tym samym miejscu.",
+    "no_route": "Nie udało się znaleźć trasy między tymi punktami.",
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "geolocation": "Nie udało się ustalić lokalizacji."
+  },
+  "air": {
+    "title": "Powietrze w Krakowie", "level": "Jakość: {{band}}", "from": "dane z {{time}}",
+    "stale": "Dane nieaktualne", "unavailable": "Brak danych o powietrzu",
+    "indicative": "Wskaźnik orientacyjny: średnia ze stacji GIOŚ, rozłożona przestrzennie wg bliskości ruchu ulicznego. To nie jest pomiar na ulicy.",
+    "stations": "Stacje pomiarowe", "source": "Źródło: GIOŚ, Portal Jakość Powietrza. Dane nie są na bieżąco weryfikowane."
+  },
+  "layers": { "title": "Warstwy", "noise": "Hałas (LDWN)", "green": "Zieleń", "traffic": "Bliskość ruchu", "fountains": "Poidełka", "stations": "Stacje powietrza", "hotspots": "Miejsca priorytetowe" },
+  "legend": { "noise": "dB: 55 → 75+", "green": "mało → dużo", "traffic": "daleko → blisko ruchliwej ulicy" },
+  "planner": {
+    "intro": "Odcinki ulic, gdzie wysoka ekspozycja (hałas, ruch, brak zieleni) spotyka wielu wrażliwych użytkowników: szkoły, przedszkola, żłobki i mieszkańców.",
+    "district": "Dzielnica", "all": "Wszystkie dzielnice", "top": "Najwyższy priorytet",
+    "export": "Pobierz CSV", "districts": "Dzielnice",
+    "rank": "#{{rank}}", "priority": "Priorytet {{value}}",
+    "explain": "hałas {{noise}} dB, zieleń {{green}} %, bliskość ruchu {{traffic}} %",
+    "who": "w promieniu 200 m: {{schools}} szk. ({{pupils}} uczn.), {{kg}} przedszk., {{nur}} żłobk.",
+    "pop": "Mieszkańcy", "kids": "Dzieci 0–14", "seniors": "Seniorzy 65+", "sites": "Placówki",
+    "noiseMean": "Hałas śr.", "loudShare": "Głośne komórki", "hotspots": "W top 100",
+    "method": "Metoda: priorytet = ekspozycja × obecność osób wrażliwych, w komórkach 150 m. Wagi w config/etl.yml."
+  },
+  "about": {
+    "button": "O danych", "title": "Źródła danych", "close": "Zamknij",
+    "created": "Data danych", "obtained": "Pozyskano",
+    "disclaimer": "Indeks ekspozycji porównuje trasy między sobą. Nie jest oceną medyczną. Mapa hałasu to model strategiczny z 2022 r., mapa zieleni pochodzi z 2016 r., a składnik powietrza jest orientacyjny.",
+    "privacy": "Prywatność: zapytania o trasy są przetwarzane i od razu usuwane. Nie zapisujemy lokalizacji, nie używamy ciasteczek analitycznych.",
+    "inspiration": "Inspiracja metodą: Green Paths 2 (DigitalGeographyLab, licencja MIT)."
+  }
+}

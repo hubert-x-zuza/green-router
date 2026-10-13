@@ -51,15 +51,12 @@ def normalise(s: str) -> str:
 
 
 def split_query(q: str) -> tuple[list[str], str | None]:
-    """Street words and the house number (the last token that looks like one), if any."""
+    """Street words and the house number (the last token, if it looks like one).
+    Numbers inside a street name ("29 listopada", "3 maja") stay words."""
     toks = tokens(q)
-    number = None
-    for i in range(len(toks) - 1, -1, -1):
-        if NUMBER_RE.match(toks[i]) and i > 0:
-            number = toks.pop(i)
-            break
-    # a street name may contain numbers ("3 maja", "29 listopada"): keep the rest as words
-    return toks, number
+    if len(toks) > 1 and NUMBER_RE.match(toks[-1]):
+        return toks[:-1], toks[-1]
+    return toks, None
 
 
 SCHEMA = """
@@ -119,20 +116,34 @@ class Geocoder:
         if not words:
             return []
         match = " ".join(f'"{w}"*' for w in words)
-        sql = ("SELECT label, kind, district, lon, lat, number FROM places WHERE places MATCH ? "
-               "AND kind = ? ORDER BY rank, length(label) LIMIT ?")  # fmt: skip
+        sql = (
+            "SELECT label, kind, district, lon, lat, name_norm FROM places WHERE places MATCH ? "
+            "AND kind = ? {extra} ORDER BY rank, length(label) LIMIT ?"
+        )
+        pool = limit * 5
         out: list[Place] = []
         if number:
-            rows = self.con.execute(sql.replace("ORDER BY", "AND number = ? ORDER BY"),
-                                    (match, "address", number, limit)).fetchall()  # fmt: skip
+            rows = self.con.execute(sql.format(extra="AND number = ?"),
+                                    (match, "address", number, pool)).fetchall()  # fmt: skip
             if not rows and number.isdigit():  # "5" also finds "5a", never "51"
-                glob_sql = sql.replace("ORDER BY", "AND number GLOB ? ORDER BY")
-                args = (match, "address", number + "[a-z]", limit)
-                rows = self.con.execute(glob_sql, args).fetchall()
-            out += [Place(r[0], r[1], r[2], r[3], r[4]) for r in rows]
-        rows = self.con.execute(sql, (match, "street", limit)).fetchall()
-        out += [Place(r[0], r[1], r[2], r[3], r[4]) for r in rows]
+                args = (match, "address", number + "[a-z]", pool)
+                rows = self.con.execute(sql.format(extra="AND number GLOB ?"), args).fetchall()
+            out += self._ranked(rows, words)[:limit]
+        rows = self.con.execute(sql.format(extra=""), (match, "street", pool)).fetchall()
+        out += self._ranked(rows, words)
         return out[:limit]
+
+    @staticmethod
+    def _ranked(rows: list[tuple], words: list[str]) -> list[Place]:
+        """Names where more query words match a whole word come first ("wawel" prefers
+        "Zamek Wawel" to "Wawelska"); otherwise keep the FTS order (stable sort)."""
+
+        def whole(name_norm: str) -> int:
+            toks = set(name_norm.split())
+            return sum(w in toks for w in words)
+
+        rows = sorted(rows, key=lambda r: -whole(r[5]))
+        return [Place(r[0], r[1], r[2], r[3], r[4]) for r in rows]
 
 
 def main() -> int:
