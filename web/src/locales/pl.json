@@ -152,6 +152,16 @@
   "export": {
     "google": "Otwórz w Google Maps",
     "gpx": "Pobierz GPX",
-    "hint": "Google Maps dostaje start, cel i 3 punkty pośrednie, więc między nimi może lekko zmienić trasę. Dokładna trasa: plik GPX (Komoot, OsmAnd, Garmin). Otwarcie Google Maps przekazuje punkty trasy do Google."
+    "hint": "„Prowadź” pokazuje dokładnie tę trasę z Twoją pozycją (lokalizacja zostaje w telefonie). „Wyślij do aplikacji nawigacyjnej” przekazuje dokładną trasę np. do Organic Maps, OsmAnd lub Komoot, które prowadzą zakręt po zakręcie. Google Maps nie przyjmuje gotowej trasy, tylko start, cel i do 3 punktów pośrednich: wybieramy je tam, gdzie trasa odbiega od najszybszej, ale Google może miejscami pójść inaczej. Otwarcie Google Maps przekazuje punkty trasy do Google.",
+    "navigate": "Prowadź",
+    "share": "Wyślij do aplikacji nawigacyjnej"
+  },
+  "nav": {
+    "remaining": "Do celu: {{km}} km · ok. {{min}} min",
+    "offRoute": "Zszedłeś z trasy ({{m}} m)",
+    "stop": "Zakończ",
+    "waiting": "Ustalam pozycję…",
+    "arrived": "Jesteś na miejscu",
+    "error": "Brak dostępu do lokalizacji"
   }
 }

@@ -178,10 +178,19 @@ positives on carriageways next to a separated path (4 % of primary-road length, 
 accepted and stated. Effect on the golden routes: Nowa Huta → Rynek by bike rises from 12 % to 72 %
 separated for +1 min. The cycleway term is not part of the exposure index.
 
-## D-028 (2026-10-13) Route export: Google Maps link with 3 waypoints, plus GPX
-Google Maps URLs need no key and accept at most three waypoints in mobile browsers (nine elsewhere,
-developers.google.com/maps/documentation/urls). We always send three, at equal distances along the
-chosen route, so the link behaves the same on every device; Google may still change the route
-between them, which the UI says. The exact route is offered as a GPX 1.1 track (Komoot, OsmAnd,
+## D-028 (2026-10-13) Route export: in-app guidance, share to a navigation app, Google Maps, GPX
+Google Maps cannot take a ready route: a Maps URL carries only origin, destination and at most three
+waypoints in mobile browsers (nine elsewhere, developers.google.com/maps/documentation/urls), and
+Google My Maps has no public API for importing a track, so "show exactly our line in Google" cannot
+be automated. What we do instead:
+1. **Prowadź (in-app guidance):** the exact route on our map with the live GPS position, remaining
+   distance and time, and an off-route warning (> 40 m). The position stays in the browser
+   (`watchPosition`, never sent to the API); a screen wake lock is requested where supported.
+2. **Wyślij do aplikacji nawigacyjnej:** the GPX file through the system share sheet (Web Share API
+   with files, mostly phones) to Organic Maps, OsmAnd, Komoot etc., which navigate along the track.
+3. **Google Maps link:** at most three waypoints, chosen at route junctions where our route departs
+   furthest (>= 40 m) from the fastest route, preferably on named streets; none if the route equals
+   the fastest. First version used equal spacing: Google snapped those points to nearby venues
+   (a playground, a swimming hall) and added loops. The exact route is offered as a GPX 1.1 track (Komoot, OsmAnd,
 Garmin), generated in the browser with an ODbL notice. Opening Google Maps is a user action that
 sends the route points to Google; the UI says so (privacy).

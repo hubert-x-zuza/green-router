@@ -152,6 +152,16 @@
   "export": {
     "google": "Open in Google Maps",
     "gpx": "Download GPX",
-    "hint": "Google Maps gets the start, the destination and 3 waypoints, so it may change the route slightly between them. Exact route: the GPX file (Komoot, OsmAnd, Garmin). Opening Google Maps sends the route points to Google."
+    "hint": "“Guide me” shows exactly this route with your position (the location stays on your phone). “Send to a navigation app” passes the exact route to e.g. Organic Maps, OsmAnd or Komoot for turn-by-turn guidance. Google Maps does not accept a ready route, only the start, the destination and up to 3 waypoints: we put them where the route leaves the fastest one, but Google may still differ in places. Opening Google Maps sends the route points to Google.",
+    "navigate": "Guide me",
+    "share": "Send to a navigation app"
+  },
+  "nav": {
+    "remaining": "To go: {{km}} km · about {{min}} min",
+    "offRoute": "Off the route ({{m}} m)",
+    "stop": "Stop",
+    "waiting": "Finding your position…",
+    "arrived": "You have arrived",
+    "error": "No access to your location"
   }
 }

@@ -14,6 +14,7 @@ import { AboutData, AirBadge, LayerToggles } from "./components/Extras";
 import MapView, { type LayerState } from "./components/MapView";
 import PlannerPanel, { HotspotText } from "./components/PlannerPanel";
 import RoutePanel, { type Endpoint, type RouteSettings } from "./components/RoutePanel";
+import { progress } from "./export";
 import { setLang } from "./i18n";
 
 type Tab = "route" | "planner";
@@ -57,6 +58,32 @@ export default function App() {
   const [focus, setFocus] = useState<[number, number] | null>(null);
   const [about, setAbout] = useState(false);
   const request = useRef(0);
+  // in-app guidance: the position never leaves the browser
+  const [nav, setNav] = useState(false);
+  const [me, setMe] = useState<{ lon: number; lat: number; acc: number } | null>(null);
+  const [navError, setNavError] = useState(false);
+
+  useEffect(() => {
+    if (!nav || !("geolocation" in navigator)) return;
+    setNavError(false);
+    const id = navigator.geolocation.watchPosition(
+      (pos) => {
+        setNavError(false);
+        setMe({ lon: pos.coords.longitude, lat: pos.coords.latitude, acc: pos.coords.accuracy });
+      },
+      // only a refusal is an error; a timeout or a lost fix keeps the last position
+      (err) => err.code === err.PERMISSION_DENIED && setNavError(true),
+      { enableHighAccuracy: true, maximumAge: 5000 },
+    );
+    let lock: { release: () => Promise<void> } | undefined;
+    const wl = (navigator as Navigator & { wakeLock?: { request: (t: "screen") => Promise<typeof lock> } }).wakeLock;
+    wl?.request("screen").then((l) => (lock = l)).catch(() => undefined);
+    return () => {
+      navigator.geolocation.clearWatch(id);
+      void lock?.release().catch(() => undefined);
+      setMe(null);
+    };
+  }, [nav]);
 
   useEffect(() => {
     api.air().then(setAir).catch(() => setAir(null));
@@ -128,7 +155,7 @@ export default function App() {
 
   const lang = i18n.language === "en" ? "en" : "pl";
   return (
-    <div className="app">
+    <div className={nav ? "app navigating" : "app"}>
       <header className="top">
         <img className="logo" src="/logo.svg" alt="" width="36" height="36" />
         <div className="brand">
@@ -177,6 +204,7 @@ export default function App() {
               setSelected={setSelected}
               busy={busy}
               error={error}
+              onNavigate={() => setNav(true)}
             />
           ) : (
             <PlannerPanel
@@ -204,7 +232,17 @@ export default function App() {
             focus={focus}
             onMapClick={onMapClick}
             onHotspotClick={showHotspot}
+            me={nav ? me : null}
           />
+          {nav && tab === "route" && (
+            <NavBanner
+              route={result?.routes.find((r) => r.kind === selected && !r.same_as) ?? null}
+              mode={settings.mode}
+              me={me}
+              error={navError}
+              onStop={() => setNav(false)}
+            />
+          )}
           <LayerToggles
             layers={layers}
             setLayers={setLayers}
@@ -222,6 +260,43 @@ export default function App() {
         </section>
       </main>
       <AboutData open={about} onClose={() => setAbout(false)} />
+    </div>
+  );
+}
+
+function NavBanner({
+  route,
+  mode,
+  me,
+  error,
+  onStop,
+}: {
+  route: RouteResponse["routes"][number] | null;
+  mode: "walk" | "bike";
+  me: { lon: number; lat: number } | null;
+  error: boolean;
+  onStop: () => void;
+}) {
+  const { t } = useTranslation();
+  let text = t("nav.waiting");
+  let off: number | null = null;
+  if (error) text = t("nav.error");
+  else if (route && me) {
+    const pr = progress(route, [me.lon, me.lat]);
+    const speed = mode === "bike" ? 4.2 : 1.33;
+    text =
+      pr.remainingM < 30
+        ? t("nav.arrived")
+        : t("nav.remaining", { km: (pr.remainingM / 1000).toFixed(1), min: Math.max(1, Math.round(pr.remainingM / speed / 60)) });
+    if (pr.offRouteM > 40) off = Math.round(pr.offRouteM);
+  }
+  return (
+    <div className="nav-banner" role="status" aria-live="polite">
+      <span>{text}</span>
+      {off != null && <span className="nav-off">{t("nav.offRoute", { m: off })}</span>}
+      <button type="button" className="button secondary" onClick={onStop}>
+        {t("nav.stop")}
+      </button>
     </div>
   );
 }

@@ -25,6 +25,7 @@ interface Props {
   focus: [number, number] | null;
   onMapClick: (p: LonLat) => void;
   onHotspotClick: (p: HotspotProps) => void;
+  me?: { lon: number; lat: number; acc: number } | null;
 }
 
 maplibregl.setWorkerUrl(workerUrl);
@@ -177,6 +178,13 @@ export default function MapView(p: Props) {
         source: "fountains",
         paint: { "circle-radius": 5, "circle-color": "#0ea5e9", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5 },
       });
+      m.addSource("me", { type: "geojson", data: EMPTY });
+      m.addLayer({
+        id: "me",
+        type: "circle",
+        source: "me",
+        paint: { "circle-radius": 8, "circle-color": "#2563eb", "circle-stroke-color": "#fff", "circle-stroke-width": 3 },
+      });
       m.addSource("stations", { type: "geojson", data: EMPTY });
       m.addLayer({
         id: "stations",
@@ -278,6 +286,22 @@ export default function MapView(p: Props) {
     for (const r of p.routes) for (const f of r.geometry.features) for (const c of f.geometry.coordinates) b.extend(c as [number, number]);
     if (!b.isEmpty()) m.fitBounds(b, { padding: { top: 60, bottom: 60, left: 60, right: 60 }, maxZoom: 16, duration: 600 });
   }, [p.routes]);
+
+  // in-app guidance: show the position and follow it
+  useEffect(() => {
+    const m = map.current;
+    if (!m || !ready.current) return;
+    const src = m.getSource("me") as GeoJSONSource | undefined;
+    if (!p.me) {
+      src?.setData(EMPTY);
+      return;
+    }
+    src?.setData({
+      type: "FeatureCollection",
+      features: [{ type: "Feature", properties: {}, geometry: { type: "Point", coordinates: [p.me.lon, p.me.lat] } }],
+    });
+    m.easeTo({ center: [p.me.lon, p.me.lat], zoom: Math.max(m.getZoom(), 16), duration: 500 });
+  }, [p.me]);
 
   useEffect(() => {
     if (p.focus && map.current) map.current.flyTo({ center: p.focus, zoom: 15, duration: 600 });
