@@ -1,4 +1,4 @@
-// Route export: Google Maps link, GPX download and sharing to a navigation app.
+// Route export (Google Maps link, GPX) and helpers for in-app guidance.
 import type { Mode, Route } from "./api";
 
 /** Documented Google Maps URLs (developers.google.com/maps/documentation/urls): mobile browsers
@@ -120,7 +120,11 @@ export function googleMapsUrl(route: Route, mode: Mode, fastest?: Route): string
 /** Undocumented format with up to 8 waypoints (see USE_LEGACY_GOOGLE_URL). */
 export function googleMapsLegacyUrl(route: Route, mode: Mode, fastest?: Route): string {
   const coords = routeCoords(route);
-  const points = [coords[0], ...waypointsFor(route, fastest, GOOGLE_LEGACY_MAX_WAYPOINTS), coords[coords.length - 1]];
+  const wps: LngLat[] = (route.google_waypoints ?? waypointsFor(route, fastest, GOOGLE_LEGACY_MAX_WAYPOINTS)).slice(
+    0,
+    GOOGLE_LEGACY_MAX_WAYPOINTS,
+  );
+  const points = [coords[0], ...wps, coords[coords.length - 1]];
   const path = points.map(fmt).join("/");
   return `https://www.google.com/maps/dir/${path}/data=!4m2!4m1!${LEGACY_MODE[mode]}`;
 }
@@ -193,3 +197,20 @@ export function downloadGpx(route: Route, name: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+/** Progress along the route for in-app guidance: remaining metres from the closest route vertex,
+ * and how far the user is from the route line. */
+export function progress(route: Route, me: LngLat): { remainingM: number; offRouteM: number } {
+  const coords = routeCoords(route);
+  let best = 0;
+  let bestD = Infinity;
+  coords.forEach((c, i) => {
+    const d = distM(c, me);
+    if (d < bestD) {
+      bestD = d;
+      best = i;
+    }
+  });
+  let remaining = 0;
+  for (let i = best + 1; i < coords.length; i++) remaining += distM(coords[i - 1], coords[i]);
+  return { remainingM: remaining, offRouteM: distToLine(me, coords) };
+}

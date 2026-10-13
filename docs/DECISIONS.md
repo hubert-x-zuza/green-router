@@ -190,8 +190,9 @@ be automated. What we do instead:
    the fastest. First version used equal spacing: Google snapped those points to nearby venues
    (a playground, a swimming hall) and added loops.
 3. **GPX download** of the exact track.
-An in-app "Prowadź" guidance mode (live GPS on our map) was built and removed again on the team's
-request (2026-10-13): the team wants guidance to happen in Google Maps.
+An in-app "Prowadź" guidance mode (live GPS on our map, position never leaves the browser, remaining
+distance and time, off-route warning > 40 m, wake lock) was built, removed, and restored on the
+team's request (2026-10-13); it is the only way to follow exactly our line.
 
 ## D-029 (2026-10-13) Google Maps link: undocumented path format with up to 8 waypoints (team choice)
 On the team's request the "Otwórz w Google Maps" link uses the undocumented format
@@ -237,3 +238,14 @@ Podgórski 5.5 → 5.4 km vs 5.4 km). Tried and rejected: giving long detours 2�
 (5.5 km, worse: every extra waypoint is snapped to an address and adds a spur). Remaining gaps are
 mostly Google's own network (e.g. Narciarska → Muzeum Lotnictwa: Google's fastest is already 2.4 km
 vs our 2.1 km).
+
+## D-032 (2026-10-13) The 8-waypoint link format is not worth it with the detour-based choice
+With one waypoint per detour (D-030), routes up to ~10 km have at most 2–3 detours, so the
+undocumented 10-point format gives exactly the same link as the documented one (9 routes measured).
+Long routes (12–16 km) have 4–6 detours; measured in Google (healthiest route, our length / Google
+with 3 waypoints / Google with all detours): Bronowice → Nowa Huta bike green_water 12.7 / 15.0 /
+14.7 km (6 points); Bieżanów → Bronowice bike quiet 15.6 / 16.3 / 16.4 km (4); Swoszowice → Prądnik
+Biały bike quiet 14.9 / 16.2 / 16.7 km (4). No consistent gain, and the format is undocumented, so
+the documented 3-waypoint link stays (`USE_LEGACY_GOOGLE_URL = false`). On these long bike routes the
+remaining gap is mostly Google's cycling network: even without waypoints Google's own route is
+14.5 km where ours is 12.7 km.

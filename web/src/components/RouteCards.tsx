@@ -8,6 +8,7 @@ interface Props {
   onSelect: (k: RouteKind) => void;
   mode: Mode;
   names: [string, string];
+  onNavigate: () => void;
 }
 
 const fmtPct = (v: number | null) => (v == null ? null : Math.round(v * 100));
@@ -56,16 +57,22 @@ interface ExportProps {
   fastest: Route | undefined;
   mode: Mode;
   names: [string, string];
+  onNavigate: () => void;
 }
 
-function Export({ route, fastest, mode, names }: ExportProps) {
+function Export({ route, fastest, mode, names, onNavigate }: ExportProps) {
   const { t } = useTranslation();
   const title = `${names[0]} → ${names[1]} (${t(`kinds.${route.kind}`)})`;
   return (
     <div className="export">
       <div className="row">
+        {"geolocation" in navigator && (
+          <button type="button" className="button" onClick={onNavigate}>
+            {t("export.navigate")}
+          </button>
+        )}
         <a
-          className="button"
+          className="button secondary"
           href={googleMapsUrl(route, mode, fastest)}
           target="_blank"
           rel="noopener noreferrer"
@@ -86,7 +93,7 @@ function Export({ route, fastest, mode, names }: ExportProps) {
   );
 }
 
-export default function RouteCards({ routes, selected, onSelect, mode, names }: Props) {
+export default function RouteCards({ routes, selected, onSelect, mode, names, onNavigate }: Props) {
   const { t } = useTranslation();
   const sel = routes.find((r) => r.kind === selected && !r.same_as) ?? routes[0];
   return (
@@ -179,6 +186,7 @@ export default function RouteCards({ routes, selected, onSelect, mode, names }: 
         fastest={routes.find((r) => r.kind === "fastest")}
         mode={mode}
         names={names}
+        onNavigate={onNavigate}
       />
     )}
     </>

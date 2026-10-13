@@ -152,7 +152,16 @@
   "export": {
     "google": "Otwórz w Google Maps",
     "gpx": "Pobierz GPX",
-    "hint": "Google Maps nie przyjmuje gotowej trasy, tylko punkty: przekazujemy start, cel i do 3 punktów pośrednich tam, gdzie trasa odbiega od najszybszej. Między nimi Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
-    "share": "Wyślij do aplikacji nawigacyjnej"
+    "hint": "„Prowadź” pokazuje dokładnie tę trasę z Twoją pozycją (lokalizacja zostaje w telefonie). Google Maps nie przyjmuje gotowej trasy, tylko punkty: przekazujemy start, cel i do 3 punktów pośrednich tam, gdzie trasa odbiega od najszybszej. Między nimi Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
+    "share": "Wyślij do aplikacji nawigacyjnej",
+    "navigate": "Prowadź"
+  },
+  "nav": {
+    "remaining": "Do celu: {{km}} km · ok. {{min}} min",
+    "offRoute": "Zszedłeś z trasy ({{m}} m)",
+    "stop": "Zakończ",
+    "waiting": "Ustalam pozycję…",
+    "arrived": "Jesteś na miejscu",
+    "error": "Brak dostępu do lokalizacji"
   }
 }

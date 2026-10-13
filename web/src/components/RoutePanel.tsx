@@ -30,6 +30,7 @@ interface Props {
   setSelected: (k: RouteKind) => void;
   busy: boolean;
   error: string | null;
+  onNavigate: () => void;
 }
 
 const PROFILES: Profile[] = ["balanced", "quiet", "clean_air", "green_water", "fastest"];
@@ -189,6 +190,7 @@ export default function RoutePanel(p: Props) {
             onSelect={p.setSelected}
             mode={p.result.mode}
             names={[p.origin?.label ?? "", p.destination?.label ?? ""]}
+            onNavigate={p.onNavigate}
           />
         </>
       )}

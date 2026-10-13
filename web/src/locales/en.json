@@ -152,7 +152,16 @@
   "export": {
     "google": "Open in Google Maps",
     "gpx": "Download GPX",
-    "hint": "Google Maps does not accept a ready route, only points: we pass the start, the destination and up to 3 waypoints where the route leaves the fastest one. Between them Google may still differ in places. The exact route goes through “Send to a navigation app” (e.g. Organic Maps, OsmAnd, Komoot) or the GPX file. Opening Google Maps sends the route points to Google.",
-    "share": "Send to a navigation app"
+    "hint": "“Guide me” shows exactly this route with your position (the location stays on your phone). Google Maps does not accept a ready route, only points: we pass the start, the destination and up to 3 waypoints where the route leaves the fastest one. Between them Google may still differ in places. The exact route goes through “Send to a navigation app” (e.g. Organic Maps, OsmAnd, Komoot) or the GPX file. Opening Google Maps sends the route points to Google.",
+    "share": "Send to a navigation app",
+    "navigate": "Guide me"
+  },
+  "nav": {
+    "remaining": "To go: {{km}} km · about {{min}} min",
+    "offRoute": "Off the route ({{m}} m)",
+    "stop": "Stop",
+    "waiting": "Finding your position…",
+    "arrived": "You have arrived",
+    "error": "No access to your location"
   }
 }
