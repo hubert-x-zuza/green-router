@@ -1,0 +1,66 @@
+# ETL parameters (plan sections 5.1, 5.2, 5.5). Starting values; review them with the team.
+crs: "EPSG:2178"
+
+graph:
+  boundary_buffer_m: 500          # OSM graph = city boundary + this buffer (plan 3c point 4)
+  modes: [walk, bike]
+  # extra OSM way tags kept on edges
+  useful_tags_way: [highway, oneway, junction, name, surface, lit, cycleway, "cycleway:left", "cycleway:right",
+                    "cycleway:both", "oneway:bicycle", bicycle, foot, maxspeed, access, service]
+  # bike: a one-way street with one of these tag values is cyclable both ways
+  bike_contraflow: {"oneway:bicycle": ["no"], cycleway: ["opposite", "opposite_lane", "opposite_track"]}
+
+grid:
+  res_m: 10
+  sample_spacing_m: 15            # points along each edge (min 2 per edge)
+
+noise:
+  indicators: [LDWN, LN]
+  # penalty: linear between these dB values, clamped to [0, 1]
+  LDWN: {zero_db: 45, one_db: 75}
+  LN: {zero_db: 40, one_db: 65}
+
+green:
+  buffer_m: 30                    # share of each class within this distance of the edge
+  # class_name prefix -> weight in green_score (plan 3c point 2)
+  class_weights: {"200": 1.0, "300": 0.4, "400": 0.2}
+
+fountains:
+  near_m: 100                     # penalty 0 within this distance
+  far_m: 500                      # penalty 1 beyond this distance
+
+traffic:
+  reach_m: 50                     # influence of a road decays linearly to 0 at this distance
+  # OSM highway class -> weight in [0, 1] (the busiest road nearby wins)
+  class_weights:
+    motorway: 1.0
+    motorway_link: 0.9
+    trunk: 1.0
+    trunk_link: 0.9
+    primary: 0.9
+    primary_link: 0.8
+    secondary: 0.7
+    secondary_link: 0.6
+    tertiary: 0.5
+    tertiary_link: 0.4
+    unclassified: 0.25
+    residential: 0.15
+    living_street: 0.05
+    service: 0.05
+
+coverage:
+  neutral_penalty: 0.5            # penalty used where a layer has no data (outside the city)
+
+planner:
+  cell_m: 150                     # planner unit: square cell of this size
+  # sensitive presence: each site contributes weight * people / people_ref within radius_m
+  sites:
+    school:        {radius_m: 200, weight: 1.0}
+    kindergarten:  {radius_m: 200, weight: 1.0}
+    nursery:       {radius_m: 200, weight: 1.0}
+  people_ref: 300                 # people at a site that count as 1.0 (saturates at 3.0 per site)
+  site_cap: 3.0
+  resident_weight: 0.5            # weight of residential address density (addresses per cell / 95th pct)
+  top_n: 20
+  # exposure_severity uses these penalty weights (same idea as the Balanced profile)
+  exposure_weights: {noise: 1.0, traffic: 1.0, green: 0.5}

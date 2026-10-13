@@ -20,3 +20,21 @@ stations:
   10447: {name: "Kraków, Os. Wadów",           sensors: {PM10: [17309, 17310]}}
   11303: {name: "Kraków, Os. Swoszowice",      sensors: {PM10: [20320, 20321]}}
   16896: {name: "Kraków, ul. Kamieńskiego",    sensors: {PM10: [27841], NO2: [27843]}}
+
+# City-level index level(t) (plan 3c point 1): per pollutant, value / normalise_at clamped to [0, 1],
+# mean over the stations that reported within `window_h` of the newest hour, then max across
+# pollutants. Bands are the GIOŚ air-quality index bands for 1 h values as we know them
+# (µg/m3, upper bounds of: very good, good, moderate, sufficient, bad; above = very bad).
+# TODO verify against the GIOŚ index documentation (docs/OPEN_QUESTIONS.md A5).
+index:
+  window_h: 3                 # stations whose newest value is older than this are left out
+  stale_after_h: 3            # the UI says "data from HH:MM" and stops calling it live after this
+  bands:
+    PM10: [20, 50, 80, 110, 150]
+    PM25: [13, 35, 55, 75, 110]
+    NO2:  [40, 100, 150, 230, 400]
+  band_names_pl: ["bardzo dobry", "dobry", "umiarkowany", "dostateczny", "zły", "bardzo zły"]
+  band_names_en: ["very good", "good", "moderate", "sufficient", "poor", "very poor"]
+  # normalised value 1.0 is reached at the lower bound of "very bad"
+  normalise_at: {PM10: 150, PM25: 110, NO2: 400}
+  air_a: 0.3                  # air_penalty = clamp(level * (a + (1 - a) * traffic_prox), 0, 1)

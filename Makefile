@@ -1,23 +1,48 @@
 PY ?= .venv/bin/python
-NOISE_IN ?= data/raw/noise
+UV ?= uv
+NOISE_IN ?= data/raw/noise_2022/Mapa_imisyjna_2022_JSON
 
-.PHONY: setup data noise air-once api web test lint up
-setup:
-	uv venv --python 3.12 .venv
-	uv pip install --python $(PY) -e . pytest ruff black pre-commit
+.PHONY: setup fetch data noise graph layers enrich geocoder planner air-once api web test lint up
 
-noise:  ## Phase 0: build the two 10 m noise grids
+setup:  ## Python 3.12 venv with all dependencies (D-001)
+	$(UV) venv --python 3.12 .venv
+	$(UV) pip install --python $(PY) -e ".[dev]"
+
+fetch:  ## download every external dataset into data/raw/ (MSIP incl. the 614 MB noise map, ArcGIS, otwartedane)
+	$(PY) -m etl.fetch.msip --large
+	$(PY) -m etl.fetch.otwartedane
+
+noise:  ## 10 m noise grids (LDWN, LN)
 	$(PY) etl/noise_to_grid.py --in $(NOISE_IN) --out data/processed
+
+graph:  ## OSM walk/bike graphs + roads (Overpass, cached in data/raw/osm)
+	$(PY) -m etl.graph
+
+layers:  ## exposure grids and map overlays
+	$(PY) -m etl.layers
+
+enrich:  ## per-edge exposure + penalties -> network_<mode>.parquet
+	$(PY) -m etl.enrich
+	$(PY) -m etl.normalise
+
+geocoder:
+	$(PY) -m etl.geocoder
+
+planner:
+	$(PY) -m etl.planner
+
+data:  ## rebuild everything from data/raw (run `make fetch` first on a fresh clone)
+	$(MAKE) noise graph layers enrich geocoder planner
+	$(PY) -m etl.air
 
 air-once:  ## one archiver run (the hourly job calls the same thing)
 	$(PY) -m etl.air
 
-data:  ## Phase 1 will rebuild everything; for now only the noise grids
-	$(MAKE) noise
-	@echo "NOTE: graph/enrich/geocoder steps arrive in Phase 1."
+api:
+	$(PY) -m uvicorn api.main:app --reload --port 8000
 
-api web up:
-	@echo "'$@' is not implemented yet (Phase 2/3/4)."; exit 1
+web:
+	cd web && npm install && npm run dev
 
 test:
 	$(PY) -m pytest
@@ -25,3 +50,7 @@ test:
 lint:
 	$(PY) -m ruff check .
 	$(PY) -m black --check .
+	cd web && npm run lint --if-present
+
+up:
+	docker compose up --build

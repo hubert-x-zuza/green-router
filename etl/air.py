@@ -169,3 +169,66 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ---- city-level index (plan 3c point 1) ---------------------------------------------------
+
+
+def band(value: float, bounds: list[float]) -> int:
+    """Index band 0..len(bounds): the first band whose upper bound is >= value."""
+    for i, ub in enumerate(bounds):
+        if value <= ub:
+            return i
+    return len(bounds)
+
+
+def city_level(con: sqlite3.Connection, cfg: dict[str, Any], now: datetime) -> dict[str, Any]:
+    """level(t) from the newest readings. Never fills gaps: a pollutant with no fresh station is
+    reported as missing and left out of the max."""
+    ic = cfg["index"]
+    rows = con.execute(
+        "SELECT r.station_id, r.pollutant, r.ts_utc, r.value, s.name, s.lat, s.lon "
+        "FROM readings r JOIN (SELECT station_id, pollutant, MAX(ts_utc) AS ts FROM readings "
+        "GROUP BY station_id, pollutant) m ON r.station_id = m.station_id "
+        "AND r.pollutant = m.pollutant AND r.ts_utc = m.ts LEFT JOIN stations s "
+        "ON s.station_id = r.station_id"
+    ).fetchall()
+    if not rows:
+        return {"available": False}
+    newest = max(datetime.strptime(r[2], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC) for r in rows)
+    window = ic["window_h"] * 3600
+    stations: dict[int, dict[str, Any]] = {}
+    per_pol: dict[str, list[float]] = {}
+    for sid, pol, ts, value, name, lat, lon in rows:
+        t = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=UTC)
+        st = stations.setdefault(sid, {"station_id": sid, "name": name, "lat": lat, "lon": lon,
+                                       "values": {}})  # fmt: skip
+        fresh = (newest - t).total_seconds() <= window
+        st["values"][pol] = {"value": value, "ts_utc": ts, "fresh": fresh,
+                             "band": band(value, ic["bands"][pol])}  # fmt: skip
+        if fresh:
+            per_pol.setdefault(pol, []).append(value)
+    pollutants = {}
+    for pol, vals in per_pol.items():
+        mean = sum(vals) / len(vals)
+        pollutants[pol] = {
+            "mean": round(mean, 1),
+            "n_stations": len(vals),
+            "normalised": min(1.0, max(0.0, mean / ic["normalise_at"][pol])),
+            "band": band(mean, ic["bands"][pol]),
+        }
+    level = max(p["normalised"] for p in pollutants.values())
+    worst = max(p["band"] for p in pollutants.values())
+    age_h = (now - newest).total_seconds() / 3600
+    return {
+        "available": True,
+        "level": round(level, 3),
+        "band": worst,
+        "band_pl": ic["band_names_pl"][worst],
+        "band_en": ic["band_names_en"][worst],
+        "data_ts_utc": iso(newest),
+        "stale": age_h > ic["stale_after_h"],
+        "pollutants": pollutants,
+        "missing": sorted(set(ic["bands"]) - set(pollutants)),
+        "stations": sorted(stations.values(), key=lambda s: s["station_id"]),
+    }

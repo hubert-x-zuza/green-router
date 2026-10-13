@@ -1,0 +1,19 @@
+# Routing profiles (plan 5.4). cost(e) = length_m / speed_mps(mode) * (1 + sum_k w_k * p_k(e, t))
+# Penalty keys: noise (LDWN, or LN when `night` is requested), air (live, see config/air_stations.yml
+# index.air_a), traffic (static near-road proxy), green (1 - green_score), fountain (distance).
+# Starting values; tune with the golden routes in api/tests.
+speeds_mps: {walk: 1.33, bike: 4.2}     # 4.8 km/h walking, 15 km/h cycling
+max_detour_pct: 30                       # guard rail: healthier routes may take at most this much longer
+default_profile: balanced
+
+profiles:
+  fastest:     {noise: 0.0, air: 0.0, traffic: 0.0, green: 0.0, fountain: 0.0}
+  balanced:    {noise: 1.0, air: 1.0, traffic: 0.5, green: 0.7, fountain: 0.0}
+  quiet:       {noise: 3.0, air: 0.5, traffic: 0.5, green: 0.5, fountain: 0.0}
+  clean_air:   {noise: 0.5, air: 3.0, traffic: 1.5, green: 0.5, fountain: 0.0}
+  green_water: {noise: 0.7, air: 0.7, traffic: 0.3, green: 2.5, fountain: 1.0}
+  # used as the "healthiest" alternative when the chosen profile is fastest or balanced
+  healthiest:  {noise: 2.5, air: 2.0, traffic: 1.0, green: 2.0, fountain: 0.0}
+
+# The UI suggests the clean_air profile when the city-level PM10 mean exceeds this (µg/m3).
+smog_hint_pm10: 50

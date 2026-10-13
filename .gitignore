@@ -23,4 +23,3 @@ logs/
 # web
 web/node_modules/
 web/dist/
-data/processed/

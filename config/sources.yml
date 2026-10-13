@@ -1,0 +1,25 @@
+# Download sources for `make fetch`. Every URL here was read from the provider's catalogue page
+# on 2026-10-13 (see data/manifest.yml for catalogue pages, terms and citations).
+
+# MSIP direct downloads (msip.krakow.pl/dataset/<id> -> "Do pobrania"). Unzipped to data/raw/<key>/.
+msip_zip:
+  districts: {url: "https://msip.um.krakow.pl/Dane/Dzielnice_JSON.zip", catalogue: 1483}
+  address_points: {url: "https://msip.um.krakow.pl/Dane/Adresy_JSON.zip", catalogue: 1492}
+  streets: {url: "https://msip.um.krakow.pl/Dane/Ulice_JSON.zip", catalogue: 1379}
+  fountains_outdoor: {url: "https://msip.um.krakow.pl/Dane/Pitniki_zewnetrzne_JSON.zip", catalogue: 1359}
+  noise_2022: {url: "https://msip.um.krakow.pl/Dane/Mapa_Halasu_2022_JSON.zip", catalogue: 1361, large: true}
+
+# ArcGIS REST feature layers. The layer id is resolved from the service JSON by `layer_name`
+# (CLAUDE.md data rule 7: never hard-code the id). Saved as GeoJSON in EPSG:2178.
+arcgis:
+  green_map:
+    service: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer"
+    layer_name: "Mapa zieleni"
+    out_fields: "objectid,class_name,area_ha"
+  city_boundary:
+    service: "https://msip.um.krakow.pl/arcgis/rest/services/MONIT-AIR/WS_MA_Atlas_02_mapa_zieleni_przewietrzania_Krakowa/MapServer"
+    layer_name: "Granica Krakowa"
+    out_fields: "*"
+    order_by: "objectid_1"
+
+page_size: 1000
