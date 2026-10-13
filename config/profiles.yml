@@ -12,8 +12,10 @@ profiles:
   fastest:     {noise: 0.0, air: 0.0, traffic: 0.0, green: 0.0, fountain: 0.0, cycleway: 0.0}
   balanced:    {noise: 1.0, air: 1.0, traffic: 0.5, green: 0.7, fountain: 0.0, cycleway: 0.7}
   quiet:       {noise: 3.0, air: 0.5, traffic: 0.5, green: 0.5, fountain: 0.0, cycleway: 0.5}
-  clean_air:   {noise: 0.5, air: 3.0, traffic: 1.5, green: 0.5, fountain: 0.0, cycleway: 1.0}
-  green_water: {noise: 0.7, air: 0.7, traffic: 0.3, green: 2.5, fountain: 1.0, cycleway: 0.5}
+  # Avoid motor traffic even on clean days or when live air readings are unavailable (D-031).
+  clean_air:   {noise: 0.5, air: 3.0, traffic: 4.0, green: 0.5, fountain: 0.0, cycleway: 1.0}
+  # Roadside greenery/fountains must not outweigh a substantially less traffic-exposed path.
+  green_water: {noise: 0.7, air: 0.7, traffic: 3.0, green: 2.5, fountain: 1.0, cycleway: 0.5}
   # used as the "healthiest" alternative when the chosen profile is fastest or balanced
   healthiest:  {noise: 2.5, air: 2.0, traffic: 1.0, green: 2.0, fountain: 0.0, cycleway: 1.0}
 

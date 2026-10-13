@@ -239,6 +239,19 @@ Podgórski 5.5 → 5.4 km vs 5.4 km). Tried and rejected: giving long detours 2�
 mostly Google's own network (e.g. Narciarska → Muzeum Lotnictwa: Google's fastest is already 2.4 km
 vs our 2.1 km).
 
+## D-031 (2026-10-13) Green and clean-air profiles avoid motor traffic more strongly
+Raise the independent traffic weight from 0.3 to 3.0 in `green_water` and from 1.5 to 4.0 in
+`clean_air`. Roadside greenery and fountains previously outweighed traffic avoidance, while
+the air penalty has little spatial contrast on clean days and is disabled for missing/stale
+readings. Keep the air formula and measured city-level index unchanged: increasing the air
+weight alone would not address missing readings, and inventing a pollution floor would misstate
+air conditions. Keep the existing 30% detour guard. On the ten golden routes, at air level 0.119,
+mean route traffic proximity fell from 0.2398 to 0.1792 for green_water (25%) and from 0.2084 to
+0.1671 for clean_air (20%); no case increased traffic proximity. Green routes improved in six
+cases, clean-air routes in nine; all stayed within the detour limit. These are equally weighted
+means across the ten routes, whose individual metrics are length-weighted. This is stronger
+avoidance, not a guarantee of traffic-free routing; OSM road classes remain a static proxy.
+
 ## D-032 (2026-10-13) The 8-waypoint link format is not worth it with the detour-based choice
 With one waypoint per detour (D-030), routes up to ~10 km have at most 2–3 detours, so the
 undocumented 10-point format gives exactly the same link as the documented one (9 routes measured).

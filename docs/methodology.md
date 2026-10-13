@@ -96,8 +96,12 @@ Prędkości: pieszo 1,33 m/s (4,8 km/h), rowerem 4,2 m/s (15 km/h).
 | Najszybsza | 0 | 0 | 0 | 0 | 0 | 0 |
 | Zrównoważona | 1,0 | 1,0 | 0,5 | 0,7 | 0 | 0,7 |
 | Cicha | 3,0 | 0,5 | 0,5 | 0,5 | 0 | 0,5 |
-| Czyste powietrze | 0,5 | 3,0 | 1,5 | 0,5 | 0 | 1,0 |
-| Zieleń i woda | 0,7 | 0,7 | 0,3 | 2,5 | 1,0 | 0,5 |
+| Czyste powietrze | 0,5 | 3,0 | 4,0 | 0,5 | 0 | 1,0 |
+| Zieleń i woda | 0,7 | 0,7 | 3,0 | 2,5 | 1,0 | 0,5 |
+
+Profile „Czyste powietrze” i „Zieleń i woda” mają silną, niezależną od bieżących pomiarów karę
+za bliskość ruchu. Zieleń przy arterii nie wystarcza, aby zniwelować dużą różnicę w ekspozycji
+na samochody. Nadal jest to kompromis z długością trasy, a nie zakaz korzystania z ruchliwych ulic.
 
 Każde zapytanie zwraca trzy trasy: **najszybszą**, **najzdrowszą w limicie** (wybrany profil) i
 **zrównoważoną**. Limit wydłużenia (domyślnie 30 % czasu) pilnuje, żeby zdrowsza trasa nie była

@@ -4,6 +4,7 @@ import pytest
 from api import routing
 from api.costs import edge_cost
 from api.models import RouteRequest
+from api.store import load_cfg
 from api.tests.conftest import grid_network
 
 ZERO = {"noise": 0.0, "air": 0.0, "traffic": 0.0, "green": 0.0, "fountain": 0.0, "cycleway": 0.0}
@@ -89,3 +90,32 @@ def test_cycleway_weight_increases_share_on_cycle_paths():
         on_path = ((1 - pen["cycleway"][e]) * net.length[e]).sum() / net.length[e].sum()
         shares.append(on_path)
     assert shares[0] <= shares[1] + 1e-9 <= shares[2] + 2e-9
+
+
+@pytest.mark.parametrize("profile", ["green_water", "clean_air"])
+@pytest.mark.parametrize("level", [0.0, 0.119, 1.0])
+def test_profiles_avoid_traffic_despite_roadside_amenities(profile, level):
+    """A 25% detour away from cars wins, including without live air readings.
+
+    For green_water the busy route also has more greenery and a nearby fountain.
+    """
+    net = grid_network(n=2)
+    # Paths 0->1->3 (busy) and 0->2->3 (less traffic), in both directions.
+    busy = np.array([0, 2, 4, 6])
+    calm = np.array([1, 3, 5, 7])
+    net.length[busy] = 100.0
+    net.length[calm] = 125.0
+    for values in net.penalties.values():
+        values[:] = 0.0
+    net.penalties["traffic"][busy] = 0.9 if profile == "green_water" else 0.25
+    net.penalties["traffic"][calm] = 0.1
+    if profile == "green_water":
+        net.penalties["green"][busy] = 0.2
+        net.penalties["green"][calm] = 0.3
+        net.penalties["fountain"][calm] = 1.0
+    cfg = load_cfg("profiles.yml")
+    pen = routing.penalties_for(net, level, load_cfg("air_stations.yml")["index"]["air_a"], False)
+    speed = cfg["speeds_mps"]["walk"]
+    path = routing.guarded(net, 0, 3, pen, cfg["profiles"][profile], speed, 200 / speed * 1.3)
+    assert path.edges == [1, 3]
+    assert routing.travel_s(net, path.edges, speed) <= 200 / speed * 1.3
