@@ -60,6 +60,8 @@ planner:
     nursery:       {radius_m: 200, weight: 1.0}
   people_ref: 300                 # people at a site that count as 1.0 (saturates at 3.0 per site)
   site_cap: 3.0
+  presence_scale: 2.0             # presence = 1 - exp(-raw / scale): saturates at a few sites
+  approx_max_spread_m: 300        # site without house number: street+postcode centre if compact
   resident_weight: 0.5            # weight of residential address density (addresses per cell / 95th pct)
   top_n: 20
   # exposure_severity uses these penalty weights (same idea as the Balanced profile)

@@ -151,3 +151,120 @@ def tradeoff_text(t: dict, lang: str) -> str:
         if t.get(k) is not None and abs(t[k]) >= 1:
             parts.append(f"{t[k]:+.0f} % {labels[lang][k]}")
     return ", ".join(parts)
+
+
+# ---- request -> three routes ---------------------------------------------------------------
+
+SNAP_MAX_M = 300
+
+
+def snap(store, net: Network, lon: float, lat: float, which: str) -> int:
+    from shapely import Point
+
+    from api.store import TO_2178
+
+    x, y = TO_2178.transform(lon, lat)
+    if not store.coverage_area.contains(Point(x, y)):
+        raise RouteError("outside_city", f"{which} is outside Kraków")
+    d, i = net.node_tree.query([x, y])
+    if d > SNAP_MAX_M:
+        raise RouteError("far_from_network", f"{which} is {d:.0f} m from the nearest path")
+    return int(i)
+
+
+def features(net: Network, edges: list[int], pen: dict) -> dict[str, Any]:
+    feats = []
+    raw = net.raw
+    for e in edges:
+        noise = raw.noise_ldwn_mean.iat[e]
+        green = raw.green_score.iat[e]
+        feats.append(
+            {
+                "type": "Feature",
+                "geometry": {"type": "LineString", "coordinates": net.coords[e].tolist()},
+                "properties": {
+                    "noise_db": None if np.isnan(noise) else round(float(noise), 1),
+                    "green": None if np.isnan(green) else round(float(green), 2),
+                    "air": round(float(pen["air"][e]), 3),
+                    "covered": bool(raw.data_coverage.iat[e]),
+                    "name": net.names[e] if isinstance(net.names[e], str) else None,
+                },
+            }
+        )
+    return {"type": "FeatureCollection", "features": feats}
+
+
+def plan(store, req) -> dict[str, Any]:
+    net = store.networks.get(req.mode)
+    if net is None:
+        raise RouteError("mode_unavailable", f"{req.mode} network is not built")
+    src = snap(store, net, req.origin.lon, req.origin.lat, "origin")
+    dst = snap(store, net, req.destination.lon, req.destination.lat, "destination")
+    if src == dst:
+        raise RouteError("same_point", "origin and destination are the same place")
+    profiles = store.profiles["profiles"]
+    speed = store.profiles["speeds_mps"][req.mode]
+    air = store.air.get()
+    level = air["level"] if air.get("available") and not air.get("stale") else 0.0
+    warnings = []
+    if not air.get("available") or air.get("stale"):
+        warnings.append("air_unavailable")
+    pen = penalties_for(net, level, store.air_cfg["index"]["air_a"], req.night)
+    zero = {k: 0.0 for k in profiles["fastest"]}
+    fastest = shortest(net, src, dst, edge_cost(net.length, speed, pen, zero))
+    limit = travel_s(net, fastest, speed) * (1 + req.max_detour_pct / 100)
+    chosen = req.weights.model_dump() if req.weights else profiles[req.profile]
+    healthy_name = req.profile
+    if not req.weights and req.profile in ("fastest", "balanced"):
+        chosen, healthy_name = profiles["healthiest"], "healthiest"
+    paths = {
+        "fastest": ("fastest", Path(fastest, zero, 1.0)),
+        "healthiest": (healthy_name, guarded(net, src, dst, pen, chosen, speed, limit)),
+        "balanced": (
+            "balanced",
+            guarded(net, src, dst, pen, profiles["balanced"], speed, limit),
+        ),
+    }
+    exp_w = profiles["balanced"]
+    near = store.profiles.get("fountain_near_m", 100)
+    out, seen = [], {}
+    base = None
+    for kind, (pname, p) in paths.items():
+        m = metrics(net, p.edges, speed, pen, store.fountains_xy, store.fountain_tree, near)
+        m["exposure_index"] = exposure_index(net, p.edges, pen, exp_w)
+        if kind == "fastest":
+            base = m
+        key = tuple(p.edges)
+        t = None
+        if kind != "fastest":
+            t = tradeoff(base, m)
+            t["text"] = tradeoff_text(t, req.lang)
+        out.append(
+            {
+                "kind": kind,
+                "profile": pname,
+                "weights_scale": round(p.scale, 3),
+                "limited_by_detour": p.scale < 1.0,
+                "metrics": m,
+                "tradeoff": t,
+                "same_as": seen.get(key),
+                "geometry": features(net, p.edges, pen),
+            }
+        )
+        seen.setdefault(key, kind)
+    if any(r["metrics"]["coverage"] < 0.9 for r in out):
+        warnings.append("partial_coverage")
+    if (
+        air.get("available")
+        and air["pollutants"].get("PM10", {}).get("mean", 0) > store.profiles["smog_hint_pm10"]
+    ):
+        warnings.append("smog_hint")
+    return {"mode": req.mode, "profile": req.profile, "air": _air_brief(air), "routes": out,
+            "warnings": warnings}  # fmt: skip
+
+
+def _air_brief(air: dict) -> dict:
+    if not air.get("available"):
+        return {"available": False}
+    keys = ("available", "level", "band", "band_pl", "band_en", "data_ts_utc", "stale")
+    return {k: air[k] for k in keys}
