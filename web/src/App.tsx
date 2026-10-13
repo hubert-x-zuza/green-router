@@ -12,8 +12,9 @@ import {
 } from "./api";
 import { AboutData, AirBadge, LayerToggles } from "./components/Extras";
 import MapView, { type LayerState } from "./components/MapView";
-import PlannerPanel, { HotspotText } from "./components/PlannerPanel";
+import PlannerPanel, { HotspotFacts, HotspotWho } from "./components/PlannerPanel";
 import RoutePanel, { type Endpoint, type RouteSettings } from "./components/RoutePanel";
+import { Button, Icon, IconButton, Segmented } from "./components/ui";
 import { progress } from "./export";
 import { setLang } from "./i18n";
 
@@ -52,6 +53,7 @@ export default function App() {
     hotspots: false,
   });
   const [hotspots, setHotspots] = useState<GeoJSON.FeatureCollection<GeoJSON.Polygon, HotspotProps> | null>(null);
+  const [hotspotsLoading, setHotspotsLoading] = useState(false);
   const [districts, setDistricts] = useState<District[]>([]);
   const [district, setDistrict] = useState<number | undefined>();
   const [focusHotspot, setFocusHotspot] = useState<HotspotProps | null>(null);
@@ -97,7 +99,12 @@ export default function App() {
   useEffect(() => {
     if (tab !== "planner") return;
     setLayers((l) => ({ ...l, hotspots: true }));
-    api.hotspots(district).then(setHotspots).catch(() => setHotspots(null));
+    setHotspotsLoading(true);
+    api
+      .hotspots(district)
+      .then(setHotspots)
+      .catch(() => setHotspots(null))
+      .finally(() => setHotspotsLoading(false));
     if (!districts.length) api.districts().then(setDistricts).catch(() => undefined);
   }, [tab, district, districts.length]);
 
@@ -154,43 +161,57 @@ export default function App() {
   };
 
   const lang = i18n.language === "en" ? "en" : "pl";
+  const switchTab = (k: Tab) => {
+    setTab(k);
+    if (k === "route") setLayers((l) => ({ ...l, hotspots: false }));
+  };
+  const mapHint =
+    tab === "route" && !nav && !busy && !(origin && destination)
+      ? origin
+        ? t("route.mapHintTo")
+        : t("route.mapHintFrom")
+      : null;
+  const showRouteLegend = tab === "route" && !!result?.routes.some((r) => !r.same_as) && !nav;
   return (
     <div className={nav ? "app navigating" : "app"}>
       <header className="top">
-        <img className="logo" src="/logo.svg" alt="" width="36" height="36" />
+        <img className="logo" src="/logo.svg" alt="" width="32" height="32" />
         <div className="brand">
           <h1>{t("app.title")}</h1>
           <span className="tagline">{t("app.tagline")}</span>
         </div>
         <AirBadge air={air} />
         <div className="top-actions">
-          <button type="button" className="link" onClick={() => setAbout(true)}>
-            {t("about.button")}
-          </button>
-          <button type="button" className="link" aria-label={t("lang.label")} onClick={() => setLang(lang === "pl" ? "en" : "pl")}>
-            {t("lang.switch")}
-          </button>
+          <Button variant="ghost" size="sm" icon="info" onClick={() => setAbout(true)} aria-label={t("about.button")}>
+            <span className="label-wide">{t("about.button")}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            icon="globe"
+            className="lang-btn"
+            lang={lang === "pl" ? "en" : "pl"}
+            aria-label={t("lang.label")}
+            onClick={() => setLang(lang === "pl" ? "en" : "pl")}
+          >
+            {lang === "pl" ? "EN" : "PL"}
+          </Button>
         </div>
       </header>
       <main className="main">
-        <section className="panel" aria-label={t(`tabs.${tab}`)}>
-          <nav className="tabs" role="tablist">
-            {(["route", "planner"] as Tab[]).map((k) => (
-              <button
-                key={k}
-                type="button"
-                role="tab"
-                aria-selected={tab === k}
-                className={tab === k ? "on" : undefined}
-                onClick={() => {
-                  setTab(k);
-                  if (k === "route") setLayers((l) => ({ ...l, hotspots: false }));
-                }}
-              >
-                {t(`tabs.${k}`)}
-              </button>
-            ))}
-          </nav>
+        <section className={tab === "planner" ? "panel wide" : "panel"} aria-label={t(`tabs.${tab}`)}>
+          <div className="panel-head">
+            <Segmented<Tab>
+              name="tab"
+              legend={t("tabs.label")}
+              value={tab}
+              onChange={switchTab}
+              options={[
+                { value: "route", label: t("tabs.route"), icon: "route" },
+                { value: "planner", label: t("tabs.planner"), icon: "chart" },
+              ]}
+            />
+          </div>
           {tab === "route" ? (
             <RoutePanel
               origin={origin}
@@ -209,6 +230,7 @@ export default function App() {
           ) : (
             <PlannerPanel
               hotspots={hotspots?.features.map((f) => f.properties) ?? []}
+              loading={hotspotsLoading}
               districts={districts}
               district={district}
               setDistrict={setDistrict}
@@ -234,6 +256,35 @@ export default function App() {
             onHotspotClick={showHotspot}
             me={nav ? me : null}
           />
+          <div className="map-ctrl">
+            <LayerToggles
+              layers={layers}
+              setLayers={setLayers}
+              keys={tab === "route" ? ["noise", "green", "traffic", "cycleways", "fountains", "stations"] : ["hotspots", "noise", "green", "traffic"]}
+            />
+          </div>
+          {mapHint && (
+            <div className="map-hint" aria-hidden="true">
+              <Icon name="pin" size={16} />
+              {mapHint}
+            </div>
+          )}
+          {showRouteLegend && (
+            <div className="map-legend">
+              <b>{t("legend.routeTitle")}</b>
+              <span className="ramp ramp-noise" />
+              <span className="ramp-labels">
+                <span>50 dB</span>
+                <span>75+ dB</span>
+              </span>
+              <span className="keys">
+                <span>
+                  <i style={{ background: "repeating-linear-gradient(90deg,#64748b 0 5px,transparent 5px 8px)" }} />
+                  {t("legend.otherRoutes")}
+                </span>
+              </span>
+            </div>
+          )}
           {nav && tab === "route" && (
             <NavBanner
               route={result?.routes.find((r) => r.kind === selected && !r.same_as) ?? null}
@@ -243,18 +294,18 @@ export default function App() {
               onStop={() => setNav(false)}
             />
           )}
-          <LayerToggles
-            layers={layers}
-            setLayers={setLayers}
-            keys={tab === "route" ? ["noise", "green", "traffic", "cycleways", "fountains", "stations"] : ["hotspots", "noise", "green", "traffic"]}
-          />
           {tab === "planner" && focusHotspot && (
-            <div className="hotspot-card" role="status">
-              <strong>
-                {t("planner.rank", { rank: focusHotspot.rank })} {focusHotspot.street ?? "–"} · {focusHotspot.district}
-              </strong>
-              <br />
-              <HotspotText h={focusHotspot} />
+            <div className="map-card" role="status">
+              <div className="map-card-head">
+                <span className="rank">{focusHotspot.rank}</span>
+                <h3>
+                  {focusHotspot.street ?? "–"}
+                  <span className="muted small"> · {focusHotspot.district}</span>
+                </h3>
+                <IconButton icon="x" label={t("about.close")} onClick={() => setFocusHotspot(null)} />
+              </div>
+              <HotspotFacts h={focusHotspot} />
+              <HotspotWho h={focusHotspot} />
             </div>
           )}
         </section>
@@ -292,11 +343,13 @@ function NavBanner({
   }
   return (
     <div className="nav-banner" role="status" aria-live="polite">
-      <span>{text}</span>
-      {off != null && <span className="nav-off">{t("nav.offRoute", { m: off })}</span>}
-      <button type="button" className="button secondary" onClick={onStop}>
+      <span className="nav-text">
+        <span>{text}</span>
+        {off != null && <span className="nav-off">{t("nav.offRoute", { m: off })}</span>}
+      </span>
+      <Button size="sm" icon="x" onClick={onStop}>
         {t("nav.stop")}
-      </button>
+      </Button>
     </div>
   );
 }

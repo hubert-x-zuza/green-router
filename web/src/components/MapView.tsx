@@ -284,7 +284,10 @@ export default function MapView(p: Props) {
     if (!m || !p.routes.length) return;
     const b = new maplibregl.LngLatBounds();
     for (const r of p.routes) for (const f of r.geometry.features) for (const c of f.geometry.coordinates) b.extend(c as [number, number]);
-    if (!b.isEmpty()) m.fitBounds(b, { padding: { top: 60, bottom: 60, left: 60, right: 60 }, maxZoom: 16, duration: 600 });
+    // small maps keep the top clear for the legend and the layer button
+    const narrow = m.getContainer().clientWidth < 600;
+    const padding = narrow ? { top: 120, bottom: 40, left: 30, right: 30 } : { top: 70, bottom: 120, left: 70, right: 70 };
+    if (!b.isEmpty()) m.fitBounds(b, { padding, maxZoom: 16, duration: 600 });
   }, [p.routes]);
 
   // in-app guidance: show the position and follow it

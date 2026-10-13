@@ -262,3 +262,18 @@ Biały bike quiet 14.9 / 16.2 / 16.7 km (4). No consistent gain, and the format 
 the documented 3-waypoint link stays (`USE_LEGACY_GOOGLE_URL = false`). On these long bike routes the
 remaining gap is mostly Google's cycling network: even without waypoints Google's own route is
 14.5 km where ours is 12.7 km.
+
+## D-033 (2026-10-13) UI redesign: results first, one token system, no new dependencies
+A Playwright audit of the web app showed the route answer landing below the fold (settings filled
+the panel), three tall route cards repeating seven metrics each, no legend for the route colour
+scale or the planner hotspots, and ad-hoc colours, radii and shadows. The redesign keeps every
+feature and the API untouched and changes only `web/`: CSS custom properties for colour roles,
+spacing (4 pt), radius, elevation and type (`styles.css`); a few shared primitives (`ui.tsx`:
+Button, IconButton, Segmented, Callout, Spinner, Meter and hand-drawn stroke icons); route results
+as compact selectable options with the trade-off line, plus one metric list for the selected route
+with differences to the fastest route; collapsed "More options"; map legends whose ramps mirror
+`etl/layers.py`; an empty state, skeleton loading and inline errors (the geolocation `alert()` is
+gone); a ranked hotspot list with a priority meter and a sortable district table. Alternatives were
+a component library (Radix, MUI) or a web font; both add weight or third-party requests for little
+gain in a four-week prototype, and a hosted font would leak visitor IPs. The design direction
+(tokens, components, target panel) is in the Figma file "Zdrowa Trasa – UI redesign".

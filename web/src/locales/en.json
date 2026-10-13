@@ -5,7 +5,8 @@
   },
   "tabs": {
     "route": "Route",
-    "planner": "For the city"
+    "planner": "For the city",
+    "label": "View"
   },
   "lang": {
     "switch": "Polski",
@@ -23,14 +24,23 @@
     "walk": "Walk",
     "bike": "Bike",
     "profile": "Priority",
-    "advanced": "Advanced settings",
+    "advanced": "More options",
     "maxDetour": "Max. extra time: {{pct}} %",
     "night": "Night time (LN noise)",
     "custom": "Custom weights",
     "plan": "Find routes",
     "planning": "Calculating…",
     "noResults": "No results",
-    "pickedOnMap": "Point on map"
+    "pickedOnMap": "Point on map",
+    "fromPlaceholder": "From: address, street or place",
+    "toPlaceholder": "To: address, street or place",
+    "detourShort": "up to +{{pct}} %",
+    "nightShort": "night",
+    "customShort": "custom weights",
+    "maxDetourLabel": "Max. detour",
+    "results": "Route comparison",
+    "mapHintFrom": "Click the map to set the start",
+    "mapHintTo": "Click the map to set the destination"
   },
   "profiles": {
     "fastest": "Fastest",
@@ -71,7 +81,12 @@
     "sameAsFastest": "The fastest route is also the healthiest here: no detour needed.",
     "separated_bike": "Separated cycle paths",
     "separated_walk": "Shared foot & cycle paths",
-    "on_street": "Cycle lanes & contraflow"
+    "on_street": "Cycle lanes & contraflow",
+    "reference": "Reference",
+    "limitedShort": "detour limit",
+    "sameAsNamed": "“{{kind}}” is the same route as “{{other}}”.",
+    "detailsOf": "Route details",
+    "vsFastest": "vs fastest"
   },
   "tradeoff": {
     "minutes": "{{sign}}{{min}} min",
@@ -101,7 +116,10 @@
     "unavailable": "No air data",
     "indicative": "Indicative: the mean of GIOŚ stations, spread in space by proximity to traffic. Not a street-level measurement.",
     "stations": "Monitoring stations",
-    "source": "Source: GIOŚ, Air Quality Portal. Data are not continuously verified."
+    "source": "Source: GIOŚ, Air Quality Portal. Data are not continuously verified.",
+    "nStations_one": "{{count}} station",
+    "nStations_other": "{{count}} stations",
+    "prefix": "Air:"
   },
   "layers": {
     "title": "Layers",
@@ -111,13 +129,19 @@
     "fountains": "Fountains",
     "stations": "Air stations",
     "hotspots": "Priority places",
-    "cycleways": "ZTP cycling infrastructure"
+    "cycleways": "ZTP cycling infrastructure",
+    "active_one": "{{count}} active layer",
+    "active_other": "{{count}} active layers"
   },
   "legend": {
-    "noise": "dB: 55 → 75+",
+    "noise": "55 dB → 75+ dB",
     "green": "little → much",
     "traffic": "far → close to a busy road",
-    "cycleways": "separated · on road · other"
+    "cycleways": "separated · on road · other",
+    "routeTitle": "Noise on the selected route",
+    "otherRoutes": "other routes",
+    "lower": "lower priority",
+    "higher": "higher"
   },
   "planner": {
     "intro": "Street segments where high exposure (noise, traffic, little greenery) meets many sensitive users: schools, kindergartens, nurseries and residents.",
@@ -137,7 +161,14 @@
     "noiseMean": "Mean noise",
     "loudShare": "Loud cells",
     "hotspots": "In top 100",
-    "method": "Method: priority = exposure × presence of sensitive people, in 150 m cells. Weights in config/etl.yml."
+    "method": "Method: priority = exposure × presence of sensitive people, in 150 m cells. Weights in config/etl.yml.",
+    "factNoise": "{{v}} dB",
+    "factGreen": "green {{v}} %",
+    "factTraffic": "traffic {{v}} %",
+    "loading": "Loading…",
+    "showing": "top {{n}}",
+    "none": "No priority locations for this selection.",
+    "sortHint": "Click a header to sort"
   },
   "about": {
     "button": "About data",
@@ -154,7 +185,9 @@
     "gpx": "Download GPX",
     "hint": "“Guide me” shows exactly this route with your position (the location stays on your phone). Google Maps does not accept a ready route, only points: we pass the start, the destination and up to 3 waypoints where the route leaves the fastest one. Between them Google may still differ in places. The exact route goes through “Send to a navigation app” (e.g. Organic Maps, OsmAnd, Komoot) or the GPX file. Opening Google Maps sends the route points to Google.",
     "share": "Send to a navigation app",
-    "navigate": "Guide me"
+    "navigate": "Guide me",
+    "googleShort": "Google Maps",
+    "how": "How do these options differ?"
   },
   "nav": {
     "remaining": "To go: {{km}} km · about {{min}} min",
@@ -163,5 +196,11 @@
     "waiting": "Finding your position…",
     "arrived": "You have arrived",
     "error": "No access to your location"
+  },
+  "empty": {
+    "title": "Plan a healthier route",
+    "step1": "Type a start or click on the map.",
+    "step2": "Pick a destination the same way: routes are computed right away.",
+    "step3": "Compare the fastest route with the healthiest and see how many minutes quiet and greenery cost."
   }
 }

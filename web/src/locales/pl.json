@@ -5,7 +5,8 @@
   },
   "tabs": {
     "route": "Trasa",
-    "planner": "Dla miasta"
+    "planner": "Dla miasta",
+    "label": "Widok"
   },
   "lang": {
     "switch": "English",
@@ -23,14 +24,23 @@
     "walk": "Pieszo",
     "bike": "Rowerem",
     "profile": "Priorytet",
-    "advanced": "Ustawienia zaawansowane",
+    "advanced": "Więcej opcji",
     "maxDetour": "Maks. wydłużenie trasy: {{pct}} %",
     "night": "Pora nocna (hałas LN)",
     "custom": "Własne wagi",
     "plan": "Wyznacz trasy",
     "planning": "Liczę…",
     "noResults": "Brak wyników",
-    "pickedOnMap": "Punkt z mapy"
+    "pickedOnMap": "Punkt z mapy",
+    "fromPlaceholder": "Skąd? Adres, ulica lub miejsce",
+    "toPlaceholder": "Dokąd? Adres, ulica lub miejsce",
+    "detourShort": "do +{{pct}} %",
+    "nightShort": "noc",
+    "customShort": "własne wagi",
+    "maxDetourLabel": "Maks. wydłużenie trasy",
+    "results": "Porównanie tras",
+    "mapHintFrom": "Kliknij na mapie, aby ustawić start",
+    "mapHintTo": "Kliknij na mapie, aby ustawić cel"
   },
   "profiles": {
     "fastest": "Najszybsza",
@@ -71,7 +81,12 @@
     "sameAsFastest": "Najszybsza trasa jest tu też najzdrowsza: nie trzeba nadkładać drogi.",
     "separated_bike": "Drogi rowerowe odseparowane",
     "separated_walk": "Ciągi pieszo-rowerowe",
-    "on_street": "Pasy i kontrapasy"
+    "on_street": "Pasy i kontrapasy",
+    "reference": "Punkt odniesienia",
+    "limitedShort": "limit wydłużenia",
+    "sameAsNamed": "„{{kind}}” to ta sama trasa co „{{other}}”.",
+    "detailsOf": "Szczegóły trasy",
+    "vsFastest": "vs najszybsza"
   },
   "tradeoff": {
     "minutes": "{{sign}}{{min}} min",
@@ -101,7 +116,12 @@
     "unavailable": "Brak danych o powietrzu",
     "indicative": "Wskaźnik orientacyjny: średnia ze stacji GIOŚ, rozłożona przestrzennie wg bliskości ruchu ulicznego. To nie jest pomiar na ulicy.",
     "stations": "Stacje pomiarowe",
-    "source": "Źródło: GIOŚ, Portal Jakość Powietrza. Dane nie są na bieżąco weryfikowane."
+    "source": "Źródło: GIOŚ, Portal Jakość Powietrza. Dane nie są na bieżąco weryfikowane.",
+    "nStations_one": "{{count}} stacja",
+    "nStations_few": "{{count}} stacje",
+    "nStations_many": "{{count}} stacji",
+    "nStations_other": "{{count}} stacji",
+    "prefix": "Powietrze:"
   },
   "layers": {
     "title": "Warstwy",
@@ -111,13 +131,21 @@
     "fountains": "Poidełka",
     "stations": "Stacje powietrza",
     "hotspots": "Miejsca priorytetowe",
-    "cycleways": "Infrastruktura rowerowa ZTP"
+    "cycleways": "Infrastruktura rowerowa ZTP",
+    "active_one": "{{count}} aktywna warstwa",
+    "active_few": "{{count}} aktywne warstwy",
+    "active_many": "{{count}} aktywnych warstw",
+    "active_other": "{{count}} aktywnych warstw"
   },
   "legend": {
-    "noise": "dB: 55 → 75+",
+    "noise": "55 dB → 75+ dB",
     "green": "mało → dużo",
     "traffic": "daleko → blisko ruchliwej ulicy",
-    "cycleways": "odseparowana · na jezdni · inna"
+    "cycleways": "odseparowana · na jezdni · inna",
+    "routeTitle": "Hałas na wybranej trasie",
+    "otherRoutes": "pozostałe trasy",
+    "lower": "niższy priorytet",
+    "higher": "wyższy"
   },
   "planner": {
     "intro": "Odcinki ulic, gdzie wysoka ekspozycja (hałas, ruch, brak zieleni) spotyka wielu wrażliwych użytkowników: szkoły, przedszkola, żłobki i mieszkańców.",
@@ -137,7 +165,14 @@
     "noiseMean": "Hałas śr.",
     "loudShare": "Głośne komórki",
     "hotspots": "W top 100",
-    "method": "Metoda: priorytet = ekspozycja × obecność osób wrażliwych, w komórkach 150 m. Wagi w config/etl.yml."
+    "method": "Metoda: priorytet = ekspozycja × obecność osób wrażliwych, w komórkach 150 m. Wagi w config/etl.yml.",
+    "factNoise": "{{v}} dB",
+    "factGreen": "zieleń {{v}} %",
+    "factTraffic": "ruch {{v}} %",
+    "loading": "Wczytuję…",
+    "showing": "top {{n}}",
+    "none": "Brak miejsc priorytetowych dla tego wyboru.",
+    "sortHint": "Kliknij nagłówek, aby sortować"
   },
   "about": {
     "button": "O danych",
@@ -154,7 +189,9 @@
     "gpx": "Pobierz GPX",
     "hint": "„Prowadź” pokazuje dokładnie tę trasę z Twoją pozycją (lokalizacja zostaje w telefonie). Google Maps nie przyjmuje gotowej trasy, tylko punkty: przekazujemy start, cel i do 3 punktów pośrednich tam, gdzie trasa odbiega od najszybszej. Między nimi Google może miejscami pójść inaczej. Dokładną trasę przekazuje „Wyślij do aplikacji nawigacyjnej” (np. Organic Maps, OsmAnd, Komoot) lub plik GPX. Otwarcie Google Maps przekazuje punkty trasy do Google.",
     "share": "Wyślij do aplikacji nawigacyjnej",
-    "navigate": "Prowadź"
+    "navigate": "Prowadź",
+    "googleShort": "Google Maps",
+    "how": "Czym różnią się te opcje?"
   },
   "nav": {
     "remaining": "Do celu: {{km}} km · ok. {{min}} min",
@@ -163,5 +200,11 @@
     "waiting": "Ustalam pozycję…",
     "arrived": "Jesteś na miejscu",
     "error": "Brak dostępu do lokalizacji"
+  },
+  "empty": {
+    "title": "Zaplanuj zdrowszą trasę",
+    "step1": "Wpisz start albo kliknij na mapie.",
+    "step2": "Wybierz cel tak samo: trasy policzą się od razu.",
+    "step3": "Porównaj najszybszą trasę z najzdrowszą i zobacz, ile minut kosztuje cisza i zieleń."
   }
 }

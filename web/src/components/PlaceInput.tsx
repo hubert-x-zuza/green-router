@@ -4,13 +4,15 @@ import { api, type Place } from "../api";
 
 interface Props {
   label: string;
+  placeholder: string;
+  variant: "from" | "to";
   value: string;
   onChange: (text: string) => void;
   onPick: (p: Place) => void;
 }
 
 /** Address search with a keyboard-accessible suggestion list (ARIA combobox pattern). */
-export default function PlaceInput({ label, value, onChange, onPick }: Props) {
+export default function PlaceInput({ label, placeholder, variant, value, onChange, onPick }: Props) {
   const { t, i18n } = useTranslation();
   const id = useId();
   const [items, setItems] = useState<Place[]>([]);
@@ -43,10 +45,13 @@ export default function PlaceInput({ label, value, onChange, onPick }: Props) {
   };
 
   return (
-    <div className="place">
-      <label htmlFor={id}>{label}</label>
+    <div className={`place ${variant}`}>
+      <label htmlFor={id} className="sr-only">
+        {label}
+      </label>
       <input
         id={id}
+        className="input"
         type="search"
         role="combobox"
         aria-expanded={open && items.length > 0}
@@ -54,7 +59,7 @@ export default function PlaceInput({ label, value, onChange, onPick }: Props) {
         aria-autocomplete="list"
         aria-activedescendant={active >= 0 ? `${id}-opt-${active}` : undefined}
         autoComplete="off"
-        placeholder={t("route.placeholder")}
+        placeholder={placeholder}
         value={value}
         onChange={(e) => {
           typed.current = true;
@@ -80,24 +85,21 @@ export default function PlaceInput({ label, value, onChange, onPick }: Props) {
       />
       {open && (
         <ul id={`${id}-list`} role="listbox" className="suggest">
-          {items.length === 0 && <li className="muted">{t("route.noResults")}</li>}
+          {items.length === 0 && <li className="empty">{t("route.noResults")}</li>}
           {items.map((p, i) => (
             <li
               key={`${p.label}-${i}`}
               id={`${id}-opt-${i}`}
               role="option"
               aria-selected={i === active}
-              className={i === active ? "active" : undefined}
               onMouseDown={(e) => {
                 e.preventDefault();
                 pick(p);
               }}
             >
-              {p.label}
-              {p.kind === "poi" && (
-                <span className="cat"> {i18n.language === "en" ? p.category_en : p.category_pl}</span>
-              )}
-              {p.district && <span className="muted"> · {p.district.replace("Dzielnica ", "")}</span>}
+              <span>{p.label}</span>
+              {p.kind === "poi" && <span className="cat">{i18n.language === "en" ? p.category_en : p.category_pl}</span>}
+              {p.district && <span className="where">{p.district.replace("Dzielnica ", "")}</span>}
             </li>
           ))}
         </ul>
