@@ -32,7 +32,7 @@ def grid_network(n: int = 6, seed: int = 0, spacing: float = 100.0) -> Network:
     m = len(pairs)
     base_len = spacing * (1 + 0.6 * rng.random(m))
     length = np.concatenate([base_len, base_len])
-    keys = ("noise", "noise_night", "traffic", "green", "fountain")
+    keys = ("noise", "noise_night", "traffic", "green", "fountain", "cycleway")
     pen = {k: np.concatenate([v, v]) for k, v in {k: rng.random(m) for k in keys}.items()}
     g = ig.Graph(n=n * n, edges=edges, directed=True)
     coords = [
@@ -47,6 +47,8 @@ def grid_network(n: int = 6, seed: int = 0, spacing: float = 100.0) -> Network:
             "fountain_dist_m": 500 * pen["fountain"],
             "data_coverage": True,
             "highway": "footway",
+            "cycle_separated": 1 - pen["cycleway"],
+            "cycle_on_street": 0.0,
         }
     )
     return Network(

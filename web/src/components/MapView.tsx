@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import type { AirNow, HotspotProps, LonLat, Overlay, Route, RouteKind } from "../api";
 
-export type LayerKey = "noise" | "green" | "traffic" | "fountains" | "stations" | "hotspots";
+export type LayerKey = "noise" | "green" | "traffic" | "cycleways" | "fountains" | "stations" | "hotspots";
 export type LayerState = Record<LayerKey, boolean>;
 
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
   origin: LonLat | null;
   destination: LonLat | null;
   fountains: GeoJSON.FeatureCollection | null;
+  cycleways: GeoJSON.FeatureCollection | null;
   air: AirNow | null;
   hotspots: GeoJSON.FeatureCollection<GeoJSON.Polygon, HotspotProps> | null;
   focus: [number, number] | null;
@@ -154,6 +155,21 @@ export default function MapView(p: Props) {
         },
         beforeId,
       );
+      m.addSource("cycleways", { type: "geojson", data: EMPTY });
+      m.addLayer(
+        {
+          id: "cycleways",
+          type: "line",
+          source: "cycleways",
+          paint: {
+            "line-color": ["match", ["get", "kind"], "separated", "#0f766e", "on_street", "#7c3aed", "#94a3b8"],
+            "line-width": ["match", ["get", "kind"], "separated", 3, 2],
+            "line-opacity": 0.85,
+          },
+          layout: { "line-cap": "round" },
+        },
+        "routes-other",
+      );
       m.addSource("fountains", { type: "geojson", data: EMPTY });
       m.addLayer({
         id: "fountains",
@@ -227,14 +243,15 @@ export default function MapView(p: Props) {
     }
     (m.getSource("routes") as GeoJSONSource).setData(routeFeatures(cur.routes, cur.selected));
     (m.getSource("fountains") as GeoJSONSource).setData(cur.fountains ?? EMPTY);
+    (m.getSource("cycleways") as GeoJSONSource).setData(cur.cycleways ?? EMPTY);
     (m.getSource("stations") as GeoJSONSource).setData(stationFeatures(cur.air));
     (m.getSource("hotspots") as GeoJSONSource).setData(cur.hotspots ?? EMPTY);
-    for (const id of ["fountains", "stations", "hotspots"] as const) {
+    for (const id of ["cycleways", "fountains", "stations", "hotspots"] as const) {
       m.setLayoutProperty(id, "visibility", cur.layers[id] ? "visible" : "none");
     }
   }
 
-  useEffect(sync, [p.overlays, p.layers, p.routes, p.selected, p.fountains, p.air, p.hotspots]);
+  useEffect(sync, [p.overlays, p.layers, p.routes, p.selected, p.fountains, p.cycleways, p.air, p.hotspots]);
 
   // origin / destination markers
   useEffect(() => {

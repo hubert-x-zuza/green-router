@@ -10,6 +10,7 @@ Method. Every layer becomes a 10 m grid in EPSG:2178 (`etl.layers` builds them):
   traffic  max over road classes of weight * max(0, 1 - distance / reach)
 Each edge is sampled every `grid.sample_spacing_m` (at least 2 points, at segment midpoints so
 crossings at the ends do not dominate). Per edge: mean (and max for noise) over the samples.
+cycle    share of samples within `cycle_infra.match_m` of a ZTP cycle path (separated / on street)
 Points outside the city have no noise/green data: `coverage` is the share of samples inside, and
 `data_coverage = coverage >= 0.5`. Missing values stay NaN here; normalise.py decides what to do.
 Output: data/processed/exposure_<mode>.parquet (edge_id + raw values).
@@ -25,7 +26,7 @@ import numpy as np
 import pandas as pd
 import shapely
 
-from etl.common import PROCESSED, etl_config
+from etl.common import PROCESSED, RAW, etl_config, read_geojson
 from etl.layers import load_layers
 
 log = logging.getLogger("etl.enrich")
@@ -63,7 +64,7 @@ def reduce_min(idx: np.ndarray, values: np.ndarray, n_edges: int) -> np.ndarray:
     return -reduce_max(idx, -values, n_edges)
 
 
-def enrich(edges: gpd.GeoDataFrame, layers: dict, cfg: dict) -> pd.DataFrame:
+def enrich(edges: gpd.GeoDataFrame, layers: dict, cfg: dict, mode: str = "walk") -> pd.DataFrame:
     grid = layers["grid"]
     geoms = edges.geometry.to_numpy()
     idx, x, y = sample_points(geoms, edges.length_m.to_numpy(), cfg["grid"]["sample_spacing_m"])
@@ -84,6 +85,21 @@ def enrich(edges: gpd.GeoDataFrame, layers: dict, cfg: dict) -> pd.DataFrame:
     out["traffic_prox"] = reduce_mean(idx, grid.sample(layers["traffic"], x, y, np.nan), n)
     out["coverage"] = reduce_mean(idx, inside.astype(float), n)
     out["data_coverage"] = out["coverage"] >= 0.5
+    infra = layers.get("cycle_infra")
+    kinds_by = cfg["cycle_infra"]["modes"][mode]
+    for name in ("separated", "on_street"):
+        kinds = kinds_by[name]
+        if infra is None or not kinds:
+            out[f"cycle_{name}"] = np.nan if infra is None else 0.0
+            continue
+        lines = infra.geometry[infra.rodzaj.isin(kinds)].to_numpy()
+        tree = shapely.STRtree(lines)
+        pts = shapely.points(x, y)
+        hit = np.zeros(len(pts), dtype=float)
+        near, _ = tree.query_nearest(pts, max_distance=cfg["cycle_infra"]["match_m"],
+                                     return_distance=True, all_matches=False)  # fmt: skip
+        hit[np.unique(near[0])] = 1.0
+        out[f"cycle_{name}"] = reduce_mean(idx, hit, n)
     return out
 
 
@@ -91,9 +107,11 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     cfg = etl_config()
     layers = load_layers()
+    infra_path = RAW / "cycle_infra" / "cycle_infra.geojson"
+    layers["cycle_infra"] = read_geojson(infra_path) if infra_path.exists() else None
     for mode in cfg["graph"]["modes"]:
         edges = gpd.read_parquet(PROCESSED / f"edges_{mode}.parquet")
-        exp = enrich(edges, layers, cfg)
+        exp = enrich(edges, layers, cfg, mode)
         exp.to_parquet(PROCESSED / f"exposure_{mode}.parquet", index=False)
         log.info(
             "%s: %d edges, %.1f %% covered, mean LDWN %.1f dB, mean green %.2f",

@@ -6,7 +6,7 @@ from collections.abc import Mapping
 
 import numpy as np
 
-PENALTY_KEYS = ("noise", "air", "traffic", "green", "fountain")
+PENALTY_KEYS = ("noise", "air", "traffic", "green", "fountain", "cycleway")
 
 
 def air_penalty(level: float, traffic: np.ndarray, a: float) -> np.ndarray:

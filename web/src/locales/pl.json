@@ -45,7 +45,9 @@
     "air": "Powietrze",
     "traffic": "Ruch uliczny",
     "green": "Zieleń",
-    "fountain": "Poidełka"
+    "fountain": "Poidełka",
+    "cycleway_bike": "Drogi rowerowe (ZTP)",
+    "cycleway_walk": "Ciągi pieszo-rowerowe (ZTP)"
   },
   "kinds": {
     "fastest": "Najszybsza",
@@ -66,7 +68,10 @@
     "limited": "Ograniczona limitem wydłużenia",
     "show": "Pokaż na mapie",
     "shown": "Na mapie",
-    "sameAsFastest": "Najszybsza trasa jest tu też najzdrowsza: nie trzeba nadkładać drogi."
+    "sameAsFastest": "Najszybsza trasa jest tu też najzdrowsza: nie trzeba nadkładać drogi.",
+    "separated_bike": "Drogi rowerowe odseparowane",
+    "separated_walk": "Ciągi pieszo-rowerowe",
+    "on_street": "Pasy i kontrapasy"
   },
   "tradeoff": {
     "minutes": "{{sign}}{{min}} min",
@@ -105,12 +110,14 @@
     "traffic": "Bliskość ruchu",
     "fountains": "Poidełka",
     "stations": "Stacje powietrza",
-    "hotspots": "Miejsca priorytetowe"
+    "hotspots": "Miejsca priorytetowe",
+    "cycleways": "Infrastruktura rowerowa ZTP"
   },
   "legend": {
     "noise": "dB: 55 → 75+",
     "green": "mało → dużo",
-    "traffic": "daleko → blisko ruchliwej ulicy"
+    "traffic": "daleko → blisko ruchliwej ulicy",
+    "cycleways": "odseparowana · na jezdni · inna"
   },
   "planner": {
     "intro": "Odcinki ulic, gdzie wysoka ekspozycja (hałas, ruch, brak zieleni) spotyka wielu wrażliwych użytkowników: szkoły, przedszkola, żłobki i mieszkańców.",
@@ -141,5 +148,10 @@
     "disclaimer": "Indeks ekspozycji porównuje trasy między sobą. Nie jest oceną medyczną. Mapa hałasu to model strategiczny z 2022 r., mapa zieleni pochodzi z 2016 r., a składnik powietrza jest orientacyjny.",
     "privacy": "Prywatność: zapytania o trasy są przetwarzane i od razu usuwane. Nie zapisujemy lokalizacji, nie używamy ciasteczek analitycznych.",
     "inspiration": "Inspiracja metodą: Green Paths 2 (DigitalGeographyLab, licencja MIT)."
+  },
+  "export": {
+    "google": "Otwórz w Google Maps",
+    "gpx": "Pobierz GPX",
+    "hint": "Google Maps dostaje start, cel i 3 punkty pośrednie, więc między nimi może lekko zmienić trasę. Dokładna trasa: plik GPX (Komoot, OsmAnd, Garmin). Otwarcie Google Maps przekazuje punkty trasy do Google."
   }
 }

@@ -45,7 +45,9 @@
     "air": "Air",
     "traffic": "Traffic",
     "green": "Greenery",
-    "fountain": "Fountains"
+    "fountain": "Fountains",
+    "cycleway_bike": "Cycle paths (ZTP)",
+    "cycleway_walk": "Shared foot & cycle paths (ZTP)"
   },
   "kinds": {
     "fastest": "Fastest",
@@ -66,7 +68,10 @@
     "limited": "Limited by the detour cap",
     "show": "Show on map",
     "shown": "On map",
-    "sameAsFastest": "The fastest route is also the healthiest here: no detour needed."
+    "sameAsFastest": "The fastest route is also the healthiest here: no detour needed.",
+    "separated_bike": "Separated cycle paths",
+    "separated_walk": "Shared foot & cycle paths",
+    "on_street": "Cycle lanes & contraflow"
   },
   "tradeoff": {
     "minutes": "{{sign}}{{min}} min",
@@ -105,12 +110,14 @@
     "traffic": "Traffic proximity",
     "fountains": "Fountains",
     "stations": "Air stations",
-    "hotspots": "Priority places"
+    "hotspots": "Priority places",
+    "cycleways": "ZTP cycling infrastructure"
   },
   "legend": {
     "noise": "dB: 55 → 75+",
     "green": "little → much",
-    "traffic": "far → close to a busy road"
+    "traffic": "far → close to a busy road",
+    "cycleways": "separated · on road · other"
   },
   "planner": {
     "intro": "Street segments where high exposure (noise, traffic, little greenery) meets many sensitive users: schools, kindergartens, nurseries and residents.",
@@ -141,5 +148,10 @@
     "disclaimer": "The exposure index compares routes with each other. It is not a medical assessment. The noise map is a 2022 strategic model, the greenery map is from 2016, and the air term is indicative.",
     "privacy": "Privacy: route requests are processed and discarded. No locations are stored and no analytics cookies are used.",
     "inspiration": "Method inspired by Green Paths 2 (DigitalGeographyLab, MIT licence)."
+  },
+  "export": {
+    "google": "Open in Google Maps",
+    "gpx": "Download GPX",
+    "hint": "Google Maps gets the start, the destination and 3 waypoints, so it may change the route slightly between them. Exact route: the GPX file (Komoot, OsmAnd, Garmin). Opening Google Maps sends the route points to Google."
   }
 }

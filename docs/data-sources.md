@@ -15,6 +15,8 @@ generowany jest panel „O danych” w aplikacji. Stan na 2026-10-13.
 | Szkoły, przedszkola, żłobki, kluby dziecięce | GMK, otwartedane.um.krakow.pl | API api.um.krakow.pl (JSON) | rok szk. 2025/26 | 2026-10-13 | obecność osób wrażliwych |
 | Mieszkańcy | GMK, otwartedane, „Mieszkańcy zameldowani na pobyt stały” | API, dzielnica × płeć × rok ur. | 31.12.2025 | 2026-10-13 | tabela dzielnic |
 | Parki | ZZM, otwartedane, „Parki miejskie w Krakowie” | API (tabela, bez geometrii) | 2026-04-27 | 2026-10-13 | statystyki (rozwój) |
+| Infrastruktura rowerowa | ZTP, „Liniowa infrastruktura rowerowa” (otwartedane, ArcGIS Hub) | ArcGIS FeatureServer, 2637 linii | 2026-10 | 2026-10-13 | preferencja dróg odseparowanych, warstwa mapy |
+| Miejsca (wyszukiwarka) | © współtwórcy OpenStreetMap (ODbL) | Overpass API (osmnx), 5582 miejsca | 2026-10-13 | 2026-10-13 | wyszukiwanie: obiekty, restauracje, przystanki, części miasta |
 | Jakość powietrza | GIOŚ, Portal Jakość Powietrza, API v1 | JSON-LD, co godzinę, 8 stacji | na bieżąco | od 2026-10-11 | indeks miejski `level(t)` |
 | Sieć ulic | © współtwórcy OpenStreetMap (ODbL) | Overpass API (osmnx) | 2026-10-13 | 2026-10-13 | grafy, bliskość ruchu |
 | Podkład mapy | OpenFreeMap, © OpenMapTiles, dane OSM | kafelki wektorowe | na bieżąco | — | mapa w przeglądarce |

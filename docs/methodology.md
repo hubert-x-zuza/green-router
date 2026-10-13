@@ -27,6 +27,7 @@ Każdą warstwę zamieniamy na siatkę 10 m w EPSG:2178. Każdy odcinek próbkuj
 | Zieleń | MSIP, Mapa zieleni (Atlas MONIT-AIR 2016) | udział klas w promieniu 30 m | `1 − (1,0·wysoka + 0,4·niska + 0,2·sportowa)` |
 | Bliskość ruchu | OSM, klasy dróg | maks. po klasach: waga klasy × (1 − odległość/50 m) | wartość w [0, 1] |
 | Poidełka | MSIP, pitniki zewnętrzne | odległość do najbliższego | ≤ 100 m → 0, ≥ 500 m → 1 |
+| Infrastruktura rowerowa | ZTP, liniowa infrastruktura rowerowa | udział próbek ≤ 6 m od linii ZTP: odseparowane / na jezdni | `1 − (1,0·odseparowane + 0,5·na jezdni)` |
 | Powietrze (na żywo) | GIOŚ, 8 stacji | patrz punkt 3 | patrz punkt 3 |
 
 **Mapa hałasu.** Źródła drogowe i szynowe łączymy energetycznie: `L = 10·log10(Σ 10^(Lᵢ/10))`.
@@ -42,6 +43,13 @@ wychodzi poza zasięg.
 **Sprawdzenie na znanych miejscach** (średnia ważona długością): Al. Pokoju 78 dB, Al. Słowackiego
 81 dB, Al. Mickiewicza 80 dB (graf rowerowy, jezdnie), ścieżki parkowe i leśne 52 dB przy zieleni
 0,44, Floriańska (deptak) 52 dB.
+
+**Infrastruktura rowerowa ZTP.** Rowerem za odseparowane liczą się drogi dla rowerów i ciągi
+pieszo-rowerowe, a „na jezdni” to pasy, kontrapasy, kontraruchy i B-1 T22. Pieszo liczą się tylko
+ciągi pieszo-rowerowe, bo po drodze wyłącznie rowerowej pieszy iść nie powinien. Dopasowanie po
+odległości daje nieliczne fałszywe trafienia na jezdniach biegnących tuż obok odseparowanej drogi
+(4 % długości ulic głównych). Przykład: rowerem z Nowej Huty na Rynek udział dróg odseparowanych
+rośnie z 12 % (trasa najszybsza) do 72 % (zrównoważona) kosztem +1 min.
 
 ## 3. Powietrze: indeks miejski, nie mapa
 
@@ -83,13 +91,13 @@ koszt(e) = długość_m / prędkość(tryb) · (1 + Σ_k w_k(profil) · p_k(e, t
 
 Prędkości: pieszo 1,33 m/s (4,8 km/h), rowerem 4,2 m/s (15 km/h).
 
-| Profil | hałas | powietrze | ruch | zieleń | poidełka |
-|---|---|---|---|---|---|
-| Najszybsza | 0 | 0 | 0 | 0 | 0 |
-| Zrównoważona | 1,0 | 1,0 | 0,5 | 0,7 | 0 |
-| Cicha | 3,0 | 0,5 | 0,5 | 0,5 | 0 |
-| Czyste powietrze | 0,5 | 3,0 | 1,5 | 0,5 | 0 |
-| Zieleń i woda | 0,7 | 0,7 | 0,3 | 2,5 | 1,0 |
+| Profil | hałas | powietrze | ruch | zieleń | poidełka | drogi rowerowe / ciągi p-r |
+|---|---|---|---|---|---|---|
+| Najszybsza | 0 | 0 | 0 | 0 | 0 | 0 |
+| Zrównoważona | 1,0 | 1,0 | 0,5 | 0,7 | 0 | 0,7 |
+| Cicha | 3,0 | 0,5 | 0,5 | 0,5 | 0 | 0,5 |
+| Czyste powietrze | 0,5 | 3,0 | 1,5 | 0,5 | 0 | 1,0 |
+| Zieleń i woda | 0,7 | 0,7 | 0,3 | 2,5 | 1,0 | 0,5 |
 
 Każde zapytanie zwraca trzy trasy: **najszybszą**, **najzdrowszą w limicie** (wybrany profil) i
 **zrównoważoną**. Limit wydłużenia (domyślnie 30 % czasu) pilnuje, żeby zdrowsza trasa nie była
@@ -97,7 +105,8 @@ absurdalnie dłuższa. Gdy trasa profilu go przekracza, wagi są zmniejszane (bi
 które mieszczą się w limicie, a karta trasy o tym informuje.
 
 **Metryki trasy:** czas, długość, średni hałas (dB), udział odcinków ≥ 65 dB, średnia zieleń,
-indeks powietrza, liczba poidełek w promieniu 100 m, **indeks ekspozycji** 0–100 (średnia ważona
+indeks powietrza, liczba poidełek w promieniu 100 m, udział trasy na drogach odseparowanych od ruchu
+(i rowerem na pasach/kontrapasach), **indeks ekspozycji** 0–100 (średnia ważona
 kar z wagami profilu „Zrównoważona”) oraz zdanie o kompromisie względem trasy najszybszej, np.
 „+6 min, −34 % ekspozycji, −37 % hałasu, +108 % zieleni”. Procenty hałasu liczymy na karze, a nie
 na decybelach, bo dB są w skali logarytmicznej.
@@ -105,6 +114,9 @@ na decybelach, bo dB są w skali logarytmicznej.
 **Własności sprawdzane testami:** wagi 0 dają najkrótszą ścieżkę; rosnąca waga hałasu nigdy nie
 zwiększa średniego hałasu trasy (całkowita ekspozycja nie rośnie, długość nie maleje); limit
 wydłużenia jest zawsze dotrzymany; 10 tras wzorcowych między punktami orientacyjnymi Krakowa.
+
+**Eksport trasy.** Link do Google Maps (start, cel i 3 punkty pośrednie, bo tyle przyjmują
+przeglądarki mobilne; między nimi Google może lekko zmienić trasę) oraz plik GPX z dokładną trasą.
 
 ## 5. Widok dla miasta (planista)
 

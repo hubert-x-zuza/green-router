@@ -67,3 +67,19 @@ planner:
   top_n: 20
   # exposure_severity uses these penalty weights (same idea as the Balanced profile)
   exposure_weights: {noise: 1.0, traffic: 1.0, green: 0.5}
+
+cycle_infra:
+  # ZTP "rodzaj" values per mode. Separated = away from motor traffic; on_street = marked on the
+  # carriageway. Pedestrians may use shared foot-and-cycle paths, not cycle-only roads or lanes.
+  # "przejazd" (crossings), "inny", "chodnik dopuszczony..." are shown on the map, not scored.
+  modes:
+    bike:
+      separated: ["droga rowerowa", "ciąg pieszo-rowerowy"]
+      on_street: ["pas rowerowy", "kontrapas", "kontraruch", "B-1 T22"]
+    walk:
+      separated: ["ciąg pieszo-rowerowy"]
+      on_street: []
+  match_m: 6                      # an edge sample within this distance of a ZTP line is on it
+  # p_cycleway = 1 - clamp(w_sep * share_separated + w_lane * share_on_street)
+  weight_separated: 1.0
+  weight_on_street: 0.5

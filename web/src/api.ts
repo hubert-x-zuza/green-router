@@ -4,7 +4,14 @@ export type Mode = "walk" | "bike";
 export type Profile = "fastest" | "balanced" | "quiet" | "clean_air" | "green_water";
 export type RouteKind = "fastest" | "healthiest" | "balanced";
 export type LonLat = { lon: number; lat: number };
-export type Weights = { noise: number; air: number; traffic: number; green: number; fountain: number };
+export type Weights = {
+  noise: number;
+  air: number;
+  traffic: number;
+  green: number;
+  fountain: number;
+  cycleway: number;
+};
 
 export interface RouteMetrics {
   distance_m: number;
@@ -19,6 +26,8 @@ export interface RouteMetrics {
   exposure_index: number | null;
   coverage: number;
   fountains_near: number;
+  cycle_separated: number | null;
+  cycle_on_street: number | null;
 }
 
 export interface Tradeoff {
@@ -181,6 +190,7 @@ export const api = {
   sources: () => get<Source[]>("/meta/sources"),
   layers: () => get<Record<string, Overlay>>("/layers"),
   fountains: () => get<GeoJSON.FeatureCollection<GeoJSON.Point>>("/points/fountains"),
+  cycleways: () => get<GeoJSON.FeatureCollection<GeoJSON.LineString>>("/lines/cycleways"),
   hotspots: (district?: number) =>
     get<GeoJSON.FeatureCollection<GeoJSON.Polygon, HotspotProps>>(
       `/planner/hotspots?limit=500${district ? `&district=${district}` : ""}`,

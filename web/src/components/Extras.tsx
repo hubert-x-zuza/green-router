@@ -48,7 +48,7 @@ export function LayerToggles({
         <label key={k} className="check">
           <input type="checkbox" checked={layers[k]} onChange={(e) => setLayers({ ...layers, [k]: e.target.checked })} />
           {t(`layers.${k}`)}
-          {(k === "noise" || k === "green" || k === "traffic") && layers[k] && (
+          {(k === "noise" || k === "green" || k === "traffic" || k === "cycleways") && layers[k] && (
             <span className={`legend legend-${k}`} title={t(`legend.${k}`)}>
               <span className="muted small"> {t(`legend.${k}`)}</span>
             </span>

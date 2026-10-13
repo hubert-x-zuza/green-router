@@ -8,6 +8,8 @@ Penalties (thresholds in config/etl.yml):
   p_green        1 - green_score
   p_fountain     0 within near_m of a fountain, 1 beyond far_m, linear in between
   p_traffic      traffic_prox (already in [0, 1]); the API derives the live air penalty from it
+  p_cycleway     1 - (w_sep * share on separated ZTP cycle paths + w_lane * share on lanes);
+                 kinds per mode in config/etl.yml (walk: shared foot-and-cycle paths only)
 Edges without data (outside the city) get `coverage.neutral_penalty` for noise and green; the raw
 value stays NaN so the UI can say "no data" instead of showing a made-up number.
 Output: data/processed/network_<mode>.parquet (GeoParquet, EPSG:2178).
@@ -25,7 +27,7 @@ import pandas as pd
 from etl.common import PROCESSED, etl_config
 
 log = logging.getLogger("etl.normalise")
-PENALTIES = ["p_noise", "p_noise_night", "p_green", "p_fountain", "p_traffic"]
+PENALTIES = ["p_noise", "p_noise_night", "p_green", "p_fountain", "p_traffic", "p_cycleway"]
 
 
 def linear(x: np.ndarray, zero: float, one: float) -> np.ndarray:
@@ -42,7 +44,12 @@ def penalties(exp: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     f = cfg["fountains"]
     out["p_fountain"] = linear(exp.fountain_dist_m, f["near_m"], f["far_m"])
     out["p_traffic"] = np.clip(exp.traffic_prox.fillna(0.0), 0, 1)
-    for c in ("p_noise", "p_noise_night", "p_green", "p_fountain"):
+    ci = cfg["cycle_infra"]
+    infra = (
+        ci["weight_separated"] * exp.cycle_separated + ci["weight_on_street"] * exp.cycle_on_street
+    )
+    out["p_cycleway"] = 1.0 - np.clip(infra, 0, 1)
+    for c in ("p_noise", "p_noise_night", "p_green", "p_fountain", "p_cycleway"):
         out[c] = out[c].where(exp.data_coverage & out[c].notna(), neutral)
     return out
 

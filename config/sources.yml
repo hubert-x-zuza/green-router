@@ -21,6 +21,13 @@ arcgis:
     layer_name: "Granica Krakowa"
     out_fields: "*"
     order_by: "objectid_1"
+  # ZTP "Liniowa infrastruktura rowerowa" (ArcGIS Online item 674e4dbbd0414e74a7bb860bc042e96e,
+  # linked from otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie)
+  cycle_infra:
+    service: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Ciagi_rowerowe/FeatureServer"
+    layer_name: "ciagi_rowerowe"
+    out_fields: "OBJECTID,rodzaj,nawierzchnia"
+    order_by: "OBJECTID"
 
 page_size: 1000
 

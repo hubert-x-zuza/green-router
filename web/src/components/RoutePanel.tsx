@@ -33,7 +33,7 @@ interface Props {
 }
 
 const PROFILES: Profile[] = ["balanced", "quiet", "clean_air", "green_water", "fastest"];
-const WEIGHT_KEYS: (keyof Weights)[] = ["noise", "air", "traffic", "green", "fountain"];
+const WEIGHT_KEYS: (keyof Weights)[] = ["noise", "air", "traffic", "green", "fountain", "cycleway"];
 
 export default function RoutePanel(p: Props) {
   const { t } = useTranslation();
@@ -157,7 +157,7 @@ export default function RoutePanel(p: Props) {
         {s.custom &&
           WEIGHT_KEYS.map((k) => (
             <label key={k} className="slider">
-              {t(`weights.${k}`)}: {s.weights[k].toFixed(1)}
+              {t(k === "cycleway" ? `weights.cycleway_${s.mode}` : `weights.${k}`)}: {s.weights[k].toFixed(1)}
               <input
                 type="range"
                 min={0}
@@ -183,7 +183,13 @@ export default function RoutePanel(p: Props) {
               {t(`warnings.${w}`)}
             </p>
           ))}
-          <RouteCards routes={p.result.routes} selected={p.selected} onSelect={p.setSelected} />
+          <RouteCards
+            routes={p.result.routes}
+            selected={p.selected}
+            onSelect={p.setSelected}
+            mode={p.result.mode}
+            names={[p.origin?.label ?? "", p.destination?.label ?? ""]}
+          />
         </>
       )}
     </div>

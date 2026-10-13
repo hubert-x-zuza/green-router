@@ -25,9 +25,10 @@ Tabela zbiorów z datami wytworzenia i pozyskania: `docs/data-sources.md` (pełn
 - **Gmina Miejska Kraków, MSIP:** Mapa hałasu 2022, Mapa zieleni (Atlas MONIT-AIR 2016), granica
   miasta, punkty adresowe, ulice, dzielnice, poidełka.
 - **Gmina Miejska Kraków, otwartedane.um.krakow.pl:** szkoły, przedszkola, żłobki, kluby dziecięce,
-  mieszkańcy, parki.
+  mieszkańcy, parki; **ZTP:** liniowa infrastruktura rowerowa (drogi dla rowerów, ciągi
+  pieszo-rowerowe, pasy, kontrapasy).
 - **GIOŚ:** 8 stacji, PM10, PM2.5, NO₂, co godzinę.
-- **OpenStreetMap** (ODbL): sieć ulic.
+- **OpenStreetMap** (ODbL): sieć ulic oraz około 5600 nazwanych miejsc do wyszukiwarki.
 
 Warunki wykorzystania i ich pełne teksty są w `docs/licences/`. Każdy zbiór jest cytowany w panelu
 „O danych” razem z datą wytworzenia i pozyskania.
@@ -59,7 +60,7 @@ Metoda (funkcja kosztu, normalizacja, indeks powietrza, priorytet dla planisty, 
 ## 5. Możliwości rozwoju
 
 - Ostatni odcinek podróży komunikacją miejską (GTFS ZTP, także opóźnienia na żywo).
-- Warstwa infrastruktury rowerowej ZTP (drogi rowerowe odseparowane od ruchu) i liczniki rowerowe.
+- Liczniki rowerowe ZTP (natężenie ruchu rowerowego w widoku dla miasta).
 - Wyspy ciepła latem (miejskie rastry MWC; prototyp dekodera istnieje).
 - Prognoza jakości powietrza na jutro (IOŚ-PIB) i powiadomienia smogowe.
 - Moduł „co jeśli” dla planisty: nasadzenia, ograniczenie prędkości i ich efekt na ranking.

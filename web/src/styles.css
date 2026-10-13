@@ -111,6 +111,9 @@ legend { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
 .hotspot-card { position: absolute; z-index: 3; bottom: 34px; left: 12px; right: 12px; max-width: 460px; background: rgb(255 255 255 / 96%); border-radius: 8px; padding: 0.5rem 0.75rem; box-shadow: 0 2px 8px rgb(0 0 0 / 20%); font-size: 0.88rem; }
 .select { display: flex; flex-direction: column; font-size: 0.85rem; font-weight: 600; gap: 0.15rem; }
 .select select { padding: 0.4rem; border: 1px solid #9ca3af; border-radius: 6px; font-weight: 400; }
+.export { margin-top: 0.75rem; }
+.export .row { gap: 0.5rem; }
+.button.secondary { background: var(--bg); color: var(--accent); border: 1px solid var(--accent); cursor: pointer; }
 .button { display: inline-block; padding: 0.45rem 0.8rem; background: var(--accent); color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.9rem; align-self: flex-end; }
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; font-size: 0.8rem; width: 100%; }

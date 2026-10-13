@@ -19,7 +19,10 @@ pomiary powietrza), ale mieszkaniec nie ma z nich praktycznego pożytku na co dz
    najszybszą, najzdrowszą w zadanym limicie czasu i zrównoważoną. Pokazuje koszt w minutach
    i zysk, np. *„+6 min, −34 % ekspozycji, −37 % hałasu, +108 % zieleni”* (rowerem z Nowej Huty na
    Rynek). Trasa jest pokolorowana według hałasu na każdym odcinku. Użytkownik wybiera priorytet:
-   cisza, czyste powietrze, zieleń i woda (poidełka) albo własne wagi.
+   cisza, czyste powietrze, zieleń i woda (poidełka) albo własne wagi. Trasy chętniej prowadzą
+   drogami rowerowymi i ciągami pieszo-rowerowymi ZTP, odseparowanymi od ruchu (rowerem z Nowej Huty
+   na Rynek: 72 % trasy zamiast 12 %, za +1 min). Cel można wpisać jako adres albo nazwę miejsca
+   (Tauron Arena, Kazimierz, restauracja), a gotową trasę otworzyć w Google Maps lub pobrać jako GPX.
 2. **Dla miasta:** ranking miejsc, w których wysoka ekspozycja (hałas, ruch, brak zieleni) spotyka
    wielu wrażliwych użytkowników: uczniów, przedszkolaków, dzieci w żłobkach i mieszkańców. Każda
    pozycja ma wyjaśnienie, np. *„#1 Al. Mickiewicza: hałas 77 dB, zieleń 22 %; w promieniu 200 m
@@ -28,13 +31,14 @@ pomiary powietrza), ale mieszkaniec nie ma z nich praktycznego pożytku na co dz
 
 ## Dane
 
-Łączymy **17 zbiorów**, w tym 15 miejskich (7 z MSIP, 8 z portalu otwartych danych):
+Łączymy **18 zbiorów**, w tym 16 miejskich (7 z MSIP, 9 z portalu otwartych danych, w tym ZTP):
 
 - **Gmina Miejska Kraków (MSIP):** Mapa hałasu 2022 (drogi i szyny, wskaźniki LDWN i LN), Mapa
   zieleni, granica miasta, punkty adresowe i ulice EMUiA (własny geokoder, bez usług zewnętrznych),
   dzielnice, poidełka.
 - **Gmina Miejska Kraków (otwartedane.um.krakow.pl):** szkoły podstawowe i ponadpodstawowe,
-  przedszkola, żłobki i kluby dziecięce (liczby dzieci), mieszkańcy według dzielnic i wieku.
+  przedszkola, żłobki i kluby dziecięce (liczby dzieci), mieszkańcy według dzielnic i wieku,
+  infrastruktura rowerowa ZTP.
 - **GIOŚ:** pomiary godzinowe z 8 stacji w Krakowie (PM10, PM2.5, NO₂), archiwizowane co godzinę.
 - **OpenStreetMap:** sieć ulic i ścieżek oraz klasy dróg.
 

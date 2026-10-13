@@ -220,7 +220,13 @@ class Geocoder:
             whole = sum(w in toks for w in words)
             in_name = all(any(t.startswith(w) for t in toks) for w in words)
             cat = r[5]
-            kind_rank = 0 if cat in AREA_CATEGORIES else 2 if cat in STOP_CATEGORIES else 1
+            # an OSM area ("Nowa Huta" at Plac Centralny) before the administrative district of the
+            # same name, whose representative point can be far from what people mean
+            kind_rank = (
+                0
+                if cat in AREA_CATEGORIES - {"district"}
+                else 1 if cat == "district" else 3 if cat in STOP_CATEGORIES else 2
+            )
             return (-whole, 0 if in_name else 1, kind_rank)
 
         rows = sorted(rows, key=key)

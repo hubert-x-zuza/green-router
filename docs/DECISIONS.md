@@ -165,3 +165,23 @@ itself is not published.
 dashed route, two dots); it copies no existing mark and uses no third-party artwork or font. A web
 search on 2026-10-13 found no app or trade mark named "Zdrowa Trasa"; a check in the UPRP and EUIPO
 registers is still open (OPEN_QUESTIONS A8).
+
+## D-027 (2026-10-13) ZTP cycling infrastructure in routing (bike and walk)
+The ZTP layer "Liniowa infrastruktura rowerowa" (linked from otwartedane; the Hub map id resolves to
+a public FeatureServer) classifies 2637 segments by `rodzaj`. Each edge gets the share of its 15 m
+samples within 6 m of a ZTP line, split into *separated* (cycle roads and shared foot-and-cycle
+paths) and *on street* (lanes, contraflow, B-1 T22). `p_cycleway = 1 − (1.0·separated + 0.5·on
+street)` with a `cycleway` weight in every profile except Fastest. Pedestrians count only shared
+foot-and-cycle paths (walking on a cycle-only road is not allowed). Alternative: OSM `cycleway` tags
+only (no official classification, uneven tagging). Matching by distance gives a few false
+positives on carriageways next to a separated path (4 % of primary-road length, 1 % of residential);
+accepted and stated. Effect on the golden routes: Nowa Huta → Rynek by bike rises from 12 % to 72 %
+separated for +1 min. The cycleway term is not part of the exposure index.
+
+## D-028 (2026-10-13) Route export: Google Maps link with 3 waypoints, plus GPX
+Google Maps URLs need no key and accept at most three waypoints in mobile browsers (nine elsewhere,
+developers.google.com/maps/documentation/urls). We always send three, at equal distances along the
+chosen route, so the link behaves the same on every device; Google may still change the route
+between them, which the UI says. The exact route is offered as a GPX 1.1 track (Komoot, OsmAnd,
+Garmin), generated in the browser with an ODbL notice. Opening Google Maps is a user action that
+sends the route points to Google; the UI says so (privacy).

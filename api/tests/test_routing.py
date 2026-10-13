@@ -6,7 +6,7 @@ from api.costs import edge_cost
 from api.models import RouteRequest
 from api.tests.conftest import grid_network
 
-ZERO = {"noise": 0.0, "air": 0.0, "traffic": 0.0, "green": 0.0, "fountain": 0.0}
+ZERO = {"noise": 0.0, "air": 0.0, "traffic": 0.0, "green": 0.0, "fountain": 0.0, "cycleway": 0.0}
 
 
 def pens(net):
@@ -75,3 +75,17 @@ def test_tradeoff_text():
     assert routing.tradeoff_text(t, "pl") == "+4 min, -12 % ekspozycji, -18 % hałasu, +25 % zieleni"
     assert routing.tradeoff_text(t, "en") == "+4 min, -12 % exposure, -18 % noise, +25 % greenery"
     assert np.isfinite(t["extra_min"])
+
+
+def test_cycleway_weight_increases_share_on_cycle_paths():
+    net = grid_network(n=7, seed=11)
+    pen = pens(net)
+    src, dst = 0, net.graph.vcount() - 1
+    shares = []
+    for w in (0.0, 2.0, 20.0):
+        e = routing.shortest(
+            net, src, dst, edge_cost(net.length, 4.2, pen, {**ZERO, "cycleway": w})
+        )
+        on_path = ((1 - pen["cycleway"][e]) * net.length[e]).sum() / net.length[e].sum()
+        shares.append(on_path)
+    assert shares[0] <= shares[1] + 1e-9 <= shares[2] + 2e-9

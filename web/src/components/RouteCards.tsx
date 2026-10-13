@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
-import type { Route, RouteKind, Tradeoff } from "../api";
+import type { Mode, Route, RouteKind, Tradeoff } from "../api";
+import { downloadGpx, googleMapsUrl } from "../export";
 
 interface Props {
   routes: Route[];
   selected: RouteKind;
   onSelect: (k: RouteKind) => void;
+  mode: Mode;
+  names: [string, string];
 }
 
 const fmtPct = (v: number | null) => (v == null ? null : Math.round(v * 100));
@@ -38,9 +41,29 @@ function Bar({ value, good }: { value: number | null; good: boolean }) {
   );
 }
 
-export default function RouteCards({ routes, selected, onSelect }: Props) {
+function Export({ route, mode, names }: { route: Route; mode: Mode; names: [string, string] }) {
   const { t } = useTranslation();
+  const title = `${names[0]} → ${names[1]} (${t(`kinds.${route.kind}`)})`;
   return (
+    <div className="export">
+      <div className="row">
+        <a className="button" href={googleMapsUrl(route, mode)} target="_blank" rel="noopener noreferrer">
+          {t("export.google")}
+        </a>
+        <button type="button" className="button secondary" onClick={() => downloadGpx(route, title)}>
+          {t("export.gpx")}
+        </button>
+      </div>
+      <p className="muted small">{t("export.hint")}</p>
+    </div>
+  );
+}
+
+export default function RouteCards({ routes, selected, onSelect, mode, names }: Props) {
+  const { t } = useTranslation();
+  const sel = routes.find((r) => r.kind === selected && !r.same_as) ?? routes[0];
+  return (
+    <>
     <div className="cards" role="radiogroup" aria-label={t("metrics.show")}>
       {routes.map((r) => {
         const m = r.metrics;
@@ -101,6 +124,20 @@ export default function RouteCards({ routes, selected, onSelect }: Props) {
                   </dd>
                   <dt>{t("metrics.fountains")}</dt>
                   <dd>{m.fountains_near}</dd>
+                  {m.cycle_separated != null && (
+                    <>
+                      <dt>{t(`metrics.separated_${mode}`)}</dt>
+                      <dd>
+                        {fmtPct(m.cycle_separated)} % <Bar value={m.cycle_separated} good />
+                      </dd>
+                    </>
+                  )}
+                  {mode === "bike" && m.cycle_on_street != null && (
+                    <>
+                      <dt>{t("metrics.on_street")}</dt>
+                      <dd>{fmtPct(m.cycle_on_street)} %</dd>
+                    </>
+                  )}
                 </dl>
                 {r.limited_by_detour && <p className="note">{t("metrics.limited")}</p>}
               </>
@@ -109,5 +146,7 @@ export default function RouteCards({ routes, selected, onSelect }: Props) {
         );
       })}
     </div>
+    {sel && <Export route={sel} mode={mode} names={names} />}
+    </>
   );
 }

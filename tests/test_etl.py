@@ -32,18 +32,31 @@ def test_grid_sample_outside_is_nodata():
 
 
 def test_penalties_neutral_outside_coverage():
-    cfg = {"coverage": {"neutral_penalty": 0.5},
-           "noise": {"LDWN": {"zero_db": 45, "one_db": 75}, "LN": {"zero_db": 40, "one_db": 65}},
-           "fountains": {"near_m": 100, "far_m": 500}}  # fmt: skip
-    exp = pd.DataFrame({"noise_ldwn_mean": [60.0, np.nan], "noise_ln_mean": [52.5, np.nan],
-                        "green_score": [0.25, np.nan], "fountain_dist_m": [300.0, 900.0],
-                        "traffic_prox": [0.4, 0.1], "data_coverage": [True, False]})  # fmt: skip
+    cfg = {
+        "coverage": {"neutral_penalty": 0.5},
+        "noise": {"LDWN": {"zero_db": 45, "one_db": 75}, "LN": {"zero_db": 40, "one_db": 65}},
+        "fountains": {"near_m": 100, "far_m": 500},
+        "cycle_infra": {"weight_separated": 1.0, "weight_on_street": 0.5},
+    }
+    exp = pd.DataFrame(
+        {
+            "noise_ldwn_mean": [60.0, np.nan],
+            "noise_ln_mean": [52.5, np.nan],
+            "green_score": [0.25, np.nan],
+            "fountain_dist_m": [300.0, 900.0],
+            "traffic_prox": [0.4, 0.1],
+            "data_coverage": [True, False],
+            "cycle_separated": [0.5, 0.0],
+            "cycle_on_street": [0.4, 0.0],
+        }
+    )
     p = normalise.penalties(exp, cfg)
     assert p.loc[0, "p_noise"] == pytest.approx(0.5)
     assert p.loc[0, "p_noise_night"] == pytest.approx(0.5)
     assert p.loc[0, "p_green"] == pytest.approx(0.75)
     assert p.loc[0, "p_fountain"] == pytest.approx(0.5)
-    assert (p.loc[1, ["p_noise", "p_green", "p_fountain"]] == 0.5).all()
+    assert p.loc[0, "p_cycleway"] == pytest.approx(0.3)  # 1 - (0.5 + 0.5 * 0.4)
+    assert (p.loc[1, ["p_noise", "p_green", "p_fountain", "p_cycleway"]] == 0.5).all()
     assert p.loc[1, "p_traffic"] == pytest.approx(0.1)
 
 

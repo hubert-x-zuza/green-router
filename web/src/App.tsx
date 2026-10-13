@@ -24,7 +24,7 @@ const DEFAULT_SETTINGS: RouteSettings = {
   maxDetour: 30,
   night: false,
   custom: false,
-  weights: { noise: 1, air: 1, traffic: 0.5, green: 0.7, fountain: 0 },
+  weights: { noise: 1, air: 1, traffic: 0.5, green: 0.7, fountain: 0, cycleway: 0.7 },
 };
 
 export default function App() {
@@ -40,11 +40,13 @@ export default function App() {
   const [air, setAir] = useState<AirNow | null>(null);
   const [overlays, setOverlays] = useState<Record<string, Overlay>>({});
   const [fountains, setFountains] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [cycleways, setCycleways] = useState<GeoJSON.FeatureCollection | null>(null);
   const [layers, setLayers] = useState<LayerState>({
     noise: false,
     green: false,
     traffic: false,
     fountains: false,
+    cycleways: false,
     stations: true,
     hotspots: false,
   });
@@ -60,6 +62,7 @@ export default function App() {
     api.air().then(setAir).catch(() => setAir(null));
     api.layers().then(setOverlays).catch(() => undefined);
     api.fountains().then(setFountains).catch(() => undefined);
+    api.cycleways().then(setCycleways).catch(() => undefined);
     const h = setInterval(() => api.air().then(setAir).catch(() => undefined), 10 * 60 * 1000);
     return () => clearInterval(h);
   }, []);
@@ -195,6 +198,7 @@ export default function App() {
             origin={tab === "route" ? (origin?.pos ?? null) : null}
             destination={tab === "route" ? (destination?.pos ?? null) : null}
             fountains={fountains}
+            cycleways={cycleways}
             air={air}
             hotspots={hotspots}
             focus={focus}
@@ -204,7 +208,7 @@ export default function App() {
           <LayerToggles
             layers={layers}
             setLayers={setLayers}
-            keys={tab === "route" ? ["noise", "green", "traffic", "fountains", "stations"] : ["hotspots", "noise", "green", "traffic"]}
+            keys={tab === "route" ? ["noise", "green", "traffic", "cycleways", "fountains", "stations"] : ["hotspots", "noise", "green", "traffic"]}
           />
           {tab === "planner" && focusHotspot && (
             <div className="hotspot-card" role="status">

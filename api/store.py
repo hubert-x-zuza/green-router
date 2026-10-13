@@ -66,9 +66,12 @@ def load_network(mode: str, path: Path) -> Network:
         "traffic": net.p_traffic.to_numpy(),
         "green": net.p_green.to_numpy(),
         "fountain": net.p_fountain.to_numpy(),
+        # bike: ZTP cycle roads/lanes; walk: shared foot-and-cycle paths (config/etl.yml)
+        "cycleway": net.p_cycleway.to_numpy(),
     }
     raw = net[["noise_ldwn_mean", "noise_ln_mean", "green_score", "traffic_prox",
-               "fountain_dist_m", "data_coverage", "highway"]].reset_index(drop=True)  # fmt: skip
+               "fountain_dist_m", "data_coverage", "highway", "cycle_separated",
+               "cycle_on_street"]].reset_index(drop=True)  # fmt: skip
     log.info("%s network: %d nodes, %d edges in %.1f s", mode, n_nodes, len(net), time.time() - t0)
     return Network(mode, g, net.length_m.to_numpy(), pen, raw, net.name.to_numpy(), coords, xy,
                    cKDTree(xy))  # fmt: skip
@@ -111,6 +114,7 @@ class Store:
     overlays: dict[str, Any]
     planner: dict[str, Any] = field(default_factory=dict)
     snap_max_m: float = 300.0
+    cycleways: dict[str, Any] | None = None
 
 
 def load_store(processed: Path = PROCESSED) -> Store:
@@ -149,4 +153,18 @@ def load_store(processed: Path = PROCESSED) -> Store:
         overlays=json.loads(overlays_path.read_text("utf-8")) if overlays_path.exists() else {},
         planner=planner,
         snap_max_m=etl_cfg["coverage"]["snap_max_m"],
+        cycleways=load_cycleways(etl_cfg),
     )
+
+
+def load_cycleways(etl_cfg: dict[str, Any]) -> dict[str, Any] | None:
+    path = RAW / "cycle_infra" / "cycle_infra.geojson"
+    if not path.exists():
+        return None
+    g = gpd.read_file(path).set_crs("EPSG:2178", allow_override=True)
+    ci = etl_cfg["cycle_infra"]["modes"]["bike"]
+    on_street = np.where(g.rodzaj.isin(ci["on_street"]), "on_street", "other")
+    g["kind"] = np.where(g.rodzaj.isin(ci["separated"]), "separated", on_street)
+    g["geometry"] = g.geometry.simplify(2.0)
+    g = g[["rodzaj", "kind", "geometry"]].to_crs("EPSG:4326")
+    return json.loads(g.to_json(drop_id=True, to_wgs84=False))

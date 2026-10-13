@@ -24,6 +24,7 @@ class Weights(BaseModel):
     traffic: float = Field(ge=0, le=5)
     green: float = Field(ge=0, le=5)
     fountain: float = Field(ge=0, le=5)
+    cycleway: float = Field(default=0, ge=0, le=5, description="bike: prefer ZTP cycle paths")
 
 
 class RouteRequest(BaseModel):
@@ -50,6 +51,8 @@ class RouteMetrics(BaseModel):
     exposure_index: float | None = Field(description="0 (none) ... 100 (worst)")
     coverage: float = Field(description="share of length with noise/green data")
     fountains_near: int
+    cycle_separated: float | None = Field(None, description="share on separated cycle paths")
+    cycle_on_street: float | None = Field(None, description="share on cycle lanes/contraflow")
 
 
 class Tradeoff(BaseModel):

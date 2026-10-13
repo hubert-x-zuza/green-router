@@ -33,6 +33,7 @@ def penalties_for(net: Network, level: float, a: float, night: bool) -> dict[str
         "traffic": net.penalties["traffic"],
         "green": net.penalties["green"],
         "fountain": net.penalties["fountain"],
+        "cycleway": net.penalties["cycleway"],
     }
 
 
@@ -96,6 +97,8 @@ def metrics(
         "traffic_mean": _wmean(raw.traffic_prox.to_numpy(dtype=float), L),
         "air_index": _wmean(pen["air"][e], L),
         "coverage": float(L[covered].sum() / L.sum()) if L.sum() else 1.0,
+        "cycle_separated": _wmean(raw.cycle_separated.to_numpy(dtype=float), L),
+        "cycle_on_street": _wmean(raw.cycle_on_street.to_numpy(dtype=float), L),
         "fountains_near": 0,
     }
     if fountain_tree is not None and len(e):
@@ -105,8 +108,9 @@ def metrics(
         hits = fountain_tree.query_ball_point(verts, r=near_m)
         out["fountains_near"] = len({i for h in hits for i in h})
     # exposure index 0-100: length-weighted mean of the balanced combination of penalties
-    for k in ("noise_mean_db", "noise_night_mean_db", "share_loud", "exposure_noise",
-              "green_mean", "traffic_mean", "air_index"):  # fmt: skip
+    rounded = ("noise_mean_db", "noise_night_mean_db", "share_loud", "exposure_noise", "green_mean",
+               "traffic_mean", "air_index", "cycle_separated", "cycle_on_street")  # fmt: skip
+    for k in rounded:
         if out[k] is not None:
             out[k] = round(out[k], 3 if k not in ("noise_mean_db", "noise_night_mean_db") else 1)
     return out
@@ -223,7 +227,7 @@ def plan(store, req) -> dict[str, Any]:
             guarded(net, src, dst, pen, profiles["balanced"], speed, limit),
         ),
     }
-    exp_w = profiles["balanced"]
+    exp_w = {k: v for k, v in profiles["balanced"].items() if k != "cycleway"}
     near = store.profiles.get("fountain_near_m", 100)
     out, seen = [], {}
     base = None

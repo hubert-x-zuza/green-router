@@ -214,7 +214,20 @@ datasets:
     licence: "Otwarte Dane terms (docs/licences/otwartedane_warunki.md)"
     status: "verified 2026-10-13"
     citation_pl: "Źródło: Gmina Miejska Kraków, otwartedane.um.krakow.pl (szkoły, przedszkola, żłobki, kluby dziecięce), pozyskane 2026-10-13."
-  bike_counters: {title: "Mobilność aktywna (rowery): infrastruktura liniowa i punktowa ZTP", provider: "Zarząd Transportu Publicznego w Krakowie", page: "https://otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie", status: "ArcGIS Hub map links only (no tables); not downloaded yet"}
+  cycle_infra_ztp:
+    title: "Liniowa infrastruktura rowerowa (drogi dla rowerów, ciągi pieszo-rowerowe, pasy, kontrapasy, kontraruchy, przejazdy)"
+    provider: "Zarząd Transportu Publicznego w Krakowie (ZTP)"
+    page: "https://otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie"
+    hub_item: "https://ztpk-gmk-2.hub.arcgis.com/maps/674e4dbbd0414e74a7bb860bc042e96e"
+    layer_url: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Ciagi_rowerowe/FeatureServer/0"
+    crs: "EPSG:2178"
+    fields: [rodzaj, nawierzchnia]
+    data_date: "2026-10 (layer last edit; the portal says updated continuously)"
+    date_obtained: "2026-10-13"
+    licence: "Otwarte Dane terms (dataset listed on otwartedane.um.krakow.pl; the ArcGIS item states no other licence)"
+    status: "verified 2026-10-13: 2637 lines; droga rowerowa 181 km, ciąg pieszo-rowerowy 85 km, kontraruch 64 km, kontrapas 18 km, pas rowerowy 9 km, przejazd 17 km"
+    citation_pl: "Źródło: Zarząd Transportu Publicznego w Krakowie, „Liniowa infrastruktura rowerowa”, otwartedane.um.krakow.pl, stan z 2026-10, pozyskane 2026-10-13."
+  bike_counters: {title: "Punktowa infrastruktura rowerowa ZTP (liczniki, stojaki, stacje naprawy)", provider: "Zarząd Transportu Publicznego w Krakowie", page: "https://otwartedane.um.krakow.pl/zbiory-danych/mobilnosc-aktywna-rowery-w-krakowie", layer_url: "https://services-eu1.arcgis.com/svTzSt3AvH7sK6q9/arcgis/rest/services/Infrastruktura_rowerowa_ZTP/FeatureServer", status: "layer resolved 2026-10-13; not used yet"}
   transit_stops: {title: "Przystanki KMK", provider: "Zarząd Transportu Publicznego w Krakowie", page: "https://otwartedane.um.krakow.pl/zbiory-danych/komunikacja-miejska-w-krakowie-kmk", hub_map: "https://ztpk-gmk-2.hub.arcgis.com/maps/73cfc1778d0d4305a643ef0d2cb13e1f", status: "ArcGIS Hub map link; layer URL to resolve"}
   gtfs: {title: "GTFS Kraków", provider: "Zarząd Transportu Publicznego w Krakowie", url: "https://gtfs.ztp.krakow.pl/", status: "listing verified; TODO licence/terms"}
   residents: {title: "Mieszkańcy zameldowani na pobyt stały (31.12.2025)", provider: "Gmina Miejska Kraków, otwartedane.um.krakow.pl", page: "https://otwartedane.um.krakow.pl/zbiory-danych/mieszkancy-zameldowani-na-pobyt-staly", aggregation: "district x sex x birth year (safe, already published)", date_obtained: "2026-10-13", status: "verified 2026-10-13; used for children (0-14) and seniors (65+) per district", citation_pl: "Źródło: Gmina Miejska Kraków, otwartedane.um.krakow.pl, „Mieszkańcy zameldowani na pobyt stały” (stan na 31.12.2025), pozyskane 2026-10-13."}

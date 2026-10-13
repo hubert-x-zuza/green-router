@@ -151,6 +151,15 @@ def fountains() -> dict[str, Any]:
     return {"type": "FeatureCollection", "features": feats}
 
 
+@app.get("/api/v1/lines/cycleways")
+def cycleways() -> dict[str, Any]:
+    """ZTP cycling infrastructure (lines, WGS84, simplified to 2 m) for the map layer."""
+    s = store()
+    if s.cycleways is None:
+        raise HTTPException(503, "cycle infrastructure not downloaded")
+    return s.cycleways
+
+
 @app.get("/api/v1/planner/hotspots")
 def hotspots(district: int | None = None, limit: int = Query(20, ge=1, le=500)) -> dict[str, Any]:
     p = store().planner.get("planner_hotspots")
