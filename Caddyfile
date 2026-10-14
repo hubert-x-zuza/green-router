@@ -1,0 +1,7 @@
+# Automatic HTTPS (Let's Encrypt) for the host name in $DOMAIN.
+# No `log` directive on purpose: Caddy writes no access log, so no request (which may carry an
+# address typed into the geocoder) is stored. Same rule as nginx and uvicorn (CLAUDE.md, D-023).
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy web:80
+}

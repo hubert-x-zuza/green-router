@@ -1,0 +1,25 @@
+# Public deployment on a VM: HTTPS in front of the normal stack (see docs/deployment.md).
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+# Needs DOMAIN in .env (e.g. zdrowatrasa.westeurope.cloudapp.azure.com) and Docker Compose >= 2.24.
+services:
+  web:
+    ports: !reset []        # only Caddy is reachable from outside; web stays on the internal network
+
+  caddy:
+    image: caddy:2
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+    ports:
+      - "80:80"             # needed for the certificate challenge and the http -> https redirect
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data    # keeps the certificate across restarts
+      - caddy_config:/config
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

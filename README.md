@@ -33,6 +33,8 @@ curl -s -X POST localhost:8080/api/v1/route -H 'content-type: application/json' 
   -d '{"origin":{"lon":19.9456,"lat":50.0680},"destination":{"lon":19.9361,"lat":50.0542},"mode":"walk","profile":"quiet"}'
 ```
 
+Publiczne wdrożenie (maszyna wirtualna Azure, HTTPS): [docs/deployment.md](docs/deployment.md).
+
 ## Uruchomienie bez Dockera (deweloperskie)
 
 Wymagania: Python 3.12 i [uv](https://docs.astral.sh/uv/), Node.js 20 lub nowszy.

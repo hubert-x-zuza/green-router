@@ -277,3 +277,15 @@ gone); a ranked hotspot list with a priority meter and a sortable district table
 a component library (Radix, MUI) or a web font; both add weight or third-party requests for little
 gain in a four-week prototype, and a hosted font would leak visitor IPs. The design direction
 (tokens, components, target panel) is in the Figma file "Zdrowa Trasa – UI redesign".
+
+## D-034 (2026-10-14) Public demo: one Azure VM with docker compose and Caddy
+The jury needs a URL. The stack is stateless apart from files read at start, so one VM
+(`Standard_B2ms`, 2 vCPU, 8 GB) runs the existing compose file plus a Caddy container
+(`docker-compose.prod.yml`, `Caddyfile`) that obtains a Let's Encrypt certificate for the Azure DNS
+label (`<name>.<region>.cloudapp.azure.com`). HTTPS is required for the browser geolocation button. Built
+data (`data/processed/`, 174 MB) is copied once from the developer machine instead of rebuilding on the VM:
+the ETL needs about 20 min and 4 GB RAM and would hit Overpass and the MSIP services again (D-010). The
+`air` service on the VM keeps the GIOŚ history live, so the air term stays current while the static layers
+are a documented snapshot. Alternatives: Azure Container Apps or App Service for Containers (data would
+have to be baked into the image or mounted from Azure Files; more moving parts for no gain at this scale).
+Caddy writes no access log, like nginx and uvicorn (D-023). Steps: docs/deployment.md.
