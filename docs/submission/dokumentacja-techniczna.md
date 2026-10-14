@@ -1,7 +1,10 @@
 # Zdrowa Trasa: dokumentacja techniczna
 
-*Szkic do zgłoszenia. Zawiera wymagane części: technologie, wykorzystane dane, opis architektury
-i możliwości rozwoju. Szczegóły są w plikach `docs/` repozytorium.*
+Autorzy: Zuzanna Jarlaczyńska, Hubert Nowak. Demo: https://opendata-project.westeurope.cloudapp.azure.com
+Kod źródłowy: https://github.com/hubert-x-zuza/green-router
+
+Dokument zawiera wymagane części: technologie, wykorzystane dane, opis architektury i możliwości
+rozwoju. Szczegóły są w plikach `docs/` repozytorium.
 
 ## 1. Technologie
 
@@ -15,7 +18,8 @@ i możliwości rozwoju. Szczegóły są w plikach `docs/` repozytorium.*
 | Frontend | React 19, TypeScript (tryb strict), Vite, MapLibre GL JS 6, i18next (PL/EN) |
 | Podkład mapy | OpenFreeMap (kafelki wektorowe, bez kluczy i ciasteczek) |
 | Uruchomienie | Docker Compose (api, web/nginx, air, etl), Makefile |
-| Jakość | pytest (57 testów), ruff, black, GitHub Actions |
+| Wdrożenie demo | maszyna wirtualna Azure (Linux), Docker Compose, Caddy (automatyczny HTTPS) |
+| Jakość | pytest (70 testów), ruff, black, GitHub Actions |
 
 ## 2. Wykorzystane dane
 
@@ -41,8 +45,15 @@ Schemat i opis: `docs/architecture.md`. Trzy warstwy:
    na odcinkach, geokoder i ranking dla planisty. Jedno polecenie: `make fetch && make data` albo
    `docker compose --profile etl run --rm etl`.
 2. **Archiwizator powietrza:** co godzinę pobiera pomiary GIOŚ do SQLite.
-3. **API + frontend:** bezstanowe API ładuje dane do pamięci (~1 s) i liczy trzy trasy w < 0,1 s;
+3. **API + frontend:** bezstanowe API ładuje dane do pamięci przy starcie i liczy trzy trasy w ułamku sekundy;
    frontend w przeglądarce pokazuje mapę, trasy, porównanie i widok dla miasta.
+
+**Wdrożenie demo:** jedna maszyna wirtualna Azure uruchamia ten sam `docker compose` co w instrukcji
+uruchomienia, a przed nim stoi Caddy, który automatycznie pobiera certyfikat HTTPS. Dane przetworzone
+budujemy raz lokalnie i kopiujemy na maszynę (ETL pobiera dane z Overpass i MSIP, więc nie powtarzamy
+go na serwerze); usługa `air` na maszynie nadal co godzinę dopisuje pomiary GIOŚ, więc składnik
+powietrza pozostaje bieżący, a warstwy statyczne są udokumentowaną migawką. Serwer nie zapisuje logów
+dostępu. Kroki: `docs/deployment.md`.
 
 Metoda (funkcja kosztu, normalizacja, indeks powietrza, priorytet dla planisty, ograniczenia):
 `docs/methodology.md`. Najważniejsze decyzje projektowe z uzasadnieniem: `docs/DECISIONS.md`.

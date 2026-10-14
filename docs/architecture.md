@@ -16,8 +16,8 @@
  GIOŚ API ───► etl/air.py (co godzinę: launchd / cron / usługa „air”) ──► air_history.sqlite
 
               ┌──────────────────── API (FastAPI, bezstanowe) ────────────────────┐
- przeglądarka │ start: grafy igraph z Parquet (~1 s), geokoder, nakładki          │
- React +  ◄──►│ /api/v1/route     trzy trasy, metryki, kompromis (< 0,1 s)        │
+ przeglądarka │ start: grafy igraph z Parquet, geokoder, nakładki                 │
+ React +  ◄──►│ /api/v1/route     trzy trasy, metryki, kompromis (szybkość)         │
  MapLibre     │ /api/v1/geocode   /api/v1/air/now   /api/v1/meta/sources          │
  (nginx)      │ /api/v1/layers    /api/v1/planner/{hotspots,districts,export.csv} │
               └────────────────────────────────────────────────────────────────────┘
@@ -35,7 +35,7 @@
 | Frontend | React 19, TypeScript (strict), Vite, MapLibre GL 6, i18next | Najpierw mobile, PL/EN, obsługa klawiaturą |
 | Podkład | OpenFreeMap (styl positron) | Bez kluczy i ciasteczek, atrybucja OSM |
 | Uruchomienie | Docker Compose: `api`, `web` (nginx), `air`, `etl` (profil) | `docker compose up --build` → http://localhost:8080 |
-| Jakość | pytest (57 testów), ruff, black, GitHub Actions | Testy bez wywołań zewnętrznych API (nagrane odpowiedzi) |
+| Jakość | pytest (70 testów), ruff, black, GitHub Actions | Testy bez wywołań zewnętrznych API (nagrane odpowiedzi) |
 
 ## Przepływ zapytania o trasę
 

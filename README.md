@@ -5,6 +5,8 @@ Aplikacja pokazuje też, ile to kosztuje w minutach. Druga zakładka, „Dla mia
 gdzie wysoka ekspozycja spotyka wielu wrażliwych użytkowników (szkoły, przedszkola, żłobki,
 mieszkańcy). Projekt na konkurs „Open Data App” Gminy Miejskiej Kraków.
 
+Demo: https://opendata-project.westeurope.cloudapp.azure.com · Kod: https://github.com/hubert-x-zuza/green-router
+
 Dokumentacja: [metodologia](docs/methodology.md) · [architektura](docs/architecture.md) ·
 [źródła danych](docs/data-sources.md) · [decyzje](docs/DECISIONS.md) ·
 [otwarte pytania](docs/OPEN_QUESTIONS.md).
@@ -45,7 +47,7 @@ make fetch        # pobranie danych do data/raw/ (MSIP z mapą hałasu 614 MB, o
 make data         # siatki hałasu, grafy OSM, ekspozycja, geokoder, planista (ok. 15 min)
 make api          # API na :8000
 make web          # frontend na :5173 (proxy /api → :8000)
-make test         # pytest (57 testów; trasy wzorcowe wymagają make data)
+make test         # pytest (70 testów; trasy wzorcowe wymagają make data)
 make lint         # ruff, black, tsc
 ./ops/install_launchd.sh   # archiwizator powietrza co godzinę (macOS)
 ```
@@ -60,6 +62,10 @@ otwartedane.um.krakow.pl; Główny Inspektorat Ochrony Środowiska, Portal Jako�
 są na bieżąco weryfikowane); © współtwórcy OpenStreetMap (ODbL); podkład OpenFreeMap / OpenMapTiles.
 Daty wytworzenia i pozyskania każdego zbioru są w `data/manifest.yml` i w panelu „O danych”.
 Inspiracją metody jest Green Paths 2 (DigitalGeographyLab, licencja MIT).
+
+**Licencja kodu:** MIT (plik `LICENSE`). Licencja dotyczy kodu i dokumentacji tego repozytorium, nie danych:
+dane źródłowe i pochodne zachowują warunki swoich dostawców (powyżej). Dane przetworzone z OpenStreetMap
+(ODbL) nie są w repozytorium; odtwarza je `make data`.
 
 Indeks ekspozycji służy do porównywania tras i nie jest oceną medyczną.
 

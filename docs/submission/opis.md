@@ -1,7 +1,6 @@
 # Zdrowa Trasa: zdrowsze trasy po Krakowie
 
-*Szkic opisu do zgłoszenia (PDF, maks. 2 strony). Do uzupełnienia: nazwy autorów, adres demo,
-zrzut ekranu.*
+**Zespół:** Zuzanna Jarlaczyńska, Hubert Nowak  ·  **Demo:** https://opendata-project.westeurope.cloudapp.azure.com
 
 ## Problem
 
@@ -31,7 +30,7 @@ pomiary powietrza), ale mieszkaniec nie ma z nich praktycznego pożytku na co dz
 
 ## Dane
 
-Łączymy **18 zbiorów**, w tym 16 miejskich (7 z MSIP, 9 z portalu otwartych danych, w tym ZTP):
+Łączymy **ponad 20 zbiorów** Gminy Miejskiej Kraków (MSIP, portal otwartych danych, ZTP) z pomiarami GIOŚ i danymi OpenStreetMap:
 
 - **Gmina Miejska Kraków (MSIP):** Mapa hałasu 2022 (drogi i szyny, wskaźniki LDWN i LN), Mapa
   zieleni, granica miasta, punkty adresowe i ulice EMUiA (własny geokoder, bez usług zewnętrznych),
@@ -60,9 +59,9 @@ Dane statyczne i bieżące są połączone w jednej funkcji kosztu trasy:
 
 Łączymy routing wielokryterialny z danymi na żywo i danymi o tym, kto jest narażony. Inspiracją
 jest metoda Green Paths 2 (Uniwersytet Helsiński), ale to nasza własna implementacja: aplikacja dla
-mieszkańca, a nie narzędzie dla ekspertów. Trasy liczą się w niecałe 0,1 s. Cały proces przetwarzania
+mieszkańca, a nie narzędzie dla ekspertów. Trasa jest wyznaczana w ułamku sekundy. Cały proces przetwarzania
 danych jest powtarzalny jednym poleceniem, a całość uruchamia się przez `docker compose up`.
-Python (FastAPI, igraph, geopandas), React, MapLibre. 57 testów automatycznych.
+Wykorzystane technologie to m.in. Python (FastAPI, igraph, geopandas), React i MapLibre. Dla zapewnienia dobrego działania aplikacji, stworzyliśmy te 70 testów automatycznych.
 
 ## Potencjał rozwoju i biznesowy
 
@@ -70,4 +69,5 @@ Warstwa w aplikacji mKraków; licencja dla miast (ten sam proces dla innych mias
 hałasu); API dla aplikacji zdrowotnych, ubezpieczycieli i programów pracowniczych; ostatni odcinek
 podróży komunikacją miejską (GTFS); ostrzeżenia smogowe; wyspy ciepła latem.
 
-**Demo:** <adres>  ·  **Kod i instrukcja:** <repozytorium / archiwum>
+**Demo:** https://opendata-project.westeurope.cloudapp.azure.com  
+**Kod i instrukcja uruchomienia:** https://github.com/hubert-x-zuza/green-router (także w załączniku).
