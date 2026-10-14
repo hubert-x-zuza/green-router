@@ -53,6 +53,15 @@ rsync -avz data/processed/ azureuser@<NAZWA>.<region>.cloudapp.azure.com:~/green
 ```
 
 To około 174 MB i zawiera także `air_history.sqlite` (dotychczasowa historia powietrza).
+
+API czyta przy starcie także cztery małe pliki z `data/raw/` (razem około 2 MB). Bez
+`city_boundary` API się nie uruchomi; brak pozostałych nie powoduje błędu, ale po cichu wyłącza
+infrastrukturę rowerową, pitniki i dopasowanie miejsc w linku Google Maps:
+
+```sh
+rsync -avz --relative data/raw/city_boundary data/raw/cycle_infra data/raw/fountains_outdoor \
+  data/raw/osm/poi.parquet azureuser@<NAZWA>.<region>.cloudapp.azure.com:~/green-router/
+```
 Zatrzymaj wtedy lokalnego archiwizatora, żeby historia nie rozjechała się na dwa pliki:
 
 ```sh
